@@ -11,7 +11,7 @@ function Header() {
   return (
     <>
       <header>
-        <div className="container relative mx-auto flex items-center h-[62px] border-b border-gray-light">
+        <div className="container container-header relative mx-auto flex items-center h-[62px] border-b border-gray-light">
           <Link
             href={"/"}
             className="flex items-center gap-[7px] pl-[20px] w-full min-w-[230px] border-x border-gray-light h-full md:min-w-[250px] md:pl-[30px]"

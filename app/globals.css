@@ -1,11 +1,20 @@
 @import "tailwindcss";
 
-.container {
+.container{
   width: 100%;
   max-width: initial;
 
+}
+
+.container-header {
   @media (width >= 1440px) {
     max-width: 1440px;
+  }
+}
+
+.container-main {
+  @media (width >= 1380px) {
+    max-width: 1380px;
   }
 }
 
