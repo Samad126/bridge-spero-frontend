@@ -1,8 +1,17 @@
 @import "tailwindcss";
 
+.container {
+  width: 100%;
+  max-width: initial;
+
+  @media (width >= 1440px) {
+    max-width: 1440px;
+  }
+}
+
 @theme {
-    --color-primary: #C96129;
-    --color-secondary: #252525;
-    --color-tertiary: #626262;
-    --color-gray-light: #C8C8C8;
+  --color-primary: #c96129;
+  --color-secondary: #252525;
+  --color-tertiary: #626262;
+  --color-gray-light: #c8c8c8;
 }
