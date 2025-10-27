@@ -6,11 +6,12 @@ import Link from "next/link";
 
 function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <>
       <header className="">
-        <div className="container mx-auto flex items-center h-[62px] border-b border-gray-light">
+        <div className="container relative mx-auto flex items-center h-[62px] border-b border-gray-light">
           <Link
             href={"/"}
             className="flex items-center gap-[7px] pl-[20px] w-full min-w-[230px] border-x border-gray-light h-full md:min-w-[250px] md:pl-[30px]"
@@ -32,7 +33,7 @@ function Header() {
           </Link>
           <div className="w-full max-w-[62px] h-full justify-center flex items-center sm:max-w-full sm:justify-start border-r border-gray-light">
             <button
-              className="w-full flex justify-center cursor-pointer h-full sm:hidden"
+              className="w-full flex justify-center items-center cursor-pointer h-full sm:hidden"
               onClick={() => setIsSearchOpen(true)}
               aria-label="Open search"
             >
@@ -42,12 +43,11 @@ function Header() {
                 width={22}
                 height={22}
                 loading="eager"
-                className="min-w-[22px] min-h-[22px] h-full"
+                className="min-w-[22px] min-h-[22px]"
               />
             </button>
-
             <label
-              className="hidden sm:flex justify-center cursor-text h-full pl-[20px] pr-[12px]"
+              className="hidden sm:flex justify-center items-center cursor-text h-full pl-[20px] pr-[12px]"
               htmlFor="search"
             >
               <Image
@@ -56,10 +56,9 @@ function Header() {
                 width={22}
                 height={22}
                 loading="eager"
-                className="min-w-[22px] min-h-[22px] h-full"
+                className="min-w-[22px] min-h-[22px]"
               />
             </label>
-
             <input
               type="search"
               placeholder="Search"
@@ -67,14 +66,17 @@ function Header() {
               id="search"
             />
           </div>
-          <button className="w-full max-w-[62px] flex justify-center h-full border-r border-gray-light xl:hidden">
+          <button
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            className="w-full max-w-[62px] flex justify-center items-center h-full border-r border-gray-light xl:hidden"
+          >
             <Image
-              src={"/menu.svg"}
+              src={isMenuOpen ? "/close.svg" : "/menu.svg"}
               alt="menu icon"
               width={22}
               height={22}
               loading="eager"
-              className="min-w-[22px] min-h-[22px] h-full"
+              className="min-w-[22px] min-h-[22px]"
             />
           </button>
           <nav className="h-full">
@@ -121,9 +123,33 @@ function Header() {
               </li>
             </ul>
           </nav>
+          {isMenuOpen && (
+            <div className="absolute right-0 top-full w-full sm:max-w-[390px] xl:hidden border-l border-b border-gray-light">
+              <nav>
+                <ul className="flex flex-col" id="topMenu">
+                  <li>
+                    <Link className="block p-[20px] border-b border-gray-light" href={"/about"}>About</Link>
+                  </li>
+                  <li>
+                    <Link className="block p-[20px] border-b border-gray-light" href={"/explore"}>Explore</Link>
+                  </li>
+                  <li>
+                    <Link className="block p-[20px] border-b border-gray-light" href={"/contact"}>Contact</Link>
+                  </li>
+                </ul>
+                <ul className="flex justify-between" id="bottomMenu">
+                  <li className="flex-1">
+                    <Link className="block py-[20px] text-center" href={"/login"}>Login</Link>
+                  </li>
+                  <li className="flex-1">
+                    <Link className="block py-[20px] bg-secondary text-white text-center" href={"/register"}>Register</Link>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          )}
         </div>
       </header>
-
       {isSearchOpen && null}
     </>
   );
