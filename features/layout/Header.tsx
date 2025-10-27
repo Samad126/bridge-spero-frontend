@@ -31,23 +31,9 @@ function Header() {
               Bridge<span className="text-primary">Spero</span>
             </p>
           </Link>
-          <div className="w-full max-w-[62px] h-full justify-center flex items-center md:max-w-full md:justify-start border-r border-gray-light">
-            <button
-              className="w-full flex justify-center items-center cursor-pointer h-full md:hidden"
-              onClick={() => setIsSearchOpen(true)}
-              aria-label="Open search"
-            >
-              <Image
-                src={"/search.svg"}
-                alt="search icon"
-                width={22}
-                height={22}
-                loading="eager"
-                className="min-w-[22px] min-h-[22px]"
-              />
-            </button>
+          <div className="hidden w-full h-full md:flex items-center border-r border-gray-light">
             <label
-              className="hidden md:flex justify-center items-center cursor-text h-full pl-[20px] pr-[12px]"
+              className="flex justify-center items-center cursor-text h-full pl-[20px] pr-[12px]"
               htmlFor="search"
             >
               <Image
@@ -62,10 +48,24 @@ function Header() {
             <input
               type="search"
               placeholder="Search"
-              className="outline-none placeholder:text-secondary h-full w-full pr-[20px] hidden md:inline-block"
+              className="outline-none placeholder:text-secondary h-full w-full pr-[20px]"
               id="search"
             />
           </div>
+          <button
+            className="w-full max-w-[62px] border-r border-gray-light flex justify-center items-center cursor-pointer h-full md:hidden"
+            onClick={() => setIsSearchOpen(true)}
+            aria-label="Open search"
+          >
+            <Image
+              src={"/search.svg"}
+              alt="search icon"
+              width={22}
+              height={22}
+              loading="eager"
+              className="min-w-[22px] min-h-[22px]"
+            />
+          </button>
           <button
             onClick={() => setIsMenuOpen((prev) => !prev)}
             className="w-full max-w-[62px] flex justify-center items-center h-full border-r border-gray-light xl:hidden"
@@ -128,21 +128,46 @@ function Header() {
               <nav>
                 <ul className="flex flex-col" id="topMenu">
                   <li>
-                    <Link className="block p-[20px] border-b border-gray-light" href={"/about"}>About</Link>
+                    <Link
+                      className="block p-[20px] border-b border-gray-light"
+                      href={"/about"}
+                    >
+                      About
+                    </Link>
                   </li>
                   <li>
-                    <Link className="block p-[20px] border-b border-gray-light" href={"/explore"}>Explore</Link>
+                    <Link
+                      className="block p-[20px] border-b border-gray-light"
+                      href={"/explore"}
+                    >
+                      Explore
+                    </Link>
                   </li>
                   <li>
-                    <Link className="block p-[20px] border-b border-gray-light" href={"/contact"}>Contact</Link>
+                    <Link
+                      className="block p-[20px] border-b border-gray-light"
+                      href={"/contact"}
+                    >
+                      Contact
+                    </Link>
                   </li>
                 </ul>
                 <ul className="flex justify-between" id="bottomMenu">
                   <li className="flex-1">
-                    <Link className="block py-[20px] text-center" href={"/login"}>Login</Link>
+                    <Link
+                      className="block py-[20px] text-center"
+                      href={"/login"}
+                    >
+                      Login
+                    </Link>
                   </li>
                   <li className="flex-1">
-                    <Link className="block py-[20px] bg-secondary text-custom-white text-center" href={"/register"}>Register</Link>
+                    <Link
+                      className="block py-[20px] bg-secondary text-custom-white text-center"
+                      href={"/register"}
+                    >
+                      Register
+                    </Link>
                   </li>
                 </ul>
               </nav>

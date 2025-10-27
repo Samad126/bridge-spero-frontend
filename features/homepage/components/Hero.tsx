@@ -3,13 +3,13 @@ import Link from "next/link";
 function Hero() {
   return (
     <section id="hero">
-      <div className="container mx-auto text-center mt-[120px]">
+      <div className="container mx-auto text-center mt-[100px] md:mt-[120px]">
         <h1 className="text-primary leading-[130%] text-[38px] md:text-[64px] lg:text-[80px]">
           Smarter Education
           <br />
           Smarter Generation
         </h1>
-        <p className="text-[20px] leading-[130%] text-center max-w-[386px] mx-auto mt-[18px] mb-[42px] md:mt-[16px] md:mb-[50px]">
+        <p className="text-[16px] leading-[130%] text-center max-w-[320px] mx-auto mt-[18px] mb-[42px] md:mt-[16px] md:mb-[50px] md:text-[18px] md:max-w-[386px] lg:text-[20px]">
           Delivering high-quality education designed to prepare you for the
           future
         </p>
