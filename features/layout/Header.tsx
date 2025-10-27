@@ -14,16 +14,16 @@ function Header() {
         <div className="container container-header relative mx-auto flex items-center h-[62px] border-b border-gray-light">
           <Link
             href={"/"}
-            className="flex items-center gap-[7px] pl-[20px] w-full min-w-[230px] border-x border-gray-light h-full md:min-w-[250px] md:pl-[30px]"
+            className="flex items-center gap-[7px] pl-[16.25px] w-full min-w-[230px] border-x border-gray-light h-full md:min-w-[250px] md:pl-[25px]"
           >
             <div>
-              <div className="relative w-[46.5px] h-[21px] md:w-[80px] md:h-[36px]">
+              <div className="relative w-[54px] h-[27px] md:w-[72px] md:h-[36px]">
                 <Image
                   src={"/logo.svg"}
                   alt="main logo"
                   fill
                   loading="eager"
-                  sizes="(max-width: 768px) 46.5px, 80px"
+                  sizes="(max-width: 768px) 54px, 72px"
                 />
               </div>
             </div>
