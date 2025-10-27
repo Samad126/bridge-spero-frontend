@@ -10,7 +10,7 @@ function Header() {
 
   return (
     <>
-      <header className="">
+      <header>
         <div className="container relative mx-auto flex items-center h-[62px] border-b border-gray-light">
           <Link
             href={"/"}
@@ -115,7 +115,7 @@ function Header() {
               </li>
               <li className="w-full h-full min-w-[102px]">
                 <Link
-                  className="h-full text-center flex items-center justify-center border-r border-gray-light"
+                  className="h-full text-center flex items-center justify-center border-r border-gray-light bg-secondary text-custom-white"
                   href={"/register"}
                 >
                   Sign Up
@@ -124,7 +124,7 @@ function Header() {
             </ul>
           </nav>
           {isMenuOpen && (
-            <div className="absolute right-0 top-full w-full sm:max-w-[390px] xl:hidden border-l border-b border-gray-light">
+            <div className="absolute right-0 top-full w-full sm:max-w-[390px] xl:hidden border-l bg-white border-b border-t border-gray-light">
               <nav>
                 <ul className="flex flex-col" id="topMenu">
                   <li>
@@ -142,7 +142,7 @@ function Header() {
                     <Link className="block py-[20px] text-center" href={"/login"}>Login</Link>
                   </li>
                   <li className="flex-1">
-                    <Link className="block py-[20px] bg-secondary text-white text-center" href={"/register"}>Register</Link>
+                    <Link className="block py-[20px] bg-secondary text-custom-white text-center" href={"/register"}>Register</Link>
                   </li>
                 </ul>
               </nav>
