@@ -31,9 +31,9 @@ function Header() {
               Bridge<span className="text-primary">Spero</span>
             </p>
           </Link>
-          <div className="w-full max-w-[62px] h-full justify-center flex items-center sm:max-w-full sm:justify-start border-r border-gray-light">
+          <div className="w-full max-w-[62px] h-full justify-center flex items-center md:max-w-full md:justify-start border-r border-gray-light">
             <button
-              className="w-full flex justify-center items-center cursor-pointer h-full sm:hidden"
+              className="w-full flex justify-center items-center cursor-pointer h-full md:hidden"
               onClick={() => setIsSearchOpen(true)}
               aria-label="Open search"
             >
@@ -47,7 +47,7 @@ function Header() {
               />
             </button>
             <label
-              className="hidden sm:flex justify-center items-center cursor-text h-full pl-[20px] pr-[12px]"
+              className="hidden md:flex justify-center items-center cursor-text h-full pl-[20px] pr-[12px]"
               htmlFor="search"
             >
               <Image
@@ -62,7 +62,7 @@ function Header() {
             <input
               type="search"
               placeholder="Search"
-              className="outline-none placeholder:text-secondary h-full w-full pr-[20px] hidden sm:inline-block"
+              className="outline-none placeholder:text-secondary h-full w-full pr-[20px] hidden md:inline-block"
               id="search"
             />
           </div>
