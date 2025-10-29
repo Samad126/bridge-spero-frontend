@@ -2,13 +2,17 @@
 
 .container{
   width: 100%;
+  padding: 0 20px;
   max-width: initial;
 
+  @media (width >= 1380px) {
+    padding: 0;
+  }
 }
 
 .container-header {
-  @media (width >= 1440px) {
-    max-width: 1440px;
+  @media (width >= 1380px) {
+    max-width: 1380px;
   }
 }
 
@@ -24,4 +28,6 @@
   --color-tertiary: #626262;
   --color-gray-light: #c8c8c8;
   --color-custom-white: #EBEBEB;
+  --color-custom-yellow: #D4AD1E;
+  --breakpoint-xxl: 90rem;
 }
