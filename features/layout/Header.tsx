@@ -15,10 +15,10 @@ function Header() {
           <div className="relative flex items-center h-[62px] border-y border-gray-light bg-white">
             <Link
               href={"/"}
-              className="flex items-center gap-[7px] pl-[16.25px] w-full min-w-[230px] border-x border-gray-light h-full md:min-w-[250px] md:pl-[25px]"
+              className="flex items-center gap-[7px] pl-[16.25px] w-full min-w-[230px] border-x border-gray-light h-full lg:min-w-[250px] lg:pl-[25px]"
             >
               <div>
-                <div className="relative w-[54px] h-[27px] md:w-[72px] md:h-[36px]">
+                <div className="relative w-[54px] h-[27px] lg:w-[72px] lg:h-[36px]">
                   <Image
                     src={"/logo.svg"}
                     alt="main logo"
@@ -32,7 +32,7 @@ function Header() {
                 Bridge<span className="text-primary">Spero</span>
               </p>
             </Link>
-            <div className="hidden w-full h-full md:flex items-center border-r border-gray-light">
+            <div className="hidden w-full h-full lg:flex items-center border-r border-gray-light">
               <label
                 className="flex justify-center items-center cursor-text h-full pl-[20px] pr-[12px]"
                 htmlFor="search"
@@ -54,7 +54,7 @@ function Header() {
               />
             </div>
             <button
-              className="w-full max-w-[62px] border-r border-gray-light flex justify-center items-center cursor-pointer h-full md:hidden"
+              className="w-full max-w-[62px] border-r border-gray-light flex justify-center items-center cursor-pointer h-full lg:hidden"
               onClick={() => setIsSearchOpen(true)}
               aria-label="Open search"
             >
@@ -69,7 +69,7 @@ function Header() {
             </button>
             <button
               onClick={() => setIsMenuOpen((prev) => !prev)}
-              className="w-full max-w-[62px] flex justify-center items-center h-full border-r border-gray-light xl:hidden"
+              className="w-full max-w-[62px] flex justify-center items-center h-full border-r border-gray-light xxl:hidden"
             >
               <Image
                 src={isMenuOpen ? "/close.svg" : "/menu.svg"}
@@ -81,7 +81,7 @@ function Header() {
               />
             </button>
             <nav className="h-full">
-              <ul className="hidden xl:flex h-full items-center">
+              <ul className="hidden xxl:flex h-full items-center">
                 <li className="w-full h-full min-w-[165px]">
                   <Link
                     className="h-full text-center flex items-center justify-center border-r border-gray-light"
@@ -125,7 +125,7 @@ function Header() {
               </ul>
             </nav>
             {isMenuOpen && (
-              <div className="absolute right-0 top-full w-full sm:max-w-[390px] xl:hidden border-x bg-white border-b border-t border-gray-light">
+              <div className="absolute right-0 top-full w-full sm:max-w-[390px] xxl:hidden border-x bg-white border-b border-t border-gray-light">
                 <nav>
                   <ul className="flex flex-col" id="topMenu">
                     <li>
