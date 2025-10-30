@@ -16,3 +16,10 @@ export type GroupCardItem = {
   teacherName: string,
   price: number
 };
+
+
+export type FAQItemType = {
+  id?: number;
+  name: string;
+  description: string;
+};
