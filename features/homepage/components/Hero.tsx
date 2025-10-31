@@ -25,6 +25,22 @@ function Hero() {
           </Link>
         </div>
       </div>
+      <div className="container container-main mx-auto my-[50px]">
+        <div className='border border-gray-light max-w-[350px] mx-auto lg:max-w-[476px] lg:flex lg:border-none xl:max-w-[571px] '>
+          <div className='flex justify-between my-[12px] mx-[20px] lg:flex lg:flex-col-reverse xl:pr-[20px]'>
+            <span className='leading-[100%] text-secondary text-[20px] xl:text-[24px]'>Teachers</span>
+            <span className='text-primary text-[24px] leading-[100%] lg:mb-[5px] lg:text-[26px] lg:text-center xl:text-[32px]'>100+</span>
+          </div> <hr className='border-gray-light' />
+          <div className='flex justify-between my-[12px] mx-[20px] lg:flex lg:flex-col-reverse lg:border-r lg:border-r-secondary lg:border-l lg:border-l-secondary lg:px-[50px] xl:px-[70px]'>
+            <span className='leading-[100%] text-secondary text-[20px] xl:text-[24px]'>Students</span>
+            <span className='text-primary text-[24px] leading-[100%] lg:mb-[5px] lg:text-[26px] lg:text-center xl:text-[32px]'>2000+</span>
+          </div> <hr className='border-gray-light' />
+          <div className='flex justify-between my-[12px] mx-[20px] lg:flex lg:flex-col-reverse xl:pl-[20px]'>
+            <span className='leading-[100%] text-secondary text-[20px] xl:text-[24px]'>Groups</span>
+            <span className='text-primary text-[24px] leading-[100%] lg:mb-[5px] lg:text-[26px] lg:text-center xl:text-[32px]'>250+</span>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
