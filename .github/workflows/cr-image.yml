@@ -1,0 +1,36 @@
+name: Container Build
+
+on:
+  push:
+    branches: [ "master", "dev" ]
+  pull_request:
+    branches: [ "master", "dev" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: Build
+    steps:
+
+    - name: Check out the repo
+      run: |
+        eval `ssh-agent -s`
+        ssh-add - <<< '${{ secrets.REPO_SSH_KEY }}'
+        git clone git@github.com:${{ github.repository }}.git --single-branch repo
+
+    - name: Log in to GHCR
+      run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ vars.CR_USERNAME }} --password-stdin
+
+    - name: Build the image
+      run: |
+        docker build . -t ghcr.io/${{ vars.CR_USERNAME }}/brsp:$([[ ${{ github.ref }} == 'refs/heads/dev' ]] && echo dev-)$(jq -r .version package.json)
+      working-directory: ./repo
+
+    - name: Tag as latest image
+      run: |
+        docker image tag ghcr.io/${{ vars.CR_USERNAME }}/brsp:$([[ ${{ github.ref }} == 'refs/heads/dev' ]] && echo dev-)$(jq -r .version package.json) ghcr.io/${{ vars.CR_USERNAME }}/brsp:$([[ ${{ github.ref }} == 'refs/heads/dev' ]] && echo dev-)latest
+      working-directory: ./repo
+
+    - name: Push images
+      run: |
+        docker push -a ghcr.io/${{ vars.CR_USERNAME }}/brsp
