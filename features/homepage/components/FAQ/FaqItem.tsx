@@ -8,12 +8,12 @@ function FaqItem(faq: FAQItemType) {
   const [isOpened, setIsOpened] = useState(false);
 
   return (
-    <div className="px-[20px] py-[18px] lg:px[32px] lg:py-[24px]">
+    <div>
       <div
         onClick={() => setIsOpened((prev) => !prev)}
-        className={`flex justify-between items-center select-none ${
-          isOpened ? "mb-[16px]" : ""
-        }`}
+        className={`flex justify-between items-center select-none 
+          px-[20px] py-[18px] lg:px[32px] lg:py-[24px]
+          ${isOpened ? "pb-[16px]!" : ""}`}
       >
         <h5>{faq.name}</h5>
         <Image
@@ -25,8 +25,10 @@ function FaqItem(faq: FAQItemType) {
         />
       </div>
       <p
-        className={`${
-          isOpened ? "overflow-visible max-h-none" : "overflow-hidden max-h-0"
+        className={`
+          px-[20px] lg:px[32px]
+          ${
+          isOpened ? "overflow-visible max-h-none pb-[18px] lg:pb-[24px]" : "overflow-hidden max-h-0"
         }`}
       >
         {faq.description}
