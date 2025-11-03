@@ -55,7 +55,7 @@ const TrendingGroups = () => {
           </p>
         </div>
 
-        <div className="flex flex-col lg:gap-[24px] lg:flex-row [&>*:last-child]:hidden xxl:[&>*:last-child]:block">
+        <div className="flex flex-col lg:gap-[12px] lg:flex-row [&>*:last-child]:hidden xxl:[&>*:last-child]:block">
           {demoGroups.map((group, i) => (
             <GroupCard
               imageUrl={group.imageUrl}

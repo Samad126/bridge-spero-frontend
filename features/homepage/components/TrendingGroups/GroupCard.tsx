@@ -12,7 +12,7 @@ const GroupCard = ({
 }: GroupCardItem) => {
   return (
     <div className="flex-1 border border-gray-light my-3">
-      <div className="relative w-full h-[340px] lg:h-[240px]">
+      <div className="relative w-full h-[240px]">
         <Image
           src={imageUrl}
           fill

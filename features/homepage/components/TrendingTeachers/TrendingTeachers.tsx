@@ -48,7 +48,7 @@ function TrendingTeachers() {
           Meet the teachers everyone&apos;s talking about — our top trending
           mentors right now
         </p>
-        <div className="flex flex-col gap-[12px] md:gap-[24px] mb-[32px] lg:mb-[42px] lg:flex-row [&>*:last-child]:hidden xxl:[&>*:last-child]:block">
+        <div className="flex flex-col gap-[12px] md:gap-[12px] mb-[32px] lg:mb-[42px] lg:flex-row [&>*:last-child]:hidden xxl:[&>*:last-child]:block">
           {demoTeachers.map((teacher) => (
             <TeacherCard
               experience={teacher.experience}
