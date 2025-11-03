@@ -22,6 +22,10 @@
   }
 }
 
+.container-footer {
+  max-width: 770px;
+}
+
 @theme {
   --color-primary: #c96129;
   --color-secondary: #252525;
