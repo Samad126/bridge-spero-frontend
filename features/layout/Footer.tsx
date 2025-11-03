@@ -6,7 +6,7 @@ import Link from "next/link";
 function Footer() {
   return (
     <footer className="flex flex-col justify-between bg-[url(/footerlogo.svg)] bg-cover bg-center bg-gray-light overflow-hidden bg-no-repeat pt-[100px]">
-      <div className="container container-footer mx-auto">
+      <div className="container container-footer">
         <h3 className="text-[32px] leading-[130%] mb-[16px] text-center text-primary tracking-[0%] lg:text-[48px] xxl:text-[54px]">
           Ready To Transform Education ?
         </h3>
