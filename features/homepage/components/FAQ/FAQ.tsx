@@ -30,12 +30,12 @@ function FAQ() {
   ];
 
   return (
-    <section>
-      <div className="container mx-auto container-main">
-        <h3 className="text-[32px] leading-[130%] mb-[16px] text-center text-primary my-[60px] lg:text-[48px] xxl:text-[54px]">
+    <section className="mb-[60px] lg:mb-[80px]">
+      <div className="container">
+        <h3 className="text-[32px] leading-[130%] text-center text-primary lg:text-[48px] xxl:text-[54px]">
           Frequently Asked Questions
         </h3>
-        <p className="text-center text-secondary mt-[16px] mb-[32px] lg:text-[18px] xxl:text-[20px] lg:mb-[54px]">
+        <p className="text-center text-secondary mt-[16px] mb-[32px] lg:text-[18px] xxl:text-[20px] lg:mb-[42px]">
           Real stories from real users — hear their feedback.
         </p>
         <div className="border border-gray-light divide-y divide-gray-light">

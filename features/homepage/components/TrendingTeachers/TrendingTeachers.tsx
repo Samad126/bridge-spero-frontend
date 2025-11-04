@@ -40,15 +40,15 @@ function TrendingTeachers() {
 
   return (
     <section>
-      <div className="container mx-auto container-main">
-        <h3 className="text-[32px] leading-[130%] mb-[16px] text-center text-primary my-[60px] lg:text-[48px] xxl:text-[54px]">
+      <div className="container">
+        <h3 className="text-[32px] leading-[130%] text-center text-primary lg:text-[48px] xxl:text-[54px]">
           Trending Teachers
         </h3>
-        <p className="text-center text-secondary lg:text-[18px] xxl:text-[20px] mx-auto max-w-[350px] lg:max-w-[438px]">
+        <p className="text-center text-secondary mt-[16px] mb-[32px] lg:mb-[42px] lg:text-[18px] xxl:text-[20px] mx-auto max-w-[350px] lg:max-w-[438px]">
           Meet the teachers everyone&apos;s talking about — our top trending
           mentors right now
         </p>
-        <div className="flex flex-col gap-[12px] md:gap-[24px] my-[32px] lg:my[54px] lg:flex-row [&>*:last-child]:hidden xxl:[&>*:last-child]:block">
+        <div className="flex flex-col gap-[12px] md:gap-[12px] mb-[32px] lg:mb-[42px] lg:flex-row [&>*:last-child]:hidden xxl:[&>*:last-child]:block">
           {demoTeachers.map((teacher) => (
             <TeacherCard
               experience={teacher.experience}
@@ -61,7 +61,7 @@ function TrendingTeachers() {
         </div>
         <Link
           href={"/courses"}
-          className="border my-[15px] py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"
+          className="border py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"
         >
           More
         </Link>
