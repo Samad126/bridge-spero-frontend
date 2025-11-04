@@ -13,10 +13,9 @@ jobs:
     steps:
 
     - name: Check out the repo
-      run: |
-        eval `ssh-agent -s`
-        ssh-add - <<< '${{ secrets.REPO_SSH_KEY }}'
-        git clone git@github.com:${{ github.repository }}.git --single-branch repo
+      uses: actions/checkout@v4
+      with:
+        path: repo
 
     - name: Log in to GHCR
       run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ vars.CR_USERNAME }} --password-stdin
