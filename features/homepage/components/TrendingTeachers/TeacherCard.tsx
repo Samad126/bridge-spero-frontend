@@ -33,7 +33,7 @@ function TeacherCard({ experience, profileUrl, star, name }: TeacherCardItem) {
       </div>
       <Link
         className="block text-center py-[12px] bg-secondary text-custom-white"
-        href={"/profile"}
+        href={"/"}
       >
         View Profile
       </Link>

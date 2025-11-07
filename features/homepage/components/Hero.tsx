@@ -16,11 +16,11 @@ function Hero() {
         <div className="flex flex-col gap-[12px] max-w-[200px] mx-auto md:max-w-[424px] md:flex-row md:gap-[24px] justify-between mb-[60px] lg:mb-[80px]">
           <Link
             className="md:flex-1 py-[12px] border bg-secondary text-custom-white"
-            href={"/explore"}
+            href={"/"}
           >
             Explore
           </Link>
-          <Link className="md:flex-1 border bg-white py-[12px]" href={"/login"}>
+          <Link className="md:flex-1 border bg-white py-[12px]" href={"/"}>
             Become a Teacher
           </Link>
         </div>

@@ -69,7 +69,7 @@ const TrendingGroups = () => {
           ))}
         </div>
         <Link
-          href={"/groups"}
+          href={"/"}
           className="border mt-[15px] py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"
         >
           More

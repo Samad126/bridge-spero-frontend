@@ -60,7 +60,7 @@ function TrendingTeachers() {
           ))}
         </div>
         <Link
-          href={"/courses"}
+          href={"/"}
           className="border py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"
         >
           More

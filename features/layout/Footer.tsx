@@ -17,13 +17,13 @@ function Footer() {
         <div className="flex flex-col gap-[12px] max-w-[424px] mx-auto lg:flex-row lg:gap-[24px]">
           <Link
             className="inline-block py-[12px] flex-1 bg-secondary text-white text-center"
-            href={"/login"}
+            href={"/"}
           >
             Become a Student
           </Link>
           <Link
             className="inline-block py-[12px] flex-1 border border-secondary text-secondary text-center"
-            href={"/login"}
+            href={"/"}
           >
             Become a Teacher
           </Link>
@@ -36,18 +36,18 @@ function Footer() {
           </ul>
           <ul className="space-y-[12px]">
             <li>
-              <Link href={"/about"}>About</Link>
+              <Link href={"/"}>About</Link>
             </li>
             <li>
-              <Link href={"/explore"}>Explore</Link>
+              <Link href={"/"}>Explore</Link>
             </li>
             <li>
-              <Link href={"/contact"}>Contact</Link>
+              <Link href={"/"}>Contact</Link>
             </li>
           </ul>
           <ul className="space-y-[12px]">
             <li>
-              <Link className="flex items-center gap-[12px]" href={"/facebook"}>
+              <Link className="flex items-center gap-[12px]" href={"/"}>
                 <Image
                   src="/instagram.svg"
                   alt="instagram icon"
@@ -58,7 +58,7 @@ function Footer() {
               </Link>
             </li>
             <li>
-              <Link className="flex items-center gap-[12px]" href={"/facebook"}>
+              <Link className="flex items-center gap-[12px]" href={"/"}>
                 <Image
                   src="/linkedin.svg"
                   alt="linkedin icon"
@@ -69,7 +69,7 @@ function Footer() {
               </Link>
             </li>
             <li>
-              <Link className="flex items-center gap-[12px]" href={"/facebook"}>
+              <Link className="flex items-center gap-[12px]" href={"/"}>
                 <Image
                   src="/facebook.svg"
                   alt="Facebook icon"

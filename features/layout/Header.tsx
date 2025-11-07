@@ -85,7 +85,7 @@ function Header() {
                 <li className="w-full h-full min-w-[165px]">
                   <Link
                     className="h-full text-center flex items-center justify-center border-r border-gray-light"
-                    href={"/about"}
+                    href={"/"}
                   >
                     About
                   </Link>
@@ -93,7 +93,7 @@ function Header() {
                 <li className="w-full h-full min-w-[165px]">
                   <Link
                     className="h-full text-center flex items-center justify-center border-r border-gray-light"
-                    href={"/explore"}
+                    href={"/"}
                   >
                     Explore
                   </Link>
@@ -101,7 +101,7 @@ function Header() {
                 <li className="w-full h-full min-w-[165px]">
                   <Link
                     className="h-full text-center flex items-center justify-center border-r border-gray-light"
-                    href={"/contact"}
+                    href={"/"}
                   >
                     Contact
                   </Link>
@@ -109,7 +109,7 @@ function Header() {
                 <li className="w-full h-full min-w-[102px]">
                   <Link
                     className="h-full text-center flex items-center justify-center border-r border-gray-light"
-                    href={"/login"}
+                    href={"/"}
                   >
                     Login
                   </Link>
@@ -117,7 +117,7 @@ function Header() {
                 <li className="w-full h-full min-w-[102px]">
                   <Link
                     className="h-full text-center flex items-center justify-center border-r border-gray-light bg-secondary text-custom-white"
-                    href={"/register"}
+                    href={"/"}
                   >
                     Sign Up
                   </Link>
@@ -131,7 +131,7 @@ function Header() {
                     <li>
                       <Link
                         className="block p-[20px] border-b border-gray-light"
-                        href={"/about"}
+                        href={"/"}
                       >
                         About
                       </Link>
@@ -139,7 +139,7 @@ function Header() {
                     <li>
                       <Link
                         className="block p-[20px] border-b border-gray-light"
-                        href={"/explore"}
+                        href={"/"}
                       >
                         Explore
                       </Link>
@@ -147,7 +147,7 @@ function Header() {
                     <li>
                       <Link
                         className="block p-[20px] border-b border-gray-light"
-                        href={"/contact"}
+                        href={"/"}
                       >
                         Contact
                       </Link>
@@ -157,7 +157,7 @@ function Header() {
                     <li className="flex-1">
                       <Link
                         className="block py-[20px] text-center"
-                        href={"/login"}
+                        href={"/"}
                       >
                         Login
                       </Link>
@@ -165,7 +165,7 @@ function Header() {
                     <li className="flex-1">
                       <Link
                         className="block py-[20px] bg-secondary text-custom-white text-center"
-                        href={"/register"}
+                        href={"/"}
                       >
                         Register
                       </Link>

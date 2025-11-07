@@ -42,7 +42,7 @@ const GroupCard = ({
         <div className="flex justify-between items-center">
           <span className="text-[20px] text-secondary">{price}$</span>
           <Link
-            href="/groups"
+            href="/"
             className="w-[80%] block text-center py-[11px] bg-secondary text-white h-[46px]"
           >
             Details
