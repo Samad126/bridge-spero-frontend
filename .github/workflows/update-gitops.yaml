@@ -1,0 +1,108 @@
+name: Update GitOps
+
+on:
+  workflow_run:
+    workflows:
+      - Container Build
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Image version'
+        required: false
+        type: string
+      environment:
+        description: 'Environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - bluegreen
+
+jobs:
+  fetch:
+    if: ${{ (github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success') && !github.event.inputs.version}}
+    runs-on: ubuntu-latest
+    environment: Build
+    outputs:
+      version: ${{ steps.setversion.outputs.VERSION }}
+    steps:
+
+    - name: Check out the repo
+      uses: actions/checkout@v4
+
+    - name: Set version
+      id: setversion
+      run: echo "VERSION=$(jq -r .version package.json)" >> "$GITHUB_OUTPUT"
+
+  update:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment: Build
+    needs: fetch
+    env:
+      IMAGE_TAG: ${{ github.event.inputs.version || needs.fetch.outputs.version }}
+      BRANCH: rollouts
+      VALUES_FILE: brsp/values.yaml
+      TAG_PARENT_KEY: .next.image.tag
+      TAG_KEY: ${{ github.event.inputs.environment }}
+      RETRIES: 5
+    steps:
+
+    - name: Set tag key
+      if: ${{ github.event_name == 'workflow_run' }}
+      run: echo "TAG_KEY=$([[ ${{ github.ref }} == 'refs/heads/dev' ]] && echo dev || echo bluegreen)" >> "$GITHUB_ENV"
+
+    - name: Set image tag
+      run: echo "IMAGE_TAG=$([[ ${{ github.ref }} == 'refs/heads/dev' ]] && echo dev-)$IMAGE_TAG" >> "$GITHUB_ENV"
+
+    - name: Check out the gitops repo
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ secrets.GITOPS_REPO }}
+        ref: ${{ env.BRANCH }}
+        ssh-key: ${{ secrets.GITOPS_SSH_KEY }}
+
+    - name: Update image tag
+      uses: mikefarah/yq@master
+      with:
+        cmd: yq -i '${{ env.TAG_PARENT_KEY }}.${{ env.TAG_KEY }} = "${{ env.IMAGE_TAG }}"' "${{ env.VALUES_FILE }}"
+
+    - name: Push changes
+      run: |
+        set -e
+
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+        git add "$VALUES_FILE"
+        git commit -m "Update $TAG_PARENT_KEY.$TAG_KEY to $IMAGE_TAG" ||
+        (
+          gh run cancel ${{ github.run_id }} --repo ${{ github.repository }}
+          gh run watch ${{ github.run_id }} --repo ${{ github.repository }} >/dev/null
+        )
+
+        n=0
+        until [ $n -ge $RETRIES ]
+        do
+          git pull --rebase origin "$BRANCH" || git rebase --abort
+          if git push origin "$BRANCH"; then
+            echo "Push succeeded"
+            break
+          fi
+          n=$((n+1))
+          echo "Push failed, retrying ($n)..."
+          sleep 2
+        done
+
+        if [ $n -ge 5 ]; then
+          echo "Push failed after $RETRIES retries"
+          exit 1
+        fi
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true

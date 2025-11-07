@@ -2,34 +2,58 @@ name: Container Build
 
 on:
   push:
-    branches: [ "master", "dev" ]
+    branches:
+      - master
+      - dev
   pull_request:
-    branches: [ "master", "dev" ]
+    branches:
+      - master
+      - dev
 
 jobs:
   build:
     runs-on: ubuntu-latest
     environment: Build
+    env:
+      CR_REPO: ghcr.io/${{ vars.CR_USERNAME }}/brsp
     steps:
-
-    - name: Check out the repo
-      uses: actions/checkout@v4
-      with:
-        path: repo
 
     - name: Log in to GHCR
       run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ vars.CR_USERNAME }} --password-stdin
 
+    - name: Check out the repo
+      uses: actions/checkout@v4
+
+    - name: Set image tags
+      run: |
+        cat <<EOF >> "$GITHUB_ENV"
+        IMAGE_TAG=$([[ ${{ github.ref }} == 'refs/heads/dev' ]] && echo dev-)$(jq -r .version package.json)
+        IMAGE_LATEST_TAG=$([[ ${{ github.ref }} == 'refs/heads/dev' ]] && echo dev-)latest
+        EOF
+      
+    - name: Skip if image exists
+      run: |
+        docker manifest inspect "$CR_REPO:$IMAGE_TAG" >/dev/null 2>/dev/null &&
+        (
+          gh run cancel ${{ github.run_id }}
+          gh run watch ${{ github.run_id }} >/dev/null
+        ) ||
+        exit 0
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Build the image
       run: |
-        docker build . -t ghcr.io/${{ vars.CR_USERNAME }}/brsp:$([[ ${{ github.ref }} == 'refs/heads/dev' ]] && echo dev-)$(jq -r .version package.json)
-      working-directory: ./repo
+        docker build . -t "$CR_REPO:$IMAGE_TAG"
 
     - name: Tag as latest image
       run: |
-        docker image tag ghcr.io/${{ vars.CR_USERNAME }}/brsp:$([[ ${{ github.ref }} == 'refs/heads/dev' ]] && echo dev-)$(jq -r .version package.json) ghcr.io/${{ vars.CR_USERNAME }}/brsp:$([[ ${{ github.ref }} == 'refs/heads/dev' ]] && echo dev-)latest
-      working-directory: ./repo
+        docker image tag "$CR_REPO:$IMAGE_TAG" "$CR_REPO:$IMAGE_LATEST_TAG"
 
     - name: Push images
       run: |
-        docker push -a ghcr.io/${{ vars.CR_USERNAME }}/brsp
+        docker push -a "$CR_REPO"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
