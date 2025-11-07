@@ -14,9 +14,9 @@ function TeacherCard({ experience, profileUrl, star, name }: TeacherCardItem) {
           className="rounded-full w-[80px] h-[80px] object-cover"
         />
         <div>
-          <h5 className="mb-[10px] text-[24px] leading-[130%] font-medium">
+          <h3 className="mb-[10px] text-[24px] leading-[130%] font-medium">
             Kamila Sultanli
-          </h5>
+          </h3>
           <div className="flex items-center">
             <Image
               src={"/star.svg"}

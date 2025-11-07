@@ -7,9 +7,9 @@ function Footer() {
   return (
     <footer className="flex flex-col justify-between bg-[url(/footerlogo.svg)] bg-cover bg-center bg-gray-light overflow-hidden bg-no-repeat pt-[100px]">
       <div className="container container-footer">
-        <h3 className="text-[32px] leading-[130%] mb-[16px] text-center text-primary tracking-[0%] lg:text-[48px] xxl:text-[54px]">
+        <h2 className="text-[32px] leading-[130%] mb-[16px] text-center text-primary tracking-[0%] lg:text-[48px] xxl:text-[54px]">
           Ready To Transform Education ?
-        </h3>
+        </h2>
         <p className="text-center text-secondary mt-[16px] mb-[32px] lg:text-[18px] xxl:text-[20px] lg:mb-[54px]">
           Be part of the movement redefining how students learn, grow, and
           succeed
