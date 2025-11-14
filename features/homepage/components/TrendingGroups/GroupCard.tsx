@@ -36,13 +36,13 @@ const GroupCard = ({
           <span className="ml-1 text-tertiary text-[14px]">{language}</span>
         </div>
         <div className="mb-10 mt-3">
-          <p className="text-secondary text-[24px]">{subjectName}</p>
+          <h3 className="text-secondary text-[24px]">{subjectName}</h3>
           <p className="text-tertiary text-[14px]">{teacherName}</p>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-[20px] text-secondary">{price}$</span>
           <Link
-            href="/groups"
+            href="/"
             className="w-[80%] block text-center py-[11px] bg-secondary text-white h-[46px]"
           >
             Details

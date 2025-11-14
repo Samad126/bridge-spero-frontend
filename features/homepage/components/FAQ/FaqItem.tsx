@@ -15,7 +15,7 @@ function FaqItem(faq: FAQItemType) {
           px-[20px] py-[18px] lg:px[32px] lg:py-[24px]
           ${isOpened ? "pb-[16px]!" : ""}`}
       >
-        <h5>{faq.name}</h5>
+        <h3>{faq.name}</h3>
         <Image
           className={`${isOpened ? "rotate-45" : "rotate-0"}`}
           src={"/plus.svg"}
