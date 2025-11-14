@@ -46,22 +46,22 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build the image
-      if: ${{ !steps.image-exists.outputs.IMAGE_EXISTS }}
+      if: ${{ steps.image-exists.outputs.IMAGE_EXISTS == 'false' }}
       run: |
         docker build . -t "$CR_REPO:$IMAGE_TAG"
 
     - name: Tag as latest image
-      if: ${{ !steps.image-exists.outputs.IMAGE_EXISTS }}
+      if: ${{ steps.image-exists.outputs.IMAGE_EXISTS == 'false'  }}
       run: |
         docker image tag "$CR_REPO:$IMAGE_TAG" "$CR_REPO:$IMAGE_LATEST_TAG"
 
     - name: Push images
-      if: ${{ !steps.image-exists.outputs.IMAGE_EXISTS }}
+      if: ${{ steps.image-exists.outputs.IMAGE_EXISTS == 'false'  }}
       run: |
         docker push -a "$CR_REPO"
 
   trigger-cd:
-    if: ${{ !needs.build-cr-image.outputs.image-exists }}
+    if: ${{ needs.build-cr-image.outputs.image-exists == 'false' }}
     uses: ./.github/workflows/update-gitops.yaml
     needs: build-cr-image
     with:
