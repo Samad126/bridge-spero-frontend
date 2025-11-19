@@ -1,9 +1,12 @@
-import React from 'react'
+import Shedule from "@/features/common/components/Schedule/Shedule";
+import 'swiper/css';
 
 function page() {
   return (
-    <div>page</div>
-  )
+    <>
+      <Shedule />
+    </>
+  );
 }
 
-export default page
+export default page;

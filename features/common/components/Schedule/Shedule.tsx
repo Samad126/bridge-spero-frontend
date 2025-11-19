@@ -1,4 +1,7 @@
+"use client";
+
 import WeekDay from "./WeekDay";
+import WeekDayMobile from "./WeekDayMobile";
 
 function Shedule() {
   return (
@@ -10,14 +13,17 @@ function Shedule() {
           </h2>
           <p className="text-secondary text-[24px]">01.02.2025 - 07.02.2025</p>
         </div>
-        <div className="flex space-x-[12px] p-[24px] border border-gray-light">
-          <WeekDay />
-          <WeekDay />
-          <WeekDay />
-          <WeekDay />
-          <WeekDay />
-          <WeekDay />
-          <WeekDay />
+        <div className="p-[24px] border border-gray-light">
+          <div className="hidden space-x-[12px] xxl:flex">
+            <WeekDay />
+            <WeekDay />
+            <WeekDay />
+            <WeekDay />
+            <WeekDay />
+            <WeekDay />
+            <WeekDay />
+          </div>
+          <WeekDayMobile />
         </div>
       </div>
     </section>
