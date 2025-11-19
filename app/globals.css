@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-.container{
+.container {
   width: 100%;
   padding: 0 20px;
   max-width: initial;
@@ -21,7 +21,13 @@
   --color-secondary: #252525;
   --color-tertiary: #626262;
   --color-gray-light: #c8c8c8;
-  --color-custom-white: #EBEBEB;
+  --color-custom-white: #ebebeb;
   --color-custom-yellow: #836600;
   --breakpoint-xxl: 90rem;
+}
+
+@layer utilities {
+  .font-lesson {
+    font-family: var(--font-lesson);
+  }
 }
