@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
 import { EventCardTypes } from '../../dashboardTypes'
 
 const EventCard = ({time, isActive, subjectName, studentNumber}:EventCardTypes) => {

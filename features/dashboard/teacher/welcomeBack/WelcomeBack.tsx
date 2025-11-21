@@ -1,9 +1,4 @@
-import React from 'react'
-import { TeacherDashboardCountType } from '../../dashboardTypes'
-// activeGroups: 3,
-// totalStudents: 42,
-// totalEarnings: 1250,
-// averageRating: 4.8
+
 const WelcomeBack = () => {
     
     return (

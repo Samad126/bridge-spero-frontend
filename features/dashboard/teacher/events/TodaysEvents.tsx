@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import React from 'react'
 import { EventCardTypes } from '../../dashboardTypes'
 import EventCard from './EventCard'
 
