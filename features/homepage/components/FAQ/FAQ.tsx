@@ -32,9 +32,9 @@ function FAQ() {
   return (
     <section className="mb-[60px] lg:mb-[80px]">
       <div className="container">
-        <h3 className="text-[32px] leading-[130%] text-center text-primary lg:text-[48px] xxl:text-[54px]">
+        <h2 className="text-[32px] leading-[130%] text-center text-primary lg:text-[48px] xxl:text-[54px]">
           Frequently Asked Questions
-        </h3>
+        </h2>
         <p className="text-center text-secondary mt-[16px] mb-[32px] lg:text-[18px] xxl:text-[20px] lg:mb-[42px]">
           Real stories from real users — hear their feedback.
         </p>
