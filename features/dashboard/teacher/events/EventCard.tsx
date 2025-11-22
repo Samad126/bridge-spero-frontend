@@ -4,7 +4,7 @@ import { EventCardTypes } from '../../dashboardTypes'
 
 const EventCard = ({time, isActive, subjectName, studentNumber}:EventCardTypes) => {
     return (
-        <section className='w-[350px] max-w-[350px] h-[270px] p-[24px] border border-1 border-gray-light lg:max-w-[684px] lg:w-[684px] lg:h-[169px]'>
+        <div className='w-full h-[270px] p-[24px] border border-gray-light lg:h-[169px]'>
             <div className='flex items-center justify-between'>
                 <div className='flex items-center gap-[6px]'>
                     <Image
@@ -31,9 +31,9 @@ const EventCard = ({time, isActive, subjectName, studentNumber}:EventCardTypes) 
                         <span className='text-tertiary'>{studentNumber}</span>
                     </div>
                 </div>
-                <div className='flex items-center justify-between gap-[12px] lg:mt-12 lg:flex-row-reverse'>
+                <div className='flex items-center gap-[12px] lg:mt-12 lg:flex-row-reverse'>
                     <Link href={'/'}>
-                        <button className='w-[46px] h-[46px] border border-1 border-gray-light flex items-center justify-center'>
+                        <button className='w-[46px] h-[46px] border border-gray-light flex items-center justify-center'>
                             <Image
                                 width={22}
                                 height={22}
@@ -44,7 +44,7 @@ const EventCard = ({time, isActive, subjectName, studentNumber}:EventCardTypes) 
                         </button>
                     </Link>
                     <Link href={'/'}>
-                        <button className='w-[46px] h-[46px] border border-1 border-gray-light flex items-center justify-center'>
+                        <button className='w-[46px] h-[46px] border border-gray-light flex items-center justify-center'>
                             <Image
                                 width={22}
                                 height={22}
@@ -61,7 +61,7 @@ const EventCard = ({time, isActive, subjectName, studentNumber}:EventCardTypes) 
                     </Link>
                 </div>
             </div>
-        </section>
+        </div>
     )
 }
 

@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import LessonCard from "./LessonCard";
+import "swiper/css";
 
 const DAYS = [
   "Monday",

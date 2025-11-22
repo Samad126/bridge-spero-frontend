@@ -5,7 +5,7 @@ import WeekDayMobile from "./WeekDayMobile";
 
 function Shedule() {
   return (
-    <section className="mt-[40px]">
+    <section>
       <div className="container">
         <div className="flex flex-col gap-[32px] items-center justify-between mb-[32px] xxl:mb-[12px] xxl:flex-row">
           <h2 className="text-primary text-[32px] leading-[100%] font-normal">

@@ -30,7 +30,7 @@ function FAQ() {
   ];
 
   return (
-    <section className="mb-[60px] lg:mb-[80px]">
+    <section>
       <div className="container">
         <h2 className="text-[32px] leading-[130%] text-center text-primary lg:text-[48px] xxl:text-[54px]">
           Frequently Asked Questions
