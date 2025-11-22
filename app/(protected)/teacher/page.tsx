@@ -1,8 +1,12 @@
-import React from 'react'
+import WelcomeBack from '@/features/dashboard/teacher/welcomeBack/WelcomeBack'
+import TodaysEvents from '@/features/dashboard/teacher/events/TodaysEvents'
 
 function page() {
   return (
-    <div>page</div>
+    <div className='container'>
+      <WelcomeBack />
+      <TodaysEvents />
+    </div>
   )
 }
 
