@@ -6,18 +6,6 @@ export type TeacherCardItem = {
   experience: string;
 };
 
-
-export type GroupCardItem = {
-  id?: number,
-  imageUrl: string,
-  degree: string, 
-  language: string,
-  subjectName: string,
-  teacherName: string,
-  price: number
-};
-
-
 export type FAQItemType = {
   id?: number;
   name: string;

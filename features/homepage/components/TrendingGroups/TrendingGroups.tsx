@@ -1,47 +1,9 @@
 import React from "react";
-import { GroupCardItem } from "../../homepageTypes";
-import GroupCard from "./GroupCard";
 import Link from "next/link";
+import GroupList from "@/features/common/components/GroupList/GroupList";
+import { demoGroups } from "@/features/common/constants/demoGroups";
 
 const TrendingGroups = () => {
-  const demoGroups: GroupCardItem[] = [
-    {
-      id: 1,
-      imageUrl: "/groupimage.png",
-      degree: "Master",
-      language: "English",
-      subjectName: "Chemistry",
-      teacherName: "Kamila Sultanli",
-      price: 40,
-    },
-    {
-      id: 2,
-      imageUrl: "/groupimage.png",
-      degree: "Master",
-      language: "English",
-      subjectName: "Chemistry",
-      teacherName: "Kamila Sultanli",
-      price: 40,
-    },
-    {
-      id: 3,
-      imageUrl: "/groupimage.png",
-      degree: "Master",
-      language: "English",
-      subjectName: "Chemistry",
-      teacherName: "Kamila Sultanli",
-      price: 40,
-    },
-    {
-      id: 4,
-      imageUrl: "/groupimage.png",
-      degree: "Master",
-      language: "English",
-      subjectName: "Chemistry",
-      teacherName: "Kamila Sultanli",
-      price: 40,
-    },
-  ];
   return (
     <section>
       <div className="container">
@@ -55,19 +17,7 @@ const TrendingGroups = () => {
           </p>
         </div>
 
-        <div className="flex flex-col lg:gap-[12px] lg:flex-row [&>*:last-child]:hidden xxl:[&>*:last-child]:block">
-          {demoGroups.map((group, i) => (
-            <GroupCard
-              imageUrl={group.imageUrl}
-              degree={group.degree}
-              language={group.language}
-              subjectName={group.subjectName}
-              teacherName={group.teacherName}
-              price={group.price}
-              key={i}
-            />
-          ))}
-        </div>
+        <GroupList demoGroups={demoGroups} />
         <Link
           href={"/"}
           className="border mt-[15px] py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"

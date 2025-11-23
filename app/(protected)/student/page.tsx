@@ -1,10 +1,11 @@
 import Shedule from "@/features/common/components/Schedule/Shedule";
-import 'swiper/css';
+import GroupYouMightLike from "@/features/students/GroupYouMightLike";
 
 function page() {
   return (
     <>
       <Shedule />
+      <GroupYouMightLike />
     </>
   );
 }
