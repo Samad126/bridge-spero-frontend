@@ -16,6 +16,9 @@ jobs:
   build-cr-image:
     if: ${{ github.event_name != 'pull_request' || github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-build
+      cancel-in-progress: true
     outputs:
       image-exists: ${{ steps.image-exists.outputs.IMAGE_EXISTS }}
       version: ${{ steps.set-env.outputs.APP_VERSION }}
@@ -66,7 +69,3 @@ jobs:
     needs: build-cr-image
     with:
       version: ${{ needs.build-cr-image.outputs.version }}
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
