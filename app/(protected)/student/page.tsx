@@ -1,9 +1,13 @@
-import React from 'react'
+import Shedule from "@/features/common/components/Schedule/Shedule";
+import GroupYouMightLike from "@/features/students/GroupYouMightLike";
 
 function page() {
   return (
-    <div>page</div>
-  )
+    <>
+      <Shedule />
+      <GroupYouMightLike />
+    </>
+  );
 }
 
-export default page
+export default page;
