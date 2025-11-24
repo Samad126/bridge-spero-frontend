@@ -60,7 +60,7 @@ const GroupCard = ({
           <span className="text-[20px] text-secondary">{price}$</span>
           <Link
             href="/"
-            className="w-[80%] block text-center py-[11px] bg-secondary text-white h-[46px]"
+            className="w-[80%] text-[18px] block text-center bg-secondary text-white py-[12px]"
           >
             Details
           </Link>
