@@ -1,5 +1,4 @@
-import React from "react";
-import GroupList from "../../common/groups/components/GroupList/GroupList";
+import GroupList from "@/features/common/groups/components/GroupList";
 import { demoGroupsMultiple } from "../../common/groups/constants/demoGroups";
 
 function Groups() {

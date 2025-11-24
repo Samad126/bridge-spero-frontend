@@ -1,8 +1,8 @@
-import FAQ from "@/features/homepage/components/FAQ/FAQ";
-import Hero from "@/features/homepage/components/Hero";
-import TrendingGroups from "@/features/homepage/components/TrendingGroups/TrendingGroups";
-import TrendingTeachers from "@/features/homepage/components/TrendingTeachers/TrendingTeachers";
-import WhyBridgeSpero from "@/features/homepage/components/WhyBridgeSpero/WhyBridgeSpero";
+import FAQ from "@/features/homepage/faq/components/FAQ";
+import Hero from "@/features/homepage/hero/components/Hero";
+import TrendingGroups from "@/features/homepage/trending-groups/components/TrendingGroups";
+import TrendingTeachers from "@/features/homepage/trending-teachers/components/TrendingTeachers";
+import WhyBridgeSpero from "@/features/homepage/why-bridge-spero/components/WhyBridgeSpero";
 import { Metadata } from "next";
 
 export const metadata : Metadata = {

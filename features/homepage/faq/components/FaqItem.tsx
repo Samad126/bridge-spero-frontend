@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { FAQItemType } from "../../types/homepageTypes";
+import { FAQItemType } from "../types/faqTypes";
 
 function FaqItem(faq: FAQItemType) {
   const [isOpened, setIsOpened] = useState(false);
