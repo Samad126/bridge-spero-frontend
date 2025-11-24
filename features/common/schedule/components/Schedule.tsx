@@ -3,7 +3,7 @@
 import WeekDay from "./WeekDay";
 import WeekDayMobile from "./WeekDayMobile";
 
-function Shedule() {
+function Schedule() {
   return (
     <section>
       <div className="container">
@@ -30,4 +30,4 @@ function Shedule() {
   );
 }
 
-export default Shedule;
+export default Schedule;

@@ -1,10 +1,10 @@
-import Shedule from "@/features/common/schedule/components/Schedule/Shedule";
+import Schedule from "@/features/common/schedule/components/Schedule";
 import GroupYouMightLike from "@/features/students/components/GroupYouMightLike";
 
 function page() {
   return (
     <>
-      <Shedule />
+      <Schedule />
       <GroupYouMightLike />
     </>
   );

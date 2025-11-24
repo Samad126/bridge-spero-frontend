@@ -1,4 +1,4 @@
-import Schedule from "@/features/common/schedule/components/Schedule/Shedule";
+import Schedule from "@/features/common/schedule/components/Schedule";
 import TodaysEvents from "@/features/dashboard/components/teacher/events/TodaysEvents";
 import WelcomeBack from "@/features/dashboard/components/teacher/welcomeBack/WelcomeBack";
 
