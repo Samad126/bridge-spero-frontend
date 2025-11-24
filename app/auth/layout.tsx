@@ -1,5 +1,5 @@
 function page({ children }: { children: React.ReactNode }) {
-  return <div>{children}layout auth</div>;
+  return <main>{children}</main>;
 }
 
 export default page;

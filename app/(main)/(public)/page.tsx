@@ -5,10 +5,11 @@ import TrendingTeachers from "@/features/homepage/trending-teachers/components/T
 import WhyBridgeSpero from "@/features/homepage/why-bridge-spero/components/WhyBridgeSpero";
 import { Metadata } from "next";
 
-export const metadata : Metadata = {
+export const metadata: Metadata = {
   title: "Bridge Spero | Smarter Education Smarter Generation",
-  description: "Delivering high-quality education designed to prepare you for the future"
-}
+  description:
+    "Delivering high-quality education designed to prepare you for the future",
+};
 
 export default function Home() {
   return (
