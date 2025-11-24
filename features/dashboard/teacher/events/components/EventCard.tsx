@@ -1,4 +1,4 @@
-import { EventCardTypes } from "@/features/dashboard/types/dashboardTypes";
+import { EventCardTypes } from "../types/eventTypes";
 import Image from "next/image";
 import Link from "next/link";
 
