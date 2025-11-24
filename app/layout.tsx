@@ -1,7 +1,7 @@
-import Header from "@/features/layout/Header";
+import Header from "@/features/layout/components/Header";
 import "./globals.css";
-import Footer from "@/features/layout/Footer";
 import { Urbanist } from "next/font/google";
+import Footer from "@/features/layout/components/Footer";
 
 const urbanist = Urbanist({
   subsets: ["latin"],

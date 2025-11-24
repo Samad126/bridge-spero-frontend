@@ -1,6 +1,6 @@
-import Hero from "@/features/explore-groups/Hero";
-import Search from "@/features/explore-teachers/Search";
-import Teachers from "@/features/explore-teachers/Teachers";
+import Hero from "@/features/explore-groups/components/Hero";
+import Search from "@/features/explore-teachers/components/Search";
+import Teachers from "@/features/explore-teachers/components/Teachers";
 
 function page() {
   return (

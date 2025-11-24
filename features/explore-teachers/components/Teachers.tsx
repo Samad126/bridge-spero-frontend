@@ -1,5 +1,5 @@
-import TeacherList from "../common/components/TeacherList/TeacherList";
-import { demoTeachersMultiple } from "../common/constants/demoTeachers";
+import TeacherList from "@/features/common/components/TeacherList/TeacherList";
+import { demoTeachersMultiple } from "@/features/common/constants/demoTeachers";
 
 function Teachers() {
   return (
