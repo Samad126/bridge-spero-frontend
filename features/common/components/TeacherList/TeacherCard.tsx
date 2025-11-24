@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { TeacherCardItem } from "../../homepageTypes";
 import Link from "next/link";
+import { TeacherCardItem } from "../../types/teacherListTypes";
 
 interface TeacherCardProps extends TeacherCardItem {
   col?: 1 | 2;

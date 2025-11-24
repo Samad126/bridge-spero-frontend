@@ -1,5 +1,5 @@
 import TeacherCard from "./TeacherCard";
-import { TeacherCardItem } from "../../homepageTypes";
+import { TeacherCardItem } from "../../../homepage/homepageTypes";
 
 interface TeacherListProps {
   teachers: TeacherCardItem[];

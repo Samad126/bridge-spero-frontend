@@ -1,4 +1,4 @@
-import { TeacherCardItem } from "./homepageTypes";
+import { TeacherCardItem } from "../types/teacherListTypes";
 
 export const demoTeachers: TeacherCardItem[] = [
   {
