@@ -1,5 +1,5 @@
-import GroupCard from "@/features/common/components/GroupList/GroupCard";
-import { GroupCardItem } from "../../types/groupListTypes";
+import { GroupCardItem } from "../types/groupListTypes";
+import GroupCard from "./GroupCard";
 
 interface GroupListProps {
   demoGroups: GroupCardItem[];

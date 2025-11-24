@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import GroupList from "@/features/common/components/GroupList/GroupList";
-import { demoGroups } from "@/features/common/constants/demoGroups";
+import { demoGroups } from "@/features/common/groups/constants/demoGroups";
+import GroupList from "@/features/common/groups/components/GroupList";
 
 const TrendingGroups = () => {
   return (

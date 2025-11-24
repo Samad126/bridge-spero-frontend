@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { FAQItemType } from "../../homepageTypes";
 import { useState } from "react";
+import { FAQItemType } from "../../types/homepageTypes";
 
 function FaqItem(faq: FAQItemType) {
   const [isOpened, setIsOpened] = useState(false);
@@ -28,8 +28,10 @@ function FaqItem(faq: FAQItemType) {
         className={`
           px-[20px] lg:px[32px]
           ${
-          isOpened ? "overflow-visible max-h-none pb-[18px] lg:pb-[24px]" : "overflow-hidden max-h-0"
-        }`}
+            isOpened
+              ? "overflow-visible max-h-none pb-[18px] lg:pb-[24px]"
+              : "overflow-hidden max-h-0"
+          }`}
       >
         {faq.description}
       </p>

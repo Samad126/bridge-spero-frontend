@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { EventCardTypes } from "../../dashboardTypes";
 import EventCard from "./EventCard";
+import { EventCardTypes } from "@/features/dashboard/types/dashboardTypes";
 
 const TodaysEvents = () => {
   const events: EventCardTypes[] = [

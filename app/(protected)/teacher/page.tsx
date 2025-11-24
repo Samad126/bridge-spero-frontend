@@ -1,6 +1,6 @@
-import WelcomeBack from "@/features/dashboard/teacher/welcomeBack/WelcomeBack";
-import TodaysEvents from "@/features/dashboard/teacher/events/TodaysEvents";
-import Schedule from "@/features/common/components/Schedule/Shedule";
+import Schedule from "@/features/common/schedule/components/Schedule/Shedule";
+import TodaysEvents from "@/features/dashboard/components/teacher/events/TodaysEvents";
+import WelcomeBack from "@/features/dashboard/components/teacher/welcomeBack/WelcomeBack";
 
 function page() {
   return (

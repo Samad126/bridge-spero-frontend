@@ -1,4 +1,4 @@
-import { FAQItemType } from "../../homepageTypes";
+import { FAQItemType } from "../../types/homepageTypes";
 import FaqItem from "./FaqItem";
 
 function FAQ() {

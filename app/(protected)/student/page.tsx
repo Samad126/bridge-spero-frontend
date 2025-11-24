@@ -1,5 +1,5 @@
-import Shedule from "@/features/common/components/Schedule/Shedule";
-import GroupYouMightLike from "@/features/students/GroupYouMightLike";
+import Shedule from "@/features/common/schedule/components/Schedule/Shedule";
+import GroupYouMightLike from "@/features/students/components/GroupYouMightLike";
 
 function page() {
   return (

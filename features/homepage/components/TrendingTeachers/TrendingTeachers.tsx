@@ -1,6 +1,6 @@
 import Link from "next/link";
-import TeacherList from "../../../common/components/TeacherList/TeacherList";
-import { demoTeachers } from "../../../common/constants/demoTeachers";
+import { demoTeachers } from "../../../common/teachers/constants/demoTeachers";
+import TeacherList from "@/features/common/teachers/components/TeacherList";
 
 function TrendingTeachers() {
   return (

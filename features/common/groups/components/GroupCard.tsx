@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { GroupCardItem } from "../../types/groupListTypes";
+import { GroupCardItem } from "../types/groupListTypes";
 
 interface GroupCardProps extends GroupCardItem {
   col?: 1 | 2;

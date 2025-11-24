@@ -1,6 +1,6 @@
 import Link from "next/link";
-import GroupList from "../common/components/GroupList/GroupList";
-import { demoGroups } from "../common/constants/demoGroups";
+import GroupList from "../../common/groups/components/GroupList/GroupList";
+import { demoGroups } from "../../common/groups/constants/demoGroups";
 
 function GroupYouMightLike() {
   return (
