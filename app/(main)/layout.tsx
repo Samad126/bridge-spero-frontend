@@ -10,7 +10,7 @@ function layout({
   return (
     <>
       <Header />
-      <main className="space-y-[60px] mb-[60px] lg:space-y-[80px] lg:mb-[80px]">
+      <main className="space-y-[60px] my-[60px] lg:space-y-[80px] lg:mb-[80px] lg:mt-[100px]">
         {children}
       </main>
       <Footer />

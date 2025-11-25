@@ -1,7 +1,7 @@
 const WelcomeBack = () => {
   return (
     <section>
-      <div className="container mt-[60px]! md:mt-[100px]!">
+      <div className="container">
         <h2 className="text-center text-primary text-[34px] leading-[130%] font-normal tracking-[0%] xxl:text-[54px]">
           Welcome back, Anna!
         </h2>
