@@ -6,7 +6,7 @@ function PricingCard() {
   const [isOpened, setIsOpened] = useState(true);
 
   return (
-    <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-10 xxl:sticky xxl:top-0 xxl:min-w-[403px]">
+    <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-10 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
       <button
         className="bg-secondary py-[6px] px-[12px] xxl:hidden"
         onClick={() => setIsOpened(!isOpened)}

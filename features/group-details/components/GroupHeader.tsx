@@ -6,7 +6,7 @@ import TeacherCard from "./TeacherCard";
 function GroupHeader() {
   return (
     <section>
-      <div className="container flex gap-[80px]">
+      <div className="container flex gap-[80px] items-start">
         <div>
           <GroupLevel />
           <h2 className="text-center text-primary text-[32px] leading-[130%] font-normal tracking-[0%] xxl:text-[54px] xxl:text-left">
