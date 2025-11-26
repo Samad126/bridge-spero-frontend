@@ -43,7 +43,7 @@ function Schedule() {
       <label className="block mb-[8px]">Schedule *</label>
       <div className="space-y-[12px]">
         {schedules.map((schedule) => (
-          <div key={schedule.id} className="flex items-center gap-[12px]">
+          <div key={schedule.id} className="flex items-center">
             <select
               value={schedule.day}
               onChange={(e) =>
@@ -61,42 +61,28 @@ function Schedule() {
               <option value="sunday">Sunday</option>
             </select>
 
-            <div className="flex items-center gap-[8px]">
-              <Image
-                src="/clock.svg"
-                alt="clock"
-                width={20}
-                height={20}
-                className="min-w-[20px] h-[20px]"
-              />
-              <input
-                type="time"
-                value={schedule.startTime}
-                onChange={(e) =>
-                  updateSchedule(schedule.id, "startTime", e.target.value)
-                }
-                className="h-[43px] px-[12px] outline-0 border border-gray-light w-[100px]"
-              />
-            </div>
-
-            <span className="text-gray-400">-</span>
-
-            <div className="flex items-center gap-[8px]">
-              <Image
-                src="/clock.svg"
-                alt="clock"
-                width={20}
-                height={20}
-                className="min-w-[20px] h-[20px]"
-              />
-              <input
-                type="time"
-                value={schedule.endTime}
-                onChange={(e) =>
-                  updateSchedule(schedule.id, "endTime", e.target.value)
-                }
-                className="h-[43px] px-[12px] outline-0 border border-gray-light w-[100px]"
-              />
+            <div className="flex justify-center items-center gap-[12px] border border-gray-light h-[43px] px-[12px] flex-1">
+              <div className="flex items-center gap-[8px]">
+                <Image
+                  src="/clock.svg"
+                  alt="clock"
+                  width={20}
+                  height={20}
+                  className="min-w-[20px] h-[20px]"
+                />
+                <span className="text-gray-400">00 : 00</span>
+              </div>
+              <span className="text-gray-400">-</span>
+              <div className="flex items-center gap-[8px]">
+                <Image
+                  src="/clock.svg"
+                  alt="clock"
+                  width={20}
+                  height={20}
+                  className="min-w-[20px] h-[20px]"
+                />
+                <span className="text-gray-400">00 : 00</span>
+              </div>
             </div>
 
             <button
