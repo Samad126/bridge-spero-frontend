@@ -1,12 +1,13 @@
 import Schedule from "../Schedule/components/Schedule";
-import Syllabus from "../Syllabus/Syllabus";
+import Recording from "../Recordings/components/Recording";
+import Syllabus from "../Syllabus/components/Syllabus";
 
 function TabContent({ activeTabId }: { activeTabId: number }) {
   return (
     <div>
       {activeTabId === 1 && <Schedule />}
       {activeTabId === 2 && <Syllabus />}
-      {activeTabId === 3 && <div>Recordings</div>}
+      {activeTabId === 3 && <Recording />}
       {activeTabId === 4 && <div>Resources</div>}
     </div>
   );

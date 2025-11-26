@@ -7,7 +7,7 @@ function Syllabus() {
       <SyllabusCard />
       <SyllabusCard />
     </div>
-  )
+  );
 }
 
-export default Syllabus
+export default Syllabus;
