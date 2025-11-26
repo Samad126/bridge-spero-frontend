@@ -1,6 +1,4 @@
-import Header from "@/features/layout/Header";
 import "./globals.css";
-import Footer from "@/features/layout/Footer";
 import { Urbanist } from "next/font/google";
 
 const urbanist = Urbanist({
@@ -15,11 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${urbanist.variable}`}>
-        <Header />
-        <main className="space-y-[60px] mb-[60px] lg:space-y-[80px] lg:mb-[80px]">{children}</main>
-        <Footer />
-      </body>
+      <body className={`${urbanist.variable}`}>{children}</body>
     </html>
   );
 }
