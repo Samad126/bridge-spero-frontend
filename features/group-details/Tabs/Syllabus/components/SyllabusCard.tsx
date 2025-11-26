@@ -10,7 +10,7 @@ function SyllabusCard() {
         height={32}
         className="w-[32px] h-[32px]"
       />
-      <span>Syllabus</span>
+      <span className="text-[20px]">Syllabus</span>
     </div>
   );
 }

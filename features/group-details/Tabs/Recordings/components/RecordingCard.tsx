@@ -10,7 +10,7 @@ function RecordingCard() {
         height={32}
         className="w-[32px] h-[32px]"
       />
-      <span>Recording</span>
+      <span className="text-[20px]">06.02.2025</span>
     </div>
   );
 }
