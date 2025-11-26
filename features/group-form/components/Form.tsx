@@ -1,10 +1,17 @@
+"use client";
+
 import Image from "next/image";
+import Schedule from "./Schedule";
+import Syllabus from "./Syllabus";
+import { useParams } from "next/navigation";
 
 function Form() {
+  const { id } = useParams();
+
   return (
     <div className="container">
       <form action="">
-        <div className="grid grid-cols-1 gap-[18px] xxl:grid-cols-4 xxl:gap-x-[12px] xxl:gap-y-[24px]">
+        <div className="grid grid-cols-1 gap-[18px] lg:grid-cols-4 xxl:gap-x-[12px] xxl:gap-y-[24px]">
           <p>
             <label className="block mb-[8px]" htmlFor="name">
               Group Name
@@ -91,8 +98,29 @@ function Form() {
             />
           </p>
         </div>
-        <div className="flex items-center gap-[18px] xxl:gap-[12px]">
-            {/* PUT HERE */}
+        {id ? null : (
+          <div className="flex flex-col items-start gap-[18px] lg:gap-[12px] my-[18px] lg:flex-row lg:my-[24px]">
+            <Schedule />
+            <Syllabus />
+          </div>
+        )}
+        <div className="mb-[18px] lg:mb-[42px]">
+          <label className="block mb-[8px]" htmlFor="description">
+            Description*
+          </label>
+          <textarea
+            className="w-full h-[150px] border border-gray-light p-[12px] outline-0 resize-none"
+            placeholder="Description"
+            id="description"
+          />
+        </div>
+        <div className="flex justify-center gap-[12px] mt-[18px]">
+          <button className="w-full h-[43px] bg-secondary text-white lg:w-[200px]">
+            Create
+          </button>
+          <button className="w-full h-[43px] bg-white border border-gray-light lg:w-[200px]">
+            Cancel
+          </button>
         </div>
       </form>
     </div>
