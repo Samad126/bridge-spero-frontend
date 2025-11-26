@@ -21,7 +21,7 @@ function PricingCard() {
       </button>
 
       <div
-        className={`relative border w-full bg-[url('/groupimage.png')] bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
+        className={`relative w-full bg-[url('/groupimage.png')] bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
           isOpened ? "py-[30px]" : "h-[6px]"
         }`}
       >

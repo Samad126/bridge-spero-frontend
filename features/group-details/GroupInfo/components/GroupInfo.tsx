@@ -1,13 +1,14 @@
+import Tabs from "../../Tabs/components/Tabs";
 import GroupLevel from "./GroupLevel";
 import GroupMetadata from "./GroupMetadata";
 import PricingCard from "./PricingCard";
 import TeacherCard from "./TeacherCard";
 
-function GroupHeader() {
+function GroupInfo() {
   return (
     <section>
       <div className="container flex gap-[80px] items-start">
-        <div>
+        <div className="w-full">
           <GroupLevel />
           <h2 className="text-center text-primary text-[32px] leading-[130%] font-normal tracking-[0%] xxl:text-[54px] xxl:text-left">
             Advanced Mathematics
@@ -21,6 +22,7 @@ function GroupHeader() {
           <GroupMetadata />
 
           <TeacherCard />
+          <Tabs />
         </div>
         <PricingCard />
       </div>
@@ -28,4 +30,4 @@ function GroupHeader() {
   );
 }
 
-export default GroupHeader;
+export default GroupInfo;

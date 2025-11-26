@@ -2,7 +2,7 @@ import Image from "next/image";
 
 function TeacherCard() {
   return (
-    <div className="p-[24px] border border-gray-light mt-[24px]">
+    <div className="p-[24px] border border-gray-light mt-[32px] mb-[60px] xxl:mt-[24px] xxl:mb-[32px]">
       <div className="flex flex-col items-center gap-[12px] md:flex-row">
         <div className="flex justify-start">
           <Image
