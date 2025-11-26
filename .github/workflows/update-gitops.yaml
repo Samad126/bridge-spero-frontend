@@ -7,6 +7,11 @@ on:
         description: 'Image version'
         required: true
         type: string
+    secrets:
+      GITOPS_REPO:
+        required: true
+      GITOPS_SSH_KEY:
+        required: true
   workflow_dispatch:
     inputs:
       version:
@@ -31,12 +36,12 @@ jobs:
       BRANCH: rollouts
       VALUES_FILE: brsp/values.yaml
       TAG_PARENT_KEY: .next.image.tag
-      IMAGE_TAG: ${{ github.event.inputs.version }}
-      ENVIRONMENT: ${{ github.event.inputs.environment }}
+      IMAGE_TAG: ${{ inputs.version }}
+      ENVIRONMENT: ${{ inputs.environment }}
     steps:
 
     - name: Set environment
-      if: ${{ !github.event.inputs.envrionment }} 
+      if: ${{ !inputs.envrionment }} 
       run: echo "ENVIRONMENT=$([[ ${{ github.ref }} == 'refs/heads/dev' ]] && echo dev || echo bluegreen)" >> "$GITHUB_ENV"
 
     - name: Set image tag
@@ -85,5 +90,5 @@ jobs:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-deploy
+  group: ${{ github.workflow }}-${{ github.ref }}-deploy
   cancel-in-progress: true
