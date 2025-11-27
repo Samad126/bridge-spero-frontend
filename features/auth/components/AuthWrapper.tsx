@@ -3,9 +3,9 @@
 
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { setSessionExpiredPopup } from "@/features/api/auth/authSlice";
+import { setSessionExpiredPopup } from "@/features/auth/slices/authSlice";
 import { AuthEventEmitter, AuthEventType } from "../lib/authEvents";
-import { useAppDispatch } from "@/features/api/hooks/hooks";
+import { useAppDispatch } from "@/lib/redux/hooks";
 
 interface AuthWrapperProps {
   children: React.ReactNode;

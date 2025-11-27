@@ -1,7 +1,7 @@
 "use client";
 
-import { setSessionExpiredPopup } from "@/features/api/auth/authSlice";
-import { useAppDispatch, useAppSelector } from "@/features/api/hooks/hooks";
+import { setSessionExpiredPopup } from "@/features/auth/slices/authSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { useRouter } from "next/navigation";
 
 export default function SessionExpiredPopup() {

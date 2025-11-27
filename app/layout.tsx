@@ -1,8 +1,8 @@
-import StoreProvider from "@/features/api/components/StoreProvider";
 import "./globals.css";
 import { Urbanist } from "next/font/google";
 import AuthWrapper from "@/features/auth/components/AuthWrapper";
 import SessionExpiredPopup from "@/features/auth/components/SessionExpiredPopup";
+import StoreProvider from "@/lib/redux/StoreProvider";
 
 const urbanist = Urbanist({
   subsets: ["latin"],

@@ -6,9 +6,9 @@ import type {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 import { Mutex } from "async-mutex";
-import { AuthEventEmitter, AuthEventType } from "../auth/lib/authEvents";
+import { logout, setAuthenticated, setRefreshing } from "@/features/auth/slices/authSlice";
+import { AuthEventEmitter, AuthEventType } from "@/features/auth/lib/authEvents";
 import { RootState } from "./store";
-import { logout, setAuthenticated, setRefreshing } from "./auth/authSlice";
 
 const mutex = new Mutex();
 
