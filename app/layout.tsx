@@ -1,5 +1,8 @@
+import StoreProvider from "@/features/api/components/StoreProvider";
 import "./globals.css";
 import { Urbanist } from "next/font/google";
+import AuthWrapper from "@/features/auth/components/AuthWrapper";
+import SessionExpiredPopup from "@/features/auth/components/SessionExpiredPopup";
 
 const urbanist = Urbanist({
   subsets: ["latin"],
@@ -13,7 +16,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${urbanist.variable}`}>{children}</body>
+      <body className={`${urbanist.variable}`}>
+        <StoreProvider>
+          <AuthWrapper>
+            <SessionExpiredPopup />
+            {children}
+          </AuthWrapper>
+        </StoreProvider>
+      </body>
     </html>
   );
 }
