@@ -1,8 +1,10 @@
 // 2 cur register hissesi var(student ve teacher)
 
+import SignupRoles from "@/features/auth/signup/SignupRoles"
+
 function page() {
   return (
-    <div>Hello World</div>
+    <SignupRoles/>
   )
 }
 
