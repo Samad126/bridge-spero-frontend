@@ -29,11 +29,11 @@ export default function AuthWrapper({ children }: AuthWrapperProps) {
 
         // Store the current path to redirect back after login
         const currentPath = window.location.pathname;
-        if (currentPath !== "/login") {
+        if (currentPath !== "/auth/login") {
           sessionStorage.setItem("redirectAfterLogin", currentPath);
         }
 
-        router.push("/login");
+        router.push("/auth/login");
       }
     );
 

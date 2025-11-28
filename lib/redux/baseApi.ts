@@ -1,5 +1,5 @@
 // src/lib/api/baseApi.ts
-import { createApi, fetchBaseQuery, retry } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type {
   BaseQueryFn,
   FetchArgs,
@@ -70,6 +70,8 @@ const baseQueryWithReauth: BaseQueryFn<
 
   let result = await baseQuery(args, api, extraOptions);
 
+  console.log("Result from baseApi.ts is ", result);
+
   if (result.error && result.error.status === 401) {
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
@@ -85,12 +87,14 @@ const baseQueryWithReauth: BaseQueryFn<
 
         const refreshResult = await baseQuery(
           {
-            url: "/auth/refresh",
+            url: "/refresh",
             method: "POST",
           },
           api,
           extraOptions
         );
+
+        console.log(refreshResult);
 
         if (refreshResult.data) {
           // Token refresh successful
@@ -138,11 +142,11 @@ const baseQueryWithReauth: BaseQueryFn<
   return result;
 };
 
-const baseQueryWithRetry = retry(baseQueryWithReauth, { maxRetries: 3 });
+// const baseQueryWithRetry = retry(baseQueryWithReauth, { maxRetries: 3 });
 
 export const baseApi = createApi({
   reducerPath: "api",
-  baseQuery: baseQueryWithRetry,
+  baseQuery: baseQueryWithReauth,
   tagTypes: ["Dashboard", "User", "Zoom"],
   endpoints: () => ({}),
 });
