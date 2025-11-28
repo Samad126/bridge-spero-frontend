@@ -61,7 +61,7 @@ export function DesktopNav({
             </li>
           ))}
 
-        <li className="w-full h-full min-w-[62px]">
+        <li className="w-full h-full min-w-[62px] xxl:min-w-[82px]">
           <button
             className="h-full text-center flex items-center justify-center border-r border-gray-light w-full"
             onClick={onSearchClick}
@@ -79,7 +79,7 @@ export function DesktopNav({
         </li>
 
         {authIconItems.map((item) => (
-          <li key={item.label} className="w-full h-full min-w-[62px]">
+          <li key={item.label} className="w-full h-full min-w-[62px] xxl:min-w-[82px]">
             <NavLink item={item} role={userRole} />
           </li>
         ))}
