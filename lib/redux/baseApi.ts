@@ -6,22 +6,63 @@ import type {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 import { Mutex } from "async-mutex";
-import { logout, setAuthenticated, setRefreshing } from "@/features/auth/slices/authSlice";
-import { AuthEventEmitter, AuthEventType } from "@/features/auth/lib/authEvents";
-import { RootState } from "./store";
+import {
+  logout,
+  setAuthenticated,
+  setRefreshing,
+} from "@/features/auth/slices/authSlice";
+import {
+  AuthEventEmitter,
+  AuthEventType,
+} from "@/features/auth/lib/authEvents";
 
 const mutex = new Mutex();
 
-const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.NEXT_PUBLIC_API_URL,
+export type AuthMode = "strict" | "optional";
+
+interface CustomFetchArgs extends FetchArgs {
+  meta?: {
+    authMode?: AuthMode;
+  };
+}
+
+const shouldGoDirectToBackend = (url: string): boolean => {
+  const directEndpoints = ["/auth/login", "/auth/register", "/auth/logout"];
+  return directEndpoints.some((endpoint) => url.includes(endpoint));
+};
+
+const dynamicBaseQuery = fetchBaseQuery({
+  baseUrl: "/",
   credentials: "include",
   prepareHeaders: (headers) => {
     return headers;
   },
 });
 
+const baseQuery: BaseQueryFn<
+  string | CustomFetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  let adjustedArgs: CustomFetchArgs;
+
+  if (typeof args === "string") {
+    adjustedArgs = { url: args };
+  } else {
+    adjustedArgs = { ...args };
+  }
+
+  if (shouldGoDirectToBackend(adjustedArgs.url)) {
+    adjustedArgs.url = `${process.env.NEXT_PUBLIC_API_URL}${adjustedArgs.url}`;
+  } else {
+    adjustedArgs.url = `/api/proxy${adjustedArgs.url}`;
+  }
+
+  return dynamicBaseQuery(adjustedArgs, api, extraOptions);
+};
+
 const baseQueryWithReauth: BaseQueryFn<
-  string | FetchArgs,
+  string | CustomFetchArgs,
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
@@ -34,8 +75,11 @@ const baseQueryWithReauth: BaseQueryFn<
       const release = await mutex.acquire();
 
       try {
-        const state = api.getState() as RootState;
-        const authMode = state.auth.authMode;
+        // Get authMode from the request meta
+        const authMode: AuthMode =
+          typeof args !== "string" && args.meta?.authMode
+            ? args.meta.authMode
+            : "strict"; // Default to strict if not specified
 
         api.dispatch(setRefreshing(true));
 
@@ -54,7 +98,7 @@ const baseQueryWithReauth: BaseQueryFn<
 
           // Dispatch success event
           AuthEventEmitter.dispatch(AuthEventType.AUTH_SUCCESS, {
-            mode: authMode || "strict",
+            mode: authMode,
             timestamp: Date.now(),
           });
 
