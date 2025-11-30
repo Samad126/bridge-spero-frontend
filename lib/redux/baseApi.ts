@@ -77,11 +77,10 @@ const baseQueryWithReauth: BaseQueryFn<
       const release = await mutex.acquire();
 
       try {
-        // Get authMode from the request meta
         const authMode: AuthMode =
           typeof args !== "string" && args.meta?.authMode
             ? args.meta.authMode
-            : "strict"; // Default to strict if not specified
+            : "strict";
 
         api.dispatch(setRefreshing(true));
 
@@ -97,10 +96,8 @@ const baseQueryWithReauth: BaseQueryFn<
         console.log(refreshResult);
 
         if (refreshResult.data) {
-          // Token refresh successful
           api.dispatch(setAuthenticated(true));
 
-          // Dispatch success event
           AuthEventEmitter.dispatch(AuthEventType.AUTH_SUCCESS, {
             mode: authMode,
             timestamp: Date.now(),
@@ -108,11 +105,9 @@ const baseQueryWithReauth: BaseQueryFn<
 
           result = await baseQuery(args, api, extraOptions);
         } else {
-          // Refresh failed - dispatch appropriate event
           api.dispatch(setAuthenticated(false));
 
           if (authMode === "strict") {
-            // Dispatch redirect event
             AuthEventEmitter.dispatch(AuthEventType.REDIRECT_TO_LOGIN, {
               mode: "strict",
               reason: "Token refresh failed",
@@ -121,7 +116,6 @@ const baseQueryWithReauth: BaseQueryFn<
 
             api.dispatch(logout());
           } else if (authMode === "optional") {
-            // Dispatch session expired event
             AuthEventEmitter.dispatch(AuthEventType.SESSION_EXPIRED, {
               mode: "optional",
               reason: "Token refresh failed",
