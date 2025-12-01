@@ -31,7 +31,7 @@ export function DesktopNav({
           ))}
           <li className="w-full h-full min-w-[102px]">
             <Link
-              href="/"
+              href="/login"
               className="h-full text-center flex items-center justify-center border-r border-gray-light"
             >
               Login
@@ -39,7 +39,7 @@ export function DesktopNav({
           </li>
           <li className="w-full h-full min-w-[102px]">
             <Link
-              href="/"
+              href="/signup"
               className="h-full text-center flex items-center justify-center border-r border-gray-light bg-secondary text-custom-white"
             >
               Sign Up

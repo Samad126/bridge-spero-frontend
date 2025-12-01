@@ -12,7 +12,7 @@ export function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const isAuthenticated = true;
+  const isAuthenticated = false;
   const userRole = "teacher";
 
   const openSearch = useCallback(() => setIsSearchOpen(true), []);
