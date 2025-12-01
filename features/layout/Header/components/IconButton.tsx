@@ -26,7 +26,7 @@ export function IconButton({
         alt={alt}
         width={22}
         height={22}
-        loading="eager"
+        priority
         className="min-w-[22px] min-h-[22px]"
       />
     </button>
