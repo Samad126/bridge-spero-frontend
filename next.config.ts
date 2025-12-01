@@ -22,7 +22,8 @@ const nextConfig: NextConfig = {
     ],
   },
   output: "standalone",
-  devIndicators: false
+  devIndicators: false,
+  reactStrictMode: false,
 };
 
 export default nextConfig;
