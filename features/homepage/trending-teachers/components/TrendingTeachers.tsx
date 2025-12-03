@@ -1,6 +1,9 @@
+import { Suspense } from "react";
 import Link from "next/link";
-import { demoTeachers } from "../../../common/teachers/constants/demoTeachers";
-import TeacherList from "@/features/common/teachers/components/TeacherList";
+import TrendingTeachersGrid from "./TrendingTeachersGrid";
+import TrendingTeachersSkeleton from "./TrendingTeachersSkeleton";
+import ErrorBoundary from "@/features/common/error/components/ErrorBoundary";
+import ErrorDisplay from "@/features/common/error/components/ErrorDisplay";
 
 function TrendingTeachers() {
   return (
@@ -13,7 +16,13 @@ function TrendingTeachers() {
           Meet the teachers everyone&apos;s talking about — our top trending
           mentors right now
         </p>
-        <TeacherList teachers={demoTeachers} />
+
+        <ErrorBoundary fallback={<ErrorDisplay message="Failed to load trending teachers." />}>
+          <Suspense fallback={<TrendingTeachersSkeleton />}>
+            <TrendingTeachersGrid />
+          </Suspense>
+        </ErrorBoundary>
+
         <Link
           href={"/"}
           className="border py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"

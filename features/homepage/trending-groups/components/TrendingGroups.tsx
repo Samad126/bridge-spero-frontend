@@ -1,7 +1,9 @@
-import React from "react";
+import { Suspense } from "react";
 import Link from "next/link";
-import { demoGroups } from "@/features/common/groups/constants/demoGroups";
-import GroupList from "@/features/common/groups/components/GroupList";
+import TrendingGroupsGrid from "./TrendingGroupsGrid";
+import TrendingGroupsSkeleton from "./TrendingGroupsSkeleton";
+import ErrorBoundary from "@/features/common/error/components/ErrorBoundary";
+import ErrorDisplay from "@/features/common/error/components/ErrorDisplay";
 
 const TrendingGroups = () => {
   return (
@@ -17,7 +19,12 @@ const TrendingGroups = () => {
           </p>
         </div>
 
-        <GroupList demoGroups={demoGroups} />
+        <ErrorBoundary fallback={<ErrorDisplay message="Failed to load trending groups." />}>
+          <Suspense fallback={<TrendingGroupsSkeleton />}>
+            <TrendingGroupsGrid />
+          </Suspense>
+        </ErrorBoundary>
+
         <Link
           href={"/"}
           className="border mt-[15px] py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"
