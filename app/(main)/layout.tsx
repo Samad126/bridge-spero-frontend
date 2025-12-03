@@ -1,5 +1,6 @@
 import Footer from "@/features/layout/components/Footer";
 import Header from "@/features/layout/Header/components/Header";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import React from "react";
 
 function layout({
@@ -8,13 +9,13 @@ function layout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <NuqsAdapter>
       <Header />
       <main className="space-y-[60px] my-[60px] lg:space-y-[80px] lg:mb-[80px] lg:mt-[100px]">
         {children}
       </main>
       <Footer />
-    </>
+    </NuqsAdapter>
   );
 }
 

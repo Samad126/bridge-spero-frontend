@@ -1,15 +1,21 @@
-import TeacherList from "@/features/common/teachers/components/TeacherList";
-import { demoTeachersMultiple } from "@/features/common/teachers/constants/demoTeachers";
+import ExploreTeachersWrapper from "./ExploreTeachersWrapper";
 
-function Teachers() {
+interface TeachersProps {
+  searchParams: {
+    name?: string;
+    pageNumber?: string;
+    pageSize?: string;
+  };
+}
+
+function Teachers({ searchParams }: TeachersProps) {
+  // Create a key from searchParams to force remount on change
+  const key = JSON.stringify(searchParams);
+
   return (
     <div>
       <div className="container">
-        <TeacherList
-          teachers={demoTeachersMultiple}
-          col={2}
-          hideLastCard={false}
-        />
+        <ExploreTeachersWrapper key={key} searchParams={searchParams} />
       </div>
     </div>
   );

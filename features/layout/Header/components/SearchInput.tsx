@@ -15,7 +15,7 @@ export function SearchInput({ className = "" }: SearchInputProps) {
     if (e.key === "Enter") {
       const value = e.currentTarget.value.trim();
       if (value) {
-        router.push(`/explore?search=${encodeURIComponent(value)}`);
+        router.push(`/explore-groups?groupName=${encodeURIComponent(value)}`);
         e.currentTarget.value = "";
       }
     }
