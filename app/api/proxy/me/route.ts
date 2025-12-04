@@ -4,14 +4,14 @@ import { cookies } from "next/headers";
 
 export async function GET(request: Request) {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken")!;
+  const access_token = cookieStore.get("access_token")!;
 
-  if (!accessToken) {
+  if (!access_token) {
     return new Response("Unauthorized", { status: 401 });
   }
 
   const headers = new Headers();
-  headers.append("Authorization", `Bearer ${accessToken.value}`);
+  headers.append("Authorization", `Bearer ${access_token.value}`);
   const response = await fetch("http://localhost:3000/auth/me", {
     headers,
   });

@@ -2,9 +2,9 @@ import { cookies } from "next/headers";
 
 export async function POST() {
   const cookieStore = await cookies();
-  const refreshToken = cookieStore.get("refreshToken")!;
+  const refresh_token = cookieStore.get("refresh_token")!;
 
-  if (!refreshToken) {
+  if (!refresh_token) {
     return new Response("Unauthorized", { status: 401 });
   }
 
@@ -13,7 +13,7 @@ export async function POST() {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ refreshToken: refreshToken.value }),
+    body: JSON.stringify({ refresh_token: refresh_token.value }),
   });
 
   return new Response(res.body, {
