@@ -135,7 +135,6 @@ const StudentRegistration = () => {
                 placeholder="Bio"
                 className="w-full p-[12px] border border-gray-light placeholder-gray-light outline-0 h-[100px] text-gray-light"
               ></textarea>
-              {/* <textarea name="" id=""></textarea> */}
             </p>
             <div className="flex items-center gap-[12px] lg:col-span-2">
               <input

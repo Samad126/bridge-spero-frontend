@@ -104,15 +104,41 @@ function Form() {
             <Syllabus />
           </div>
         )}
-        <div className="mb-[18px] lg:mb-[42px]">
-          <label className="block mb-[8px]" htmlFor="description">
-            Description*
-          </label>
-          <textarea
-            className="w-full h-[150px] border border-gray-light p-[12px] outline-0 resize-none"
-            placeholder="Description"
-            id="description"
-          />
+        <div className="mb-[18px] flex flex-col gap-[18px] lg:mb-[42px] lg:flex-row lg:gap-[12px]">
+          <div>
+            <label className="block mb-[8px]" htmlFor="group-image">
+              Group Image
+            </label>
+            <label
+              htmlFor="group-image"
+              className="w-full h-[233px] bg-gray-light border border-gray-light flex flex-col items-center justify-center cursor-pointer lg:w-[249px] lg:h-[166px]">
+              <span className="text-3xl text-gray-600">
+                <Image
+                  src={'/camera.svg'}
+                  width={22}
+                  height={22}
+                  alt=""
+                />
+              </span>
+              <p className="text-secondary mt-2">Upload Image</p>
+            </label>
+            <input
+              type="file"
+              className="hidden"
+              id="group-image"
+            />
+          </div>
+          <div>
+            <label className="block mb-[8px]" htmlFor="description">
+              Description*
+            </label>
+            <textarea
+              className="w-full h-[166px] border border-gray-light p-[12px] outline-0 resize-none lg:w-[1119px]"
+              placeholder="Description"
+              id="description"
+            />
+          </div>
+
         </div>
         <div className="flex justify-center gap-[12px] mt-[18px]">
           <button className="w-full h-[43px] bg-secondary text-white lg:w-[200px]">
