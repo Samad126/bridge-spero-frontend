@@ -41,7 +41,7 @@ const TodaysEvents = () => {
             + Create Group
           </Link>
         </div>
-        <div className="grid grid-cols-1 gap-[12px] [&>*:last-child]:hidden xxl:[&>*:last-child]:block xxl:grid-cols-2">
+        <div className="grid grid-cols-1 gap-[12px] [&>*:nth-child(4)]:hidden xxl:[&>*:nth-child(4)]:block xxl:grid-cols-2">
           {events.map((item, index) => (
             <EventCard
               time={item.time}

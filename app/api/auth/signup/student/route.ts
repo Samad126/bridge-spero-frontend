@@ -5,8 +5,7 @@ const API_BASE_URL =
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    delete body.interests;
+    const body = await request.json();    
 
     const response = await fetch(`${API_BASE_URL}/auth/signup/user`, {
       method: "POST",

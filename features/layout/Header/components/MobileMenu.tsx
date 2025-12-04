@@ -36,13 +36,13 @@ export function MobileMenu({
           </ul>
           <ul className="flex justify-between" id="bottomMenu">
             <li className="flex-1">
-              <Link href="/" className="block py-[20px] text-center">
+              <Link href="/login" className="block py-[20px] text-center">
                 Login
               </Link>
             </li>
             <li className="flex-1">
               <Link
-                href="/"
+                href="/signup"
                 className="block py-[20px] bg-secondary text-custom-white text-center"
               >
                 Register
