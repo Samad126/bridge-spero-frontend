@@ -7,13 +7,14 @@ import { SearchModal } from "./SearchModal";
 import { DesktopNav } from "./DesktopNav";
 import { MobileMenu } from "./MobileMenu";
 import { IconButton } from "./IconButton";
+import { JWTPayload } from "@/features/auth/types/authTypes";
 
-export function Header() {
+export function Header({ role }: { role: JWTPayload["role"] | null }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const isAuthenticated = false;
-  const userRole = "teacher";
+  const isAuthenticated = !!role;
+  const userRole = role;
 
   const openSearch = useCallback(() => setIsSearchOpen(true), []);
   const closeSearch = useCallback(() => setIsSearchOpen(false), []);

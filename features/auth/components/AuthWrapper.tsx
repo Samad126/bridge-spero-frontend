@@ -4,14 +4,15 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { setSessionExpiredPopup } from "@/features/auth/slices/authSlice";
-import { AuthEventEmitter, AuthEventType } from "../lib/authEvents";
+import { AuthEventEmitter } from "../lib/authEvents";
 import { useAppDispatch } from "@/lib/redux/hooks";
+import { AuthEventType } from "../types/authTypes";
 
-interface AuthWrapperProps {
+export default function AuthWrapper({
+  children,
+}: {
   children: React.ReactNode;
-}
-
-export default function AuthWrapper({ children }: AuthWrapperProps) {
+}) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const hasListenersRef = useRef(false);

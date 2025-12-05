@@ -13,8 +13,8 @@ import {
 } from "@/features/auth/slices/authSlice";
 import {
   AuthEventEmitter,
-  AuthEventType,
 } from "@/features/auth/lib/authEvents";
+import { AuthEventType } from "@/features/auth/types/authTypes";
 
 const mutex = new Mutex();
 
