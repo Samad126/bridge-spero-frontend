@@ -19,7 +19,7 @@ export default function SessionExpiredPopup() {
   const handleStayLoggedOff = () => {
     dispatch(setSessionExpiredPopup(false));
 
-    fetch("/api/proxy/logout", {
+    fetch("/api/logout", {
       method: "POST",
     }).then(() => {});
   };

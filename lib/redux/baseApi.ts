@@ -55,7 +55,7 @@ const baseQuery: BaseQueryFn<
   if (shouldGoDirectToBackend(adjustedArgs.url)) {
     adjustedArgs.url = `${process.env.NEXT_PUBLIC_API_URL}${adjustedArgs.url}`;
   } else {
-    adjustedArgs.url = `/api/proxy${adjustedArgs.url}`;
+    adjustedArgs.url = `/api${adjustedArgs.url}`;
   }
 
   return dynamicBaseQuery(adjustedArgs, api, extraOptions);
