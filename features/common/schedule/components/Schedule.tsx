@@ -2,21 +2,27 @@
 
 import WeekDay from "./WeekDay";
 import WeekDayMobile from "./WeekDayMobile";
+import ScheduleSkeleton from "./ScheduleSkeleton";
 import { useGetStudentScheduleQuery } from "@/features/dashboard/student/api/studentDashboardApi";
+import { useGetTeacherScheduleQuery } from "@/features/dashboard/teacher/api/teacherDashboardApi";
 
-function Schedule() {
-  const { data, isLoading, error } = useGetStudentScheduleQuery();
+interface ScheduleProps {
+  userRole?: "student" | "teacher";
+}
+
+function Schedule({ userRole = "student" }: ScheduleProps) {
+  // Use the appropriate query based on user role
+  const studentQuery = useGetStudentScheduleQuery(undefined, {
+    skip: userRole !== "student",
+  });
+  const teacherQuery = useGetTeacherScheduleQuery(undefined, {
+    skip: userRole !== "teacher",
+  });
+
+  const { data, isLoading, error } = userRole === "student" ? studentQuery : teacherQuery;
 
   if (isLoading) {
-    return (
-      <section>
-        <div className="container">
-          <div className="h-[200px] flex items-center justify-center">
-            <div className="text-secondary text-[20px]">Loading schedule...</div>
-          </div>
-        </div>
-      </section>
-    );
+    return <ScheduleSkeleton />;
   }
 
   if (error) {

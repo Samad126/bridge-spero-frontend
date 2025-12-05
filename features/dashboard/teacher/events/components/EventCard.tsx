@@ -3,10 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 const EventCard = ({
+  id,
   time,
   isActive,
   subjectName,
   studentNumber,
+  startUrl,
 }: EventCardTypes) => {
   return (
     <div className="w-full h-[270px] p-[24px] border border-gray-light lg:h-[169px]">
@@ -38,21 +40,29 @@ const EventCard = ({
           </div>
         </div>
         <div className="flex items-center gap-[12px] lg:mt-12 lg:flex-row-reverse">
-          <Link href={"/"}>
+          <Link href={`/group-details/${id}`}>
             <button className="w-[46px] h-[46px] border border-gray-light flex items-center justify-center">
               <Image width={22} height={22} src={"/trash-2.svg"} alt="" />
             </button>
           </Link>
-          <Link href={"/"}>
+          <Link href={`/group-details/${id}`}>
             <button className="w-[46px] h-[46px] border border-gray-light flex items-center justify-center">
               <Image width={22} height={22} src={"/edit-2.svg"} alt="" />
             </button>
           </Link>
-          <Link href={"/"}>
-            <button className="h-[46px] w-[186px] bg-secondary text-white">
-              Start Lesson
-            </button>
-          </Link>
+          {isActive && startUrl ? (
+            <a href={startUrl} target="_blank" rel="noopener noreferrer">
+              <button className="h-[46px] w-[186px] bg-secondary text-white">
+                Start Lesson
+              </button>
+            </a>
+          ) : (
+            <Link href={`/group-details/${id}`}>
+              <button className="h-[46px] w-[186px] bg-secondary text-white">
+                View Details
+              </button>
+            </Link>
+          )}
         </div>
       </div>
     </div>

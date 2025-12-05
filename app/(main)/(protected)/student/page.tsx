@@ -8,7 +8,7 @@ function page() {
     <>
       <WelcomeBack />
       <StudentTodaysEvents />
-      <Schedule />
+      <Schedule userRole="student" />
       <GroupYouMightLike />
     </>
   );

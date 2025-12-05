@@ -30,11 +30,11 @@ export default function AuthWrapper({
 
         // Store the current path to redirect back after login
         const currentPath = window.location.pathname;
-        if (currentPath !== "/auth/login") {
+        if (currentPath !== "/login") {
           sessionStorage.setItem("redirectAfterLogin", currentPath);
         }
 
-        router.push("/auth/login");
+        router.push("/login");
       }
     );
 

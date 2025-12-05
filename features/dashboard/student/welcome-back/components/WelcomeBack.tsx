@@ -1,20 +1,13 @@
 "use client";
 
 import { useGetStudentDashboardQuery } from "../../api/studentDashboardApi";
+import WelcomeBackSkeleton from "./WelcomeBackSkeleton";
 
 const WelcomeBack = () => {
     const { data, isLoading, error } = useGetStudentDashboardQuery();
 
     if (isLoading) {
-        return (
-            <section>
-                <div className="container">
-                    <div className="h-[200px] flex items-center justify-center">
-                        <div className="text-secondary text-[20px]">Loading...</div>
-                    </div>
-                </div>
-            </section>
-        );
+        return <WelcomeBackSkeleton />;
     }
 
     if (error) {

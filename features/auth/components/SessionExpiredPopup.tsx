@@ -13,7 +13,7 @@ export default function SessionExpiredPopup() {
 
   const handleLogin = () => {
     dispatch(setSessionExpiredPopup(false));
-    router.push("/auth/login");
+    router.push("/login");
   };
 
   const handleStayLoggedOff = () => {
