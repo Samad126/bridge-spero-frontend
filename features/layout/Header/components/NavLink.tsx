@@ -16,6 +16,7 @@ export function NavLink({
   isActive = false,
 }: NavLinkProps) {
   const href = getNavHref(item, role);
+  console.log(href);
 
   if (variant === "mobile") {
     return (

@@ -17,6 +17,6 @@ export type JWTPayload = {
   token_type: "ACCESS" | "REFRESH";
   auth: "ROLE_TEACHER" | "ROLE_STUDENT";
   full_name: string;
-  role: "TEACHER" | "STUDENT";
+  role: "TEACHER" | "USER";
   exp: number;
 };

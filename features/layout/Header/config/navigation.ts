@@ -1,4 +1,4 @@
-export type UserRole = "STUDENT" | "TEACHER" | null;
+export type UserRole = "USER" | "TEACHER" | null;
 
 export interface NavItem {
   label: string;
@@ -19,7 +19,7 @@ export const publicNavItems: NavItem[] = [
 export const authNavItems: NavItem[] = [
   {
     label: "Dashboard",
-    href: (role) => (role === "STUDENT" ? "/student" : "/teacher"),
+    href: (role) => (role === "USER" ? "/student" : "/teacher"),
   },
   { label: "My Groups", href: "/my-groups" },
   {
@@ -54,7 +54,7 @@ export function getNavHref(item: NavItem, role: UserRole): string {
 
 export function shouldShowItem(item: NavItem, role: UserRole): boolean {
   if (!item.showFor || item.showFor === "all") return true;
-  if (item.showFor === "student" && role === "STUDENT") return true;
+  if (item.showFor === "student" && role === "USER") return true;
   if (item.showFor === "teacher" && role === "TEACHER") return true;
   return false;
 }

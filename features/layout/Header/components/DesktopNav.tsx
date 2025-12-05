@@ -50,6 +50,8 @@ export function DesktopNav({
     );
   }
 
+  console.log(userRole);
+
   return (
     <nav className="h-full">
       <ul className="hidden xxl:flex h-full items-center">

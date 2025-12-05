@@ -1,9 +1,8 @@
-// import { EventCardTypes } from "../types/eventTypes";
 import Image from "next/image";
 import Link from "next/link";
 import { StudentEventTypes } from "../types/studentEventTypes";
 
-const EventCard = ({time, isActive, subjectName, teacherName}:StudentEventTypes) => {
+const EventCard = ({id, time, isActive, subjectName, teacherName, joinUrl, status}: StudentEventTypes) => {
     return (
         <div className="w-full h-[270px] p-[24px] border border-gray-light lg:h-[169px]">
             <div className="flex items-center justify-between">
@@ -14,7 +13,7 @@ const EventCard = ({time, isActive, subjectName, teacherName}:StudentEventTypes)
                     </span>
                 </div>
                 <span className="text-secondary leading-[100%] tracking-[0%] font-normal">
-                    {isActive ? "active" : "not active"}
+                    {isActive ? "active" : status}
                 </span>
             </div>
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
@@ -27,21 +26,19 @@ const EventCard = ({time, isActive, subjectName, teacherName}:StudentEventTypes)
                     </div>
                 </div>
                 <div className="flex items-center gap-[12px] lg:mt-12 lg:flex-row-reverse">
-                    <Link href={"/"}>
-                        <button className="w-[46px] h-[46px] border border-gray-light flex items-center justify-center">
-                            <Image width={22} height={22} src={"/trash-2.svg"} alt="" />
-                        </button>
-                    </Link>
-                    <Link href={"/"}>
-                        <button className="w-[46px] h-[46px] border border-gray-light flex items-center justify-center">
-                            <Image width={22} height={22} src={"/edit-2.svg"} alt="" />
-                        </button>
-                    </Link>
-                    <Link href={"/"}>
-                        <button className="h-[46px] w-[186px] bg-secondary text-white">
-                            Start Lesson
-                        </button>
-                    </Link>
+                    {isActive && joinUrl ? (
+                        <a href={joinUrl} target="_blank" rel="noopener noreferrer">
+                            <button className="h-[46px] w-[186px] bg-secondary text-white">
+                                Join Lesson
+                            </button>
+                        </a>
+                    ) : (
+                        <Link href={`/group-details?id=${id}`}>
+                            <button className="h-[46px] w-[186px] bg-gray-300 text-gray-600">
+                                View Details
+                            </button>
+                        </Link>
+                    )}
                 </div>
             </div>
         </div>

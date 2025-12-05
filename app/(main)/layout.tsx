@@ -20,6 +20,8 @@ async function layout({
 
   const userData = userDataFromAccessToken || userDataFromRefreshToken;
 
+  console.log(userData)
+
   return (
     <NuqsAdapter>
       <Header role={userData ? userData.role : null} />

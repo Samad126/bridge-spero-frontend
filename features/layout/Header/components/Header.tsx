@@ -27,6 +27,8 @@ export function Header({ role }: { role: JWTPayload["role"] | null }) {
     ? "hidden lg:flex"
     : "hidden lg:flex xxl:hidden";
 
+    console.log("HEADER ROLE IS: ", role);
+
   return (
     <>
       <header className="sticky z-50 top-[24px] w-full">
