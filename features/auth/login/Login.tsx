@@ -69,6 +69,12 @@ function Login() {
       }
 
       // Redirect to dashboard or home page after successful login
+      const redirectPath = sessionStorage.getItem("redirectAfterLogin");
+      if (redirectPath) {
+        sessionStorage.removeItem("redirectAfterLogin");
+        router.push(redirectPath);
+        return;
+      }
       router.push("/");
     } catch (error) {
       console.error("Login error:", error);

@@ -30,6 +30,25 @@ export async function GET() {
       cache: "no-store",
     });
 
+    // If response is not ok (4xx or 5xx), still try to parse and return with original status
+    if (!response.ok) {
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        // If JSON parsing fails, return a generic error with the original status code
+        errorData = {
+          errorCode: "API_ERROR",
+          errorMessage: `API request failed with status ${response.status}`,
+        };
+      }
+
+      return new Response(JSON.stringify(errorData), {
+        status: response.status,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const data = await response.json();
 
     return new Response(JSON.stringify(data), {

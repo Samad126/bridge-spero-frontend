@@ -34,6 +34,13 @@ export default function AuthWrapper({
           sessionStorage.setItem("redirectAfterLogin", currentPath);
         }
 
+        // Clear Tokens
+        fetch("/api/logout", {
+          method: "POST",
+        })
+          .then(() => {})
+          .catch(() => {});
+
         router.push("/login");
       }
     );

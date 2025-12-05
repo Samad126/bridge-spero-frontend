@@ -11,9 +11,7 @@ import {
   setAuthenticated,
   setRefreshing,
 } from "@/features/auth/slices/authSlice";
-import {
-  AuthEventEmitter,
-} from "@/features/auth/lib/authEvents";
+import { AuthEventEmitter } from "@/features/auth/lib/authEvents";
 import { AuthEventType } from "@/features/auth/types/authTypes";
 
 const mutex = new Mutex();
@@ -72,7 +70,10 @@ const baseQueryWithReauth: BaseQueryFn<
 
   console.log("Result from baseApi.ts is ", result);
 
-  if (result.error && result.error.status === 401) {
+  if (
+    (result.error && result.error.status === 401) ||
+    (result.error && result.error.status === 403)
+  ) {
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
 
