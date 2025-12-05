@@ -27,7 +27,7 @@ export const authNavItems: NavItem[] = [
     href: "/create-group",
     showFor: "teacher",
   },
-  { label: "Explore", href: "/explore" },
+  { label: "Explore", href: "/explore-groups" },
   { label: "Contact", href: "/contact" },
 ];
 
