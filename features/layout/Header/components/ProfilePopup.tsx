@@ -44,9 +44,9 @@ export function ProfilePopup({
         aria-hidden="true"
       />
 
-      <div className="absolute right-0 top-full w-[247px] z-50 border border-gray-light bg-white shadow-lg">
+      <div className="absolute right-0 top-full w-[247px] p-[24px] z-50 border border-gray-light bg-white shadow-lg">
         {/* User Avatar and Name */}
-        <div className="flex flex-col items-center py-[40px] px-[20px]">
+        <div className="flex flex-col items-center mb-[24px] px-[20px]">
           <div className="w-[62px] h-[62px] rounded-full bg-gray-300 flex items-center justify-center mb-[12px]">
             <Image
               src="/user.svg"
@@ -60,12 +60,12 @@ export function ProfilePopup({
         </div>
 
         {/* Menu Items */}
-        <nav className="p-[24px]">
+        <nav>
           <ul className="flex flex-col">
             <li>
               <Link
                 href={profileHref}
-                className="block px-[20px] py-[12px] border border-gray-light transition-colors text-[18px]"
+                className="block px-[20px] py-[12px] border border-gray-light text-secondary"
                 onClick={onClose}
               >
                 Profile
@@ -74,7 +74,7 @@ export function ProfilePopup({
             <li>
               <Link
                 href={settingsHref}
-                className="block px-[20px] py-[12px] border border-gray-light transition-colors text-[18px]"
+                className="block px-[20px] py-[12px] border border-gray-light text-secondary"
                 onClick={onClose}
               >
                 Settings
@@ -83,7 +83,7 @@ export function ProfilePopup({
             <li>
               <button
                 onClick={handleLogout}
-                className="w-full text-left px-[20px] py-[12px] border border-gray-light text-[#CB0000] transition-colors text-[18px]"
+                className="w-full text-left px-[20px] py-[12px] border border-gray-light text-[#CB0000]"
               >
                 Logout
               </button>
