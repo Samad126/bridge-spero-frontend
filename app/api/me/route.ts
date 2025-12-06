@@ -24,6 +24,8 @@ export async function GET() {
 
   return new Response(JSON.stringify(data), {
     status: response.status,
-    headers: response.headers,
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 }

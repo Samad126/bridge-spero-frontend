@@ -1,7 +1,9 @@
-import GroupInfoWrapper from "@/features/group-details/GroupInfo/components/GroupInfoWrapper";
+import GroupInfo from "@/features/group-details/GroupInfo/components/GroupInfo";
 import { fetchGroupDetails } from "@/features/group-details/api/fetchGroupDetails";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import GroupInfoSkeleton from "@/features/group-details/GroupInfo/components/GroupInfoSkeleton";
 
 interface PageProps {
   params: Promise<{
@@ -33,7 +35,11 @@ async function page({ params }: PageProps) {
   try {
     const group = await fetchGroupDetails(id);
 
-    return <GroupInfoWrapper group={group} groupId={id} />;
+    return (
+      <Suspense fallback={<GroupInfoSkeleton />}>
+        <GroupInfo group={group} groupId={id} />
+      </Suspense>
+    );
   } catch (error) {
     console.error("Error loading group details:", error);
     notFound();

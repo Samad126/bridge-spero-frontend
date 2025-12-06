@@ -1,29 +1,38 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { UserProfile } from "@/features/profile/api/userProfileApi";
-import { useCheckIsJoinedQuery } from "../../api/groupDetailsApi";
+import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
+// import { useCheckIsJoinedQuery } from "../../api/groupDetailsApi";
 import Link from "next/link";
+import PricingCardSkeleton from "./PricingCardSkeleton";
 
 interface PricingCardProps {
   price: number;
   groupId: string;
-  user?: UserProfile;
   teacherId: number;
 }
 
-function PricingCard({ price, groupId, user, teacherId }: PricingCardProps) {
+function PricingCard({ price, groupId }: PricingCardProps) {
   const [isOpened, setIsOpened] = useState(true);
 
+  // Fetch user data using RTK Query (optional auth - won't redirect if not authenticated)
+  const { data: userData, isLoading } = useGetUserProfileOptionalQuery();
+
   // Check if user is joined (only if user is authenticated and is a student)
-  const { data: isJoinedData } = useCheckIsJoinedQuery(Number(groupId), {
-    skip: !user || user.role !== "USER",
-  });
+  // const { data: isJoinedData } = useCheckIsJoinedQuery(Number(groupId), {
+  //   skip: !userData || userData.role !== "USER",
+  // });
 
-  const isJoined = isJoinedData?.isJoined || false;
-  const isTeacher = user?.role === "TEACHER";
+  // const isJoined = isJoinedData?.isJoined || false;
+  const isJoined = false;
+  const isTeacher = userData?.role === "TEACHER";
 
-  console.log("PRICING CARD USER ROLE: ", user?.role);
+  console.log("PRICING CARD USER", userData);
+
+  // Show loading skeleton while fetching user data
+  if (isLoading) {
+    return <PricingCardSkeleton isOpened={isOpened} />;
+  }
 
   // Teacher view (if user is the owner of the group)
   if (isTeacher) {
@@ -51,15 +60,17 @@ function PricingCard({ price, groupId, user, teacherId }: PricingCardProps) {
 
           <div className={`relative ${isOpened ? "max-h-none" : "max-h-0"}`}>
             <div className="flex justify-between gap-[12px]">
-              <Link
-                href={`/edit-group/${groupId}`}
-                className="p-[12px] border border-tertiary flex items-center justify-center"
-              >
-                <Image src="/edit-2.svg" alt="edit" width={22} height={22} />
-              </Link>
-              <button className="p-[12px] border border-tertiary">
-                <Image src="/trash-2.svg" alt="delete" width={22} height={22} />
-              </button>
+              <div className="flex gap-[12px]">
+                <Link
+                  href={`/edit-group/${groupId}`}
+                  className="p-[12px] border border-tertiary flex items-center justify-center"
+                >
+                  <Image src="/edit-2.svg" alt="edit" width={22} height={22} />
+                </Link>
+                <button className="p-[12px] border border-tertiary">
+                  <Image src="/trash-2.svg" alt="delete" width={22} height={22} />
+                </button>
+              </div>
               <button className="p-[12px] border border-tertiary">
                 <Image src="/share.svg" alt="share" width={22} height={22} />
               </button>
@@ -102,7 +113,7 @@ function PricingCard({ price, groupId, user, teacherId }: PricingCardProps) {
         <div className="absolute inset-0 bg-black/50 pointer-events-none"></div>
 
         <div className={`relative ${isOpened ? "max-h-none" : "max-h-0"}`}>
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-[12px]">
             <button className="p-[12px] border border-tertiary">
               <Image src="/heart.svg" alt="heart" width={22} height={22} />
             </button>
@@ -116,7 +127,7 @@ function PricingCard({ price, groupId, user, teacherId }: PricingCardProps) {
           </p>
 
           <button className="w-full bg-white text-secondary py-[12px] text-[18px]">
-            {isJoined ? "Already Enrolled" : "Enroll Now"}
+            {isJoined ? "Join Lesson" : "Enroll Now"}
           </button>
         </div>
       </div>
