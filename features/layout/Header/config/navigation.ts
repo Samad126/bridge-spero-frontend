@@ -48,6 +48,30 @@ export const authIconItems: NavItem[] = [
   },
 ];
 
+export const mobileIconItems: NavItem[] = [
+  {
+    label: "Notifications",
+    href: "/notifications",
+    isIcon: true,
+    icon: "/bell.svg",
+    ariaLabel: "Notifications",
+  },
+  {
+    label: "Profile",
+    href: (role) => (role === "USER" ? "/student/profile" : "/teacher/profile"),
+    isIcon: true,
+    icon: "/user.svg",
+    ariaLabel: "Profile",
+  },
+  {
+    label: "Logout",
+    href: "/logout",
+    isIcon: true,
+    icon: "/log-out-dark.svg",
+    ariaLabel: "Logout",
+  },
+];
+
 export function getNavHref(item: NavItem, role: UserRole): string {
   return typeof item.href === "function" ? item.href(role) : item.href;
 }

@@ -9,7 +9,12 @@ import { MobileMenu } from "./MobileMenu";
 import { IconButton } from "./IconButton";
 import { JWTPayload } from "@/features/auth/types/authTypes";
 
-export function Header({ role }: { role: JWTPayload["role"] | null }) {
+interface HeaderProps {
+  role: JWTPayload["role"] | null;
+  fullName?: string;
+}
+
+export function Header({ role, fullName }: HeaderProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -58,6 +63,7 @@ export function Header({ role }: { role: JWTPayload["role"] | null }) {
               isAuthenticated={isAuthenticated}
               userRole={userRole}
               onSearchClick={openSearch}
+              userName={fullName || "User"}
             />
 
             <MobileMenu

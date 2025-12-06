@@ -6,7 +6,6 @@ const API_BASE_URL =
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    formData.set("experience", "BEGINNER");
 
     const response = await fetch(`${API_BASE_URL}/auth/signup/teacher`, {
       method: "POST",

@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -8,18 +11,40 @@ import {
   shouldShowItem,
 } from "../config/navigation";
 import { NavLink } from "./NavLink";
+import { ProfilePopup } from "./ProfilePopup";
 
 interface DesktopNavProps {
   isAuthenticated: boolean;
   userRole: UserRole;
   onSearchClick: () => void;
+  userName?: string;
 }
 
 export function DesktopNav({
   isAuthenticated,
   userRole,
   onSearchClick,
+  userName = "User",
 }: DesktopNavProps) {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLLIElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    if (isProfileOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isProfileOpen]);
+
   if (!isAuthenticated) {
     return (
       <nav className="h-full">
@@ -80,11 +105,44 @@ export function DesktopNav({
           </button>
         </li>
 
-        {authIconItems.map((item) => (
-          <li key={item.label} className="w-full h-full min-w-[62px] xxl:min-w-[82px]">
-            <NavLink item={item} role={userRole} />
-          </li>
-        ))}
+        {authIconItems.map((item) => {
+          if (item.label === "Profile") {
+            return (
+              <li
+                key={item.label}
+                className="w-full h-full min-w-[62px] xxl:min-w-[82px] relative"
+                ref={profileRef}
+              >
+                <button
+                  className="h-full text-center flex items-center justify-center border-r border-gray-light w-full"
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  aria-label={item.ariaLabel}
+                >
+                  <Image
+                    src={item.icon!}
+                    alt={item.label}
+                    width={22}
+                    height={22}
+                    loading="eager"
+                    className="min-w-[22px] min-h-[22px]"
+                  />
+                </button>
+                <ProfilePopup
+                  isOpen={isProfileOpen}
+                  onClose={() => setIsProfileOpen(false)}
+                  userName={userName}
+                  userRole={userRole}
+                />
+              </li>
+            );
+          }
+
+          return (
+            <li key={item.label} className="w-full h-full min-w-[62px] xxl:min-w-[82px]">
+              <NavLink item={item} role={userRole} />
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );

@@ -24,7 +24,10 @@ async function layout({
 
   return (
     <NuqsAdapter>
-      <Header role={userData ? userData.role : null} />
+      <Header
+        role={userData ? userData.role : null}
+        fullName={userData ? userData.full_name : undefined}
+      />
       <main className="space-y-[60px] my-[60px] lg:space-y-[80px] lg:mb-[80px] lg:mt-[100px]">
         {children}
       </main>

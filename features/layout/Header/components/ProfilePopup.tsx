@@ -1,0 +1,97 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { UserRole } from "../config/navigation";
+
+interface ProfilePopupProps {
+  isOpen: boolean;
+  onClose: () => void;
+  userName: string;
+  userRole: UserRole;
+}
+
+export function ProfilePopup({
+  isOpen,
+  onClose,
+  userName,
+  userRole,
+}: ProfilePopupProps) {
+  const router = useRouter();
+
+  if (!isOpen) return null;
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", {
+        method: "POST",
+      });
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  const profileHref = userRole === "USER" ? "/student/profile" : "/teacher/profile";
+  const settingsHref = userRole === "USER" ? "/student/settings" : "/teacher/settings";
+
+  return (
+    <>
+      <div
+        className="fixed inset-0 z-40"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+
+      <div className="absolute right-0 top-full w-[247px] z-50 border border-gray-light bg-white shadow-lg">
+        {/* User Avatar and Name */}
+        <div className="flex flex-col items-center py-[40px] px-[20px]">
+          <div className="w-[62px] h-[62px] rounded-full bg-gray-300 flex items-center justify-center mb-[12px]">
+            <Image
+              src="/user.svg"
+              alt="User avatar"
+              width={32}
+              height={32}
+              className="min-w-[32px] min-h-[32px]"
+            />
+          </div>
+          <p className="font-medium text-[20px] text-center">{userName}</p>
+        </div>
+
+        {/* Menu Items */}
+        <nav className="p-[24px]">
+          <ul className="flex flex-col">
+            <li>
+              <Link
+                href={profileHref}
+                className="block px-[20px] py-[12px] border border-gray-light transition-colors text-[18px]"
+                onClick={onClose}
+              >
+                Profile
+              </Link>
+            </li>
+            <li>
+              <Link
+                href={settingsHref}
+                className="block px-[20px] py-[12px] border border-gray-light transition-colors text-[18px]"
+                onClick={onClose}
+              >
+                Settings
+              </Link>
+            </li>
+            <li>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-[20px] py-[12px] border border-gray-light text-[#CB0000] transition-colors text-[18px]"
+              >
+                Logout
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </>
+  );
+}
+
