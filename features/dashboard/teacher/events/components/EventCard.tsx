@@ -40,12 +40,12 @@ const EventCard = ({
           </div>
         </div>
         <div className="flex items-center gap-[12px] lg:mt-12 lg:flex-row-reverse">
-          <Link href={`/group-details/${id}`}>
+          <Link href={`/groups/${id}`}>
             <button className="w-[46px] h-[46px] border border-gray-light flex items-center justify-center">
               <Image width={22} height={22} src={"/trash-2.svg"} alt="" />
             </button>
           </Link>
-          <Link href={`/group-details/${id}`}>
+          <Link href={`/groups/${id}`}>
             <button className="w-[46px] h-[46px] border border-gray-light flex items-center justify-center">
               <Image width={22} height={22} src={"/edit-2.svg"} alt="" />
             </button>
@@ -57,7 +57,7 @@ const EventCard = ({
               </button>
             </a>
           ) : (
-            <Link href={`/group-details/${id}`}>
+            <Link href={`/groups/${id}`}>
               <button className="h-[46px] w-[186px] bg-secondary text-white">
                 View Details
               </button>

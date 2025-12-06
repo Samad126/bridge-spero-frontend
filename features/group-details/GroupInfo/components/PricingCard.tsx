@@ -1,9 +1,23 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
+// import { useCheckIsJoinedQuery } from "../../api/groupDetailsApi";
 
-function PricingCard() {
+interface PricingCardProps {
+  price: number;
+}
+
+function PricingCard({ price }: PricingCardProps) {
   const [isOpened, setIsOpened] = useState(true);
+
+  // TODO: Uncomment when user authentication is implemented and groupId is available
+  // const { data: isJoinedData } = useCheckIsJoinedQuery(groupId, {
+  //   skip: !user, // Skip query if user is not logged in
+  // });
+  // const isJoined = isJoinedData?.isJoined || false;
+
+  // For now, we'll use a placeholder variable
+  const isJoined = true;
 
   return (
     <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-10 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
@@ -38,11 +52,11 @@ function PricingCard() {
           </div>
 
           <p className="text-[32px] mb-[12px] mt-[20px] text-white">
-            $19.99 / <span className="text-[20px]">month</span>
+            ${price} / <span className="text-[20px]">month</span>
           </p>
 
           <button className="w-full bg-white text-secondary py-[12px] text-[18px]">
-            Enroll Now
+            {isJoined ? "Already Enrolled" : "Enroll Now"}
           </button>
         </div>
       </div>

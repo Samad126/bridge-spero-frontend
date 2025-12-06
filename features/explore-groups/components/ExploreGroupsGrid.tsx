@@ -38,6 +38,7 @@ export default async function ExploreGroupsGrid({
       {groups.map((group) => (
         <GroupCard
           key={group.id}
+          id={group.id}
           imageUrl={group.imageUrl}
           degree={group.category}
           language={group.language}

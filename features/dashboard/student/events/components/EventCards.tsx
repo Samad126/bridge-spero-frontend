@@ -33,7 +33,7 @@ const EventCard = ({id, time, isActive, subjectName, teacherName, joinUrl, statu
                             </button>
                         </a>
                     ) : (
-                        <Link href={`/group-details?id=${id}`}>
+                        <Link href={`/groups/${id}`}>
                             <button className="h-[46px] w-[186px] bg-gray-300 text-gray-600">
                                 View Details
                             </button>
