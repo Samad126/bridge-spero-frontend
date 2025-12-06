@@ -1,7 +1,5 @@
-import GroupInfo from "@/features/group-details/GroupInfo/components/GroupInfo";
+import GroupInfoWrapper from "@/features/group-details/GroupInfo/components/GroupInfoWrapper";
 import { fetchGroupDetails } from "@/features/group-details/api/fetchGroupDetails";
-import { Suspense } from "react";
-import GroupInfoSkeleton from "@/features/group-details/GroupInfo/components/GroupInfoSkeleton";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -35,11 +33,7 @@ async function page({ params }: PageProps) {
   try {
     const group = await fetchGroupDetails(id);
 
-    return (
-      <Suspense fallback={<GroupInfoSkeleton />}>
-        <GroupInfo group={group} />
-      </Suspense>
-    );
+    return <GroupInfoWrapper group={group} groupId={id} />;
   } catch (error) {
     console.error("Error loading group details:", error);
     notFound();

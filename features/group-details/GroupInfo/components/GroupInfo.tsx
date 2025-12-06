@@ -4,12 +4,15 @@ import GroupMetadata from "./GroupMetadata";
 import PricingCard from "./PricingCard";
 import TeacherCard from "./TeacherCard";
 import { GroupDetails } from "../../types/groupDetailsTypes";
+import { UserProfile } from "@/features/profile/api/userProfileApi";
 
 interface GroupInfoProps {
   group: GroupDetails;
+  groupId: string;
+  user?: UserProfile;
 }
 
-function GroupInfo({ group }: GroupInfoProps) {
+function GroupInfo({ group, groupId, user }: GroupInfoProps) {
   return (
     <section>
       <div className="container flex gap-[80px] items-start">
@@ -36,7 +39,12 @@ function GroupInfo({ group }: GroupInfoProps) {
           />
           <Tabs />
         </div>
-        <PricingCard price={group.price} />
+        <PricingCard
+          price={group.price}
+          groupId={groupId}
+          user={user}
+          teacherId={group.teacher.id}
+        />
       </div>
     </section>
   );

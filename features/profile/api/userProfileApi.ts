@@ -2,23 +2,32 @@
 
 import { baseApi } from "@/lib/redux/baseApi";
 
+export interface UserProfile {
+  id: number;
+  role: "TEACHER" | "USER";
+  name: string;
+  surname: string;
+  email: string;
+  // Add other fields as needed based on backend response
+}
+
 export const userProfileApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getUserProfile: builder.query({
+    getUserProfile: builder.query<UserProfile, void>({
       query: () => ({
-        url: "/users/me",
+        url: "/me",
         meta: { authMode: "strict" },
       }),
       providesTags: ["User"],
     }),
 
-    getUserProfileOptional: builder.query({
+    getUserProfileOptional: builder.query<UserProfile, void>({
       query: () => ({
-        url: "/users/me",
+        url: "/me",
         meta: { authMode: "optional" },
       }),
       providesTags: ["User"],
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
           dispatch(
@@ -34,4 +43,5 @@ export const userProfileApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetUserProfileQuery } = userProfileApi;
+export const { useGetUserProfileQuery, useGetUserProfileOptionalQuery } =
+  userProfileApi;

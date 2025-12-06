@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { UserRole } from "../config/navigation";
+import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
 
 interface ProfilePopupProps {
   isOpen: boolean;
@@ -19,8 +20,14 @@ export function ProfilePopup({
   userRole,
 }: ProfilePopupProps) {
   const router = useRouter();
+  const { data: userData } = useGetUserProfileOptionalQuery();
 
   if (!isOpen) return null;
+
+  // Use RTK Query data if available, otherwise fall back to props
+  const displayName = userData
+    ? `${userData.name} ${userData.surname}`
+    : userName;
 
   const handleLogout = async () => {
     try {
@@ -56,7 +63,7 @@ export function ProfilePopup({
               className="min-w-[32px] min-h-[32px]"
             />
           </div>
-          <p className="font-medium text-[20px] text-center">{userName}</p>
+          <p className="font-medium text-[20px] text-center">{displayName}</p>
         </div>
 
         {/* Menu Items */}

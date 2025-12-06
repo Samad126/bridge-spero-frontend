@@ -15,7 +15,7 @@ export async function GET() {
 
   const headers = new Headers();
   headers.append("Authorization", `Bearer ${access_token.value}`);
-  const response = await fetch(`${API_BASE_URL}/auth/me`, {
+  const response = await fetch(`${API_BASE_URL}/users/me`, {
     headers,
   });
 
