@@ -58,7 +58,7 @@ export const mobileIconItems: NavItem[] = [
   },
   {
     label: "Profile",
-    href: (role) => (role === "USER" ? "/student/profile" : "/teacher/profile"),
+    href: (role) => (role === "USER" ? "/student/profile" : "/teacher-profile"),
     isIcon: true,
     icon: "/user.svg",
     ariaLabel: "Profile",

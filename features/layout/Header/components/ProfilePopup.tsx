@@ -40,7 +40,7 @@ export function ProfilePopup({
     }
   };
 
-  const profileHref = userRole === "USER" ? "/student/profile" : "/teacher/profile";
+  const profileHref = userRole === "USER" ? "/student/profile" : "/teacher-profile";
   const settingsHref = userRole === "USER" ? "/student/settings" : "/teacher/settings";
 
   return (

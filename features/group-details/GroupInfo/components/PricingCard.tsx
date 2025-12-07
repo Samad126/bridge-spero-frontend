@@ -24,10 +24,8 @@ function PricingCard({ price, groupId }: PricingCardProps) {
   // });
 
   // const isJoined = isJoinedData?.isJoined || false;
-  const isJoined = false;
+  const isJoined = true;
   const isTeacher = userData?.role === "TEACHER";
-
-  console.log("PRICING CARD USER", userData);
 
   // Show loading skeleton while fetching user data
   if (isLoading) {
@@ -60,28 +58,91 @@ function PricingCard({ price, groupId }: PricingCardProps) {
 
           <div className={`relative ${isOpened ? "max-h-none" : "max-h-0"}`}>
             <div className="flex justify-between gap-[12px]">
-              <div className="flex gap-[12px]">
-                <Link
-                  href={`/edit-group/${groupId}`}
-                  className="p-[12px] border border-tertiary flex items-center justify-center"
-                >
-                  <Image src="/edit-2.svg" alt="edit" width={22} height={22} />
-                </Link>
-                <button className="p-[12px] border border-tertiary">
-                  <Image src="/trash-2.svg" alt="delete" width={22} height={22} />
-                </button>
-              </div>
-              <button className="p-[12px] border border-tertiary">
+              <Link
+                href={`/edit-group/${groupId}`}
+                className="w-[46px] h-[46px] border border-tertiary flex items-center justify-center"
+              >
+                <Image
+                  src="/edit-2-light.svg"
+                  alt="edit"
+                  width={22}
+                  height={22}
+                />
+              </Link>
+              {/* <button className="p-[12px] border border-tertiary">
                 <Image src="/share.svg" alt="share" width={22} height={22} />
+              </button> */}
+              <button className="flex items-center justify-center w-[46px] h-[46px] border border-tertiary">
+                <Image
+                  src="/trash-2-light.svg"
+                  alt="delete"
+                  width={22}
+                  height={22}
+                />
               </button>
             </div>
 
-            <p className="text-[32px] mb-[12px] mt-[20px] text-white">
+            <p className="text-[32px] mb-[12px] mt-[30px] text-white">
               ${price} / <span className="text-[20px]">month</span>
             </p>
 
-            <button className="w-full bg-white text-secondary py-[12px] text-[18px]">
-              Start Lesson
+            <div className="flex gap-[12px]">
+              <button className="p-[12px] min-w-[46px] border border-tertiary">
+                <Image src="/share.svg" alt="share" width={22} height={22} />
+              </button>
+              <button className="w-full bg-white text-secondary h-[46px] text-[18px]">
+                Start Lesson
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if user is authenticated
+  const isAuthenticated = !!userData;
+
+  // Non-logged-in user view
+  if (!isAuthenticated) {
+    return (
+      <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-10 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
+        <button
+          className="bg-secondary py-[6px] px-[12px] xxl:hidden"
+          onClick={() => setIsOpened(!isOpened)}
+        >
+          <Image
+            src="/chevron-down.svg"
+            alt="close"
+            width={22}
+            height={22}
+            className={`transition-transform ${isOpened ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        <div
+          className={`relative w-full bg-[url('/groupimage.png')] bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
+            isOpened ? "py-[30px]" : "h-[6px]"
+          }`}
+        >
+          <div className="absolute inset-0 bg-black/50 pointer-events-none"></div>
+
+          <div className={`relative ${isOpened ? "max-h-none" : "max-h-0"}`}>
+            <div className="flex justify-between gap-[12px]">
+              <button className="w-[46px] h-[46px] flex items-center justify-center border border-tertiary">
+                <Image src="/heart.svg" alt="heart" width={22} height={22} />
+              </button>
+              <button className="w-[46px] h-[46px] flex items-center justify-center border border-tertiary">
+                <Image src="/share.svg" alt="logout" width={22} height={22} />
+              </button>
+            </div>
+
+            <p className="text-[32px] mb-[12px] mt-[30px] text-white">
+              ${price} / <span className="text-[20px]">month</span>
+            </p>
+
+            <button className="w-full bg-white text-secondary h-[46px] text-[18px]">
+              Enroll Now
             </button>
           </div>
         </div>
@@ -89,7 +150,7 @@ function PricingCard({ price, groupId }: PricingCardProps) {
     );
   }
 
-  // Student/Public view
+  // Student (logged-in) view
   return (
     <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-10 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
       <button
@@ -114,21 +175,29 @@ function PricingCard({ price, groupId }: PricingCardProps) {
 
         <div className={`relative ${isOpened ? "max-h-none" : "max-h-0"}`}>
           <div className="flex justify-between gap-[12px]">
-            <button className="p-[12px] border border-tertiary">
+            <button className="w-[46px] h-[46px] flex items-center justify-center border border-tertiary">
               <Image src="/heart.svg" alt="heart" width={22} height={22} />
             </button>
-            <button className="p-[12px] border border-tertiary">
-              <Image src="/share.svg" alt="share" width={22} height={22} />
-            </button>
+            <Link
+              href="/api/logout"
+              className="w-[46px] h-[46px] flex items-center justify-center border border-tertiary"
+            >
+              <Image src="/log-out.svg" alt="logout" width={22} height={22} />
+            </Link>
           </div>
 
-          <p className="text-[32px] mb-[12px] mt-[20px] text-white">
+          <p className="text-[32px] mb-[12px] mt-[30px] text-white">
             ${price} / <span className="text-[20px]">month</span>
           </p>
 
-          <button className="w-full bg-white text-secondary py-[12px] text-[18px]">
-            {isJoined ? "Join Lesson" : "Enroll Now"}
-          </button>
+          <div className="flex gap-[12px]">
+            <button className="p-[12px] min-w-[46px] border border-tertiary">
+              <Image src="/share.svg" alt="share" width={22} height={22} />
+            </button>
+            <button className="w-full bg-white text-secondary h-[46px] text-[18px]">
+              {isJoined ? "Join Lesson" : "Enroll Now"}
+            </button>
+          </div>
         </div>
       </div>
     </div>
