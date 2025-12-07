@@ -54,7 +54,7 @@ function PricingCard({ price, groupId }: PricingCardProps) {
             isOpened ? "py-[30px]" : "h-[6px]"
           }`}
         >
-          <div className="absolute inset-0 bg-black/50 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-black/70 pointer-events-none"></div>
 
           <div className={`relative ${isOpened ? "max-h-none" : "max-h-0"}`}>
             <div className="flex justify-between gap-[12px]">
@@ -125,7 +125,7 @@ function PricingCard({ price, groupId }: PricingCardProps) {
             isOpened ? "py-[30px]" : "h-[6px]"
           }`}
         >
-          <div className="absolute inset-0 bg-black/50 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-black/70 pointer-events-none"></div>
 
           <div className={`relative ${isOpened ? "max-h-none" : "max-h-0"}`}>
             <div className="flex justify-between gap-[12px]">
@@ -171,7 +171,7 @@ function PricingCard({ price, groupId }: PricingCardProps) {
           isOpened ? "py-[30px]" : "h-[6px]"
         }`}
       >
-        <div className="absolute inset-0 bg-black/50 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-black/70 pointer-events-none"></div>
 
         <div className={`relative ${isOpened ? "max-h-none" : "max-h-0"}`}>
           <div className="flex justify-between gap-[12px]">
