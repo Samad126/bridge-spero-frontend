@@ -15,4 +15,8 @@ export const tabData = [
     id: 4,
     label: "Resources",
   },
+  {
+    id: 5,
+    label: "Members",
+  },
 ];
