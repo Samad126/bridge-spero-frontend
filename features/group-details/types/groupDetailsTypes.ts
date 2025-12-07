@@ -60,3 +60,13 @@ export interface RecordingItem {
 
 export type RecordingsResponse = RecordingItem[];
 
+export interface ResourceItem {
+  id: number;
+  name: string;
+  path: string;
+  contentType: string;
+  createdAt: string;
+}
+
+export type ResourcesResponse = ResourceItem[];
+

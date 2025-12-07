@@ -5,7 +5,8 @@ import {
   CreateScheduleRequest,
   UpdateScheduleRequest,
   SyllabusResponse,
-  RecordingsResponse
+  RecordingsResponse,
+  ResourcesResponse
 } from "../types/groupDetailsTypes";
 
 export const groupDetailsApi = baseApi.injectEndpoints({
@@ -124,6 +125,46 @@ export const groupDetailsApi = baseApi.injectEndpoints({
         { type: "Groups", id: `recordings-${groupId}` },
       ],
     }),
+
+    getGroupResources: builder.query<ResourcesResponse, number>({
+      query: (groupId) => ({
+        url: `/groups/${groupId}/resources`,
+        meta: { authMode: "optional" },
+      }),
+      providesTags: (result, error, groupId) => [
+        { type: "Groups", id: `resources-${groupId}` },
+      ],
+    }),
+
+    uploadResource: builder.mutation<void, { groupId: number; file: File; name?: string }>({
+      query: ({ groupId, file, name }) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        if (name) {
+          formData.append("name", name);
+        }
+        return {
+          url: `/groups/${groupId}/resources`,
+          method: "POST",
+          body: formData,
+          meta: { authMode: "strict" },
+        };
+      },
+      invalidatesTags: (result, error, { groupId }) => [
+        { type: "Groups", id: `resources-${groupId}` },
+      ],
+    }),
+
+    deleteResource: builder.mutation<void, { groupId: number; resourceId: number }>({
+      query: ({ resourceId }) => ({
+        url: `/resources/${resourceId}`,
+        method: "DELETE",
+        meta: { authMode: "strict" },
+      }),
+      invalidatesTags: (result, error, { groupId }) => [
+        { type: "Groups", id: `resources-${groupId}` },
+      ],
+    }),
   }),
 });
 
@@ -138,5 +179,8 @@ export const {
   useDeleteSyllabusMutation,
   useGetGroupRecordingsQuery,
   useUploadRecordingMutation,
+  useGetGroupResourcesQuery,
+  useUploadResourceMutation,
+  useDeleteResourceMutation,
 } = groupDetailsApi;
 
