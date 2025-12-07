@@ -34,7 +34,7 @@ function Schedule({ groupId, userRole }: ScheduleProps) {
 
   return (
     <div className="grid grid-cols-1 gap-[12px] md:grid-cols-3">
-      {scheduleData && scheduleData.length > 0 ? (
+      {scheduleData && scheduleData.length > 0 && (
         scheduleData.map((schedule) => (
           <ScheduleCard
             key={schedule.id}
@@ -43,10 +43,6 @@ function Schedule({ groupId, userRole }: ScheduleProps) {
             groupId={Number(groupId)}
           />
         ))
-      ) : (
-        <div className="text-center text-secondary py-[24px] col-span-3">
-          No schedule available
-        </div>
       )}
       {isTeacher && (
         <ScheduleCard cardStatus="add" groupId={Number(groupId)} />

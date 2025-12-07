@@ -8,9 +8,10 @@ import { GroupDetails } from "../../types/groupDetailsTypes";
 interface GroupInfoProps {
   group: GroupDetails;
   groupId: string;
+  isAuthenticated: boolean;
 }
 
-function GroupInfo({ group, groupId }: GroupInfoProps) {
+function GroupInfo({ group, groupId, isAuthenticated }: GroupInfoProps) {
   return (
     <section>
       <div className="container flex gap-[80px] items-start">
@@ -35,7 +36,10 @@ function GroupInfo({ group, groupId }: GroupInfoProps) {
             rating={group.teacher.rating}
             activeStudents={group.teacher.activeStudents}
           />
-          <Tabs groupId={groupId} />
+          <Tabs
+            groupId={groupId}
+            isAuthenticated={isAuthenticated}
+          />
         </div>
         <PricingCard
           price={group.price}
