@@ -1,7 +1,112 @@
+"use client";
+
 import AuthLogo from "../AuthLogo";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  StudentRegistrationFormData,
+  studentRegistrationSchema,
+} from "../schemas/authSchemas";
+import { useState } from "react";
+
+interface BackendError {
+  field: string;
+  message: string;
+}
+
+interface BackendErrorResponse {
+  requestId?: string;
+  errorCode?: string;
+  errorMessage?: string;
+  errors?: BackendError[];
+  timestamp?: string;
+}
+
+const DEMO_SUBJECTS = [
+  "Mathematics",
+  "Physics",
+  "Chemistry",
+  "Biology",
+  "English",
+  "History",
+  "Geography",
+  "Computer Science",
+];
 
 const StudentRegistration = () => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm({
+    resolver: yupResolver(studentRegistrationSchema),
+    mode: "onChange",
+    defaultValues: {
+      phoneCode: "+994",
+      interests: [] as string[],
+      agreedToTerms: false,
+    },
+  });
+
+  const handleSubjectChange = (subject: string) => {
+    const newSelectedSubjects = selectedSubjects.includes(subject)
+      ? selectedSubjects.filter((s) => s !== subject)
+      : [...selectedSubjects, subject];
+
+    setSelectedSubjects(newSelectedSubjects);
+    setValue("interests", newSelectedSubjects);
+  };
+
+  const onSubmit = async (data: StudentRegistrationFormData) => {
+    setIsLoading(true);
+    setApiError(null);
+    setFieldErrors({});
+
+    try {
+      const response = await fetch("/api/auth/signup/student", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      const result: BackendErrorResponse = await response.json();
+
+      if (!response.ok) {
+        // Handle field-specific errors
+        if (result.errors && result.errors.length > 0) {
+          const newFieldErrors: Record<string, string> = {};
+          result.errors.forEach((error) => {
+            newFieldErrors[error.field] = error.message;
+          });
+          setFieldErrors(newFieldErrors);
+        }
+
+        // Set general error message
+        setApiError(result.errorMessage || "Registration failed");
+        return;
+      }
+
+      // Redirect to login page after successful registration
+      router.push("/login");
+    } catch (error) {
+      console.error("Registration error:", error);
+      setApiError("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="w-full min-h-screen flex items-center justify-center my-10">
       <section className="w-[343px] h-full mx-auto flex flex-col items-center justify-center border border-gray-light p-[32px] gap-[24px] lg:w-[692px] ">
@@ -14,140 +119,214 @@ const StudentRegistration = () => {
             Create your account to start learning
           </p>
         </div>
-        <div>
+        <div className="w-full">
           <form
-            action=""
+            onSubmit={handleSubmit(onSubmit)}
             className="grid grid-cols-1 gap-[18px] lg:grid-cols-2 lg:gap-x-[12px] lg:gap-y-[24px]"
           >
-            <p className="w-full">
+            {apiError && (
+              <div className="lg:col-span-2 p-[12px] bg-red-100 border border-red-400 text-red-700 text-sm">
+                {apiError}
+              </div>
+            )}
+            <div className="w-full">
               <label
-                htmlFor=""
+                htmlFor="name"
                 className="leading-[100%] block w-full mb-[8px]"
               >
                 First Name *
               </label>
               <input
+                id="name"
                 type="text"
                 placeholder="First Name"
+                {...register("name")}
                 className="w-full p-[12px] gap-[10px] border border-gray-light placeholder-gray-light outline-0 h-[43px]"
               />
-            </p>
+              {(errors.name || fieldErrors.name) && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.name?.message || fieldErrors.name}
+                </p>
+              )}
+            </div>
 
-            <p className="w-full">
+            <div className="w-full">
               <label
-                htmlFor=""
+                htmlFor="surname"
                 className="leading-[100%] block w-full mb-[8px]"
               >
                 Last Name *
               </label>
               <input
+                id="surname"
                 type="text"
                 placeholder="Last Name"
+                {...register("surname")}
                 className="w-full p-[12px] gap-[10px] border border-gray-light placeholder-gray-light outline-0 h-[43px]"
               />
-            </p>
+              {(errors.surname || fieldErrors.surname) && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.surname?.message || fieldErrors.surname}
+                </p>
+              )}
+            </div>
 
-            <p className="w-full">
+            <div className="w-full">
               <label
-                htmlFor=""
+                htmlFor="email"
                 className="leading-[100%] block w-full mb-[8px]"
               >
                 Email *
               </label>
               <input
+                id="email"
                 type="email"
                 placeholder="Email"
+                {...register("email")}
                 className="w-full p-[12px] gap-[10px] border border-gray-light placeholder-gray-light outline-0 h-[43px]"
               />
-            </p>
+              {(errors.email || fieldErrors.email) && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email?.message || fieldErrors.email}
+                </p>
+              )}
+            </div>
 
             <div className="w-full">
               <label
-                htmlFor=""
+                htmlFor="phoneNumber"
                 className="leading-[100%] block w-full mb-[8px]"
               >
                 Phone Number *
               </label>
               <div className="flex w-full">
                 <select
-                  name=""
-                  id=""
+                  {...register("phoneCode")}
                   className="p-[12px] h-[43px] leading-[130%] border border-gray-light placeholder-gray-light outline-0"
                 >
-                  <option value="all">+994</option>
+                  <option value="+994">+994</option>
+                  <option value="+1">+1</option>
+                  <option value="+44">+44</option>
+                  <option value="+90">+90</option>
                 </select>
                 <input
-                  type="email"
+                  id="phoneNumber"
+                  type="text"
                   placeholder="Phone Number"
+                  {...register("phoneNumber")}
                   className="p-[12px] w-full h-[43px] leading-[130%] border border-gray-light placeholder-gray-light  outline-0"
                 />
               </div>
+              {(errors.phoneNumber || fieldErrors.phoneNumber) && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.phoneNumber?.message || fieldErrors.phoneNumber}
+                </p>
+              )}
             </div>
 
-            <p className="w-full">
+            <div className="w-full">
               <label
-                htmlFor=""
+                htmlFor="password"
                 className="leading-[100%] block w-full mb-[8px]"
               >
                 Password *
               </label>
               <input
+                id="password"
                 type="password"
                 placeholder="Password"
+                {...register("password")}
                 className="w-full p-[12px] gap-[10px] border border-gray-light placeholder-gray-light outline-0 h-[43px]"
               />
-            </p>
+              {(errors.password || fieldErrors.password) && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password?.message || fieldErrors.password}
+                </p>
+              )}
+            </div>
 
-            <p className="w-full">
+            <div className="w-full">
               <label
-                htmlFor=""
+                htmlFor="confirmPassword"
                 className="leading-[100%] block w-full mb-[8px]"
               >
                 Confirm Password *
               </label>
               <input
+                id="confirmPassword"
                 type="password"
                 placeholder="Confirm Password"
+                {...register("confirmPassword")}
                 className="w-full p-[12px] gap-[10px] border border-gray-light placeholder-gray-light outline-0 h-[43px]"
               />
-            </p>
+              {(errors.confirmPassword || fieldErrors.confirmPassword) && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.confirmPassword?.message || fieldErrors.confirmPassword}
+                </p>
+              )}
+            </div>
 
-            <p className="w-full lg:col-span-2">
-              <label
-                htmlFor=""
-                className="leading-[100%] block w-full mb-[8px]"
-              >
-                Which Subjects Interests You?
+            <div className="w-full lg:col-span-2">
+              <label className="leading-[100%] block w-full mb-[8px]">
+                Which Subjects Interest You? *
               </label>
-              <select className="w-full h-[43px] p-[12px] gap-[10px] border border-gray-light outline-0 text-gray-light">
-                <option value="all">Choose</option>
-              </select>
-            </p>
+              <div className="grid grid-cols-2 gap-2 p-[12px] border border-gray-light">
+                {DEMO_SUBJECTS.map((subject) => (
+                  <label key={subject} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedSubjects.includes(subject)}
+                      onChange={() => handleSubjectChange(subject)}
+                      className="w-[18px] h-[18px] border border-gray-light"
+                    />
+                    <span className="text-sm">{subject}</span>
+                  </label>
+                ))}
+              </div>
+              {errors.interests && (
+                <p className="text-red-500 text-sm mt-1">{errors.interests.message}</p>
+              )}
+            </div>
 
-            <p className="w-full lg:col-span-2">
+            <div className="w-full lg:col-span-2">
               <label
-                htmlFor=""
+                htmlFor="bio"
                 className="leading-[100%] block w-full mb-[8px]"
               >
                 Bio
               </label>
               <textarea
+                id="bio"
                 placeholder="Bio"
+                {...register("bio")}
                 className="w-full p-[12px] border border-gray-light placeholder-gray-light outline-0 h-[100px] text-gray-light"
               ></textarea>
-            </p>
+            </div>
+
             <div className="flex items-center gap-[12px] lg:col-span-2">
               <input
+                id="agreedToTerms"
                 type="checkbox"
+                {...register("agreedToTerms")}
                 className="w-[18px] h-[18px] border border-gray-light"
               />
-              <label htmlFor="" className="text-[15px] leading-[100%] lg:block">
+              <label htmlFor="agreedToTerms" className="text-[15px] leading-[100%] lg:block">
                 I agree to the{" "}
                 <span className="text-primary">terms and conditions</span>
               </label>
             </div>
-            <button className="w-full text-[18px] text-custom-white bg-secondary p-[12px] lg:col-span-2">
-              Create Student Account
+            {errors.agreedToTerms && (
+              <p className="text-red-500 text-sm lg:col-span-2 -mt-3">
+                {errors.agreedToTerms.message}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full text-[18px] text-custom-white bg-secondary p-[12px] lg:col-span-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? "Creating Account..." : "Create Student Account"}
             </button>
             <p className="w-full text-center lg:col-span-2">
               Already have an account?{" "}

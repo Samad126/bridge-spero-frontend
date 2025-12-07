@@ -3,19 +3,14 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import LessonCard from "./LessonCard";
+import { ScheduleDay } from "@/features/dashboard/student/types/dashboardTypes";
 import "swiper/css";
 
-const DAYS = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
-];
+interface WeekDayMobileProps {
+  schedule: ScheduleDay[];
+}
 
-function WeekDayMobile() {
+function WeekDayMobile({ schedule }: WeekDayMobileProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
 
@@ -34,7 +29,9 @@ function WeekDayMobile() {
             className="w-[22px] h-[22px]"
           />
         </button>
-        <h3 className="text-center text-[24px]">{DAYS[activeIndex]}</h3>
+        <h3 className="text-center text-[24px]">
+          {schedule[activeIndex]?.dayOfWeek || "No Schedule"}
+        </h3>
         <button
           onClick={() => swiperInstance?.slideNext()}
           className="border border-gray-light p-[12px]"
@@ -55,12 +52,23 @@ function WeekDayMobile() {
         spaceBetween={24}
         autoHeight
       >
-        {DAYS.map((day, index) => (
-          <SwiperSlide key={day}>
+        {schedule.map((day) => (
+          <SwiperSlide key={day.dayOfWeek}>
             <div className="flex flex-col gap-[12px]">
-              <LessonCard />
-              <LessonCard />
-              {index === 0 && <LessonCard />}
+              {day.groups.length === 0 ? (
+                <div className="text-center text-secondary text-[14px] py-[20px]">
+                  No lessons
+                </div>
+              ) : (
+                day.groups.map((group) => (
+                  <LessonCard
+                    key={group.id}
+                    time={group.time}
+                    groupName={group.groupName}
+                    groupId={group.id}
+                  />
+                ))
+              )}
             </div>
           </SwiperSlide>
         ))}

@@ -1,10 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   UserRole,
   publicNavItems,
   authNavItems,
-  authIconItems,
+  mobileIconItems,
   shouldShowItem,
   getNavHref,
 } from "../config/navigation";
@@ -21,7 +24,20 @@ export function MobileMenu({
   isAuthenticated,
   userRole,
 }: MobileMenuProps) {
+  const router = useRouter();
+
   if (!isOpen) return null;
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", {
+        method: "POST",
+      });
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   if (!isAuthenticated) {
     return (
@@ -36,13 +52,13 @@ export function MobileMenu({
           </ul>
           <ul className="flex justify-between" id="bottomMenu">
             <li className="flex-1">
-              <Link href="/" className="block py-[20px] text-center">
+              <Link href="/login" className="block py-[20px] text-center">
                 Login
               </Link>
             </li>
             <li className="flex-1">
               <Link
-                href="/"
+                href="/signup"
                 className="block py-[20px] bg-secondary text-custom-white text-center"
               >
                 Register
@@ -77,31 +93,62 @@ export function MobileMenu({
           className="flex justify-between border-t border-gray-light"
           id="bottomMenu"
         >
-          {authIconItems.map((item, index) => (
-            <li
-              key={item.label}
-              className={`flex-1 ${
-                index < authIconItems.length - 1
-                  ? "border-r border-gray-light"
-                  : ""
-              }`}
-            >
-              <Link
-                href={getNavHref(item, userRole)}
-                className="flex justify-center items-center py-[20px]"
-                aria-label={item.ariaLabel}
+          {mobileIconItems.map((item, index) => {
+            // Handle logout icon separately
+            if (item.label === "Logout") {
+              return (
+                <li
+                  key={item.label}
+                  className={`flex-1 ${
+                    index < mobileIconItems.length - 1
+                      ? "border-r border-gray-light"
+                      : ""
+                  }`}
+                >
+                  <button
+                    onClick={handleLogout}
+                    className="flex justify-center items-center py-[20px] w-full"
+                    aria-label={item.ariaLabel}
+                  >
+                    <Image
+                      src={item.icon!}
+                      alt={item.label}
+                      width={22}
+                      height={22}
+                      loading="eager"
+                      className="min-w-[22px] min-h-[22px]"
+                    />
+                  </button>
+                </li>
+              );
+            }
+
+            return (
+              <li
+                key={item.label}
+                className={`flex-1 ${
+                  index < mobileIconItems.length - 1
+                    ? "border-r border-gray-light"
+                    : ""
+                }`}
               >
-                <Image
-                  src={item.icon!}
-                  alt={item.label}
-                  width={22}
-                  height={22}
-                  loading="eager"
-                  className="min-w-[22px] min-h-[22px]"
-                />
-              </Link>
-            </li>
-          ))}
+                <Link
+                  href={getNavHref(item, userRole)}
+                  className="flex justify-center items-center py-[20px]"
+                  aria-label={item.ariaLabel}
+                >
+                  <Image
+                    src={item.icon!}
+                    alt={item.label}
+                    width={22}
+                    height={22}
+                    loading="eager"
+                    className="min-w-[22px] min-h-[22px]"
+                  />
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </div>

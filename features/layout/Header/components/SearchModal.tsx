@@ -30,7 +30,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     e.preventDefault();
     const trimmed = query.trim();
     if (trimmed) {
-      router.push(`/explore?search=${encodeURIComponent(trimmed)}`);
+      router.push(`/explore-groups?groupName=${encodeURIComponent(trimmed)}`);
       onClose();
       setQuery("");
     }

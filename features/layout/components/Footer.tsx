@@ -1,10 +1,12 @@
 "use client";
 
+import { JWTPayload } from "@/features/auth/types/authTypes";
 import Image from "next/image";
 import Link from "next/link";
 
-function Footer() {
-  const isAuthenticated = true;
+export function Footer({ role }: { role: JWTPayload["role"] | null }) {
+  const isAuthenticated = !!role;
+  console.log("FOOTER IS AUTHENTICATED: ", isAuthenticated);
 
   return (
     <footer className="flex flex-col justify-between bg-[url(/footerlogo.svg)] bg-cover bg-center bg-gray-light overflow-hidden bg-no-repeat pt-[100px]">

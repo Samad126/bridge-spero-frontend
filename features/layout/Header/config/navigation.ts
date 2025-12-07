@@ -1,4 +1,4 @@
-export type UserRole = "student" | "teacher" | null;
+export type UserRole = "USER" | "TEACHER" | null;
 
 export interface NavItem {
   label: string;
@@ -19,7 +19,7 @@ export const publicNavItems: NavItem[] = [
 export const authNavItems: NavItem[] = [
   {
     label: "Dashboard",
-    href: (role) => (role === "student" ? "/student" : "/teacher"),
+    href: (role) => (role === "USER" ? "/student" : "/teacher"),
   },
   { label: "My Groups", href: "/my-groups" },
   {
@@ -27,7 +27,7 @@ export const authNavItems: NavItem[] = [
     href: "/create-group",
     showFor: "teacher",
   },
-  { label: "Explore", href: "/explore" },
+  { label: "Explore", href: "/explore-groups" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -48,11 +48,37 @@ export const authIconItems: NavItem[] = [
   },
 ];
 
+export const mobileIconItems: NavItem[] = [
+  {
+    label: "Notifications",
+    href: "/notifications",
+    isIcon: true,
+    icon: "/bell.svg",
+    ariaLabel: "Notifications",
+  },
+  {
+    label: "Profile",
+    href: (role) => (role === "USER" ? "/student/profile" : "/teacher/profile"),
+    isIcon: true,
+    icon: "/user.svg",
+    ariaLabel: "Profile",
+  },
+  {
+    label: "Logout",
+    href: "/logout",
+    isIcon: true,
+    icon: "/log-out-dark.svg",
+    ariaLabel: "Logout",
+  },
+];
+
 export function getNavHref(item: NavItem, role: UserRole): string {
   return typeof item.href === "function" ? item.href(role) : item.href;
 }
 
 export function shouldShowItem(item: NavItem, role: UserRole): boolean {
   if (!item.showFor || item.showFor === "all") return true;
-  return item.showFor === role;
+  if (item.showFor === "student" && role === "USER") return true;
+  if (item.showFor === "teacher" && role === "TEACHER") return true;
+  return false;
 }

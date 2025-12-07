@@ -13,7 +13,7 @@ export default function TrendingTeachersSkeleton({
 }: TrendingTeachersSkeletonProps) {
   const gridColsClass = col === 1 ? "grid-cols-1" : "grid-cols-2";
   const lastCardClass = hideLastCard
-    ? "[&>*:last-child]:hidden xxl:[&>*:last-child]:block"
+    ? "[&>*:nth-child(4)]:hidden xxl:[&>*:nth-child(4)]:block"
     : "";
 
   return (

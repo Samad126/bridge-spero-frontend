@@ -3,9 +3,9 @@ import { redirect } from "next/navigation";
 
 async function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
-  const refreshToken = cookieStore.get("refreshToken");
+  const refresh_token = cookieStore.get("refresh_token");
 
-  if (!refreshToken) {
+  if (!refresh_token) {
     redirect("/login");
   }
 

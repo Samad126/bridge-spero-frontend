@@ -7,13 +7,19 @@ import { SearchModal } from "./SearchModal";
 import { DesktopNav } from "./DesktopNav";
 import { MobileMenu } from "./MobileMenu";
 import { IconButton } from "./IconButton";
+import { JWTPayload } from "@/features/auth/types/authTypes";
 
-export function Header() {
+interface HeaderProps {
+  role: JWTPayload["role"] | null;
+  fullName?: string;
+}
+
+export function Header({ role, fullName }: HeaderProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const isAuthenticated = false;
-  const userRole = "teacher";
+  const isAuthenticated = !!role;
+  const userRole = role;
 
   const openSearch = useCallback(() => setIsSearchOpen(true), []);
   const closeSearch = useCallback(() => setIsSearchOpen(false), []);
@@ -25,6 +31,8 @@ export function Header() {
   const searchInputClasses = !isAuthenticated
     ? "hidden lg:flex"
     : "hidden lg:flex xxl:hidden";
+
+    console.log("HEADER ROLE IS: ", role);
 
   return (
     <>
@@ -55,6 +63,7 @@ export function Header() {
               isAuthenticated={isAuthenticated}
               userRole={userRole}
               onSearchClick={openSearch}
+              userName={fullName || "User"}
             />
 
             <MobileMenu

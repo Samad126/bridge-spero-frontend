@@ -13,13 +13,13 @@ export default function SessionExpiredPopup() {
 
   const handleLogin = () => {
     dispatch(setSessionExpiredPopup(false));
-    router.push("/auth/login");
+    router.push("/login");
   };
 
   const handleStayLoggedOff = () => {
     dispatch(setSessionExpiredPopup(false));
 
-    fetch("/api/proxy/logout", {
+    fetch("/api/logout", {
       method: "POST",
     }).then(() => {});
   };

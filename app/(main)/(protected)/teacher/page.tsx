@@ -7,7 +7,7 @@ function page() {
     <>
       <WelcomeBack />
       <TodaysEvents />
-      <Schedule />
+      <Schedule userRole="teacher" />
     </>
   );
 }

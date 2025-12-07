@@ -1,15 +1,22 @@
-import GroupList from "@/features/common/groups/components/GroupList";
-import { demoGroupsMultiple } from "../../common/groups/constants/demoGroups";
+import ExploreGroupsWrapper from "./ExploreGroupsWrapper";
 
-function Groups() {
+interface GroupsProps {
+  searchParams: {
+    groupName?: string;
+    language?: string;
+    pageNumber?: string;
+    pageSize?: string;
+  };
+}
+
+function Groups({ searchParams }: GroupsProps) {
+  // Create a key from searchParams to force remount on change
+  const key = JSON.stringify(searchParams);
+
   return (
     <div>
       <div className="container">
-        <GroupList
-          demoGroups={demoGroupsMultiple}
-          hideLastCard={false}
-          col={2}
-        />
+        <ExploreGroupsWrapper key={key} searchParams={searchParams} />
       </div>
     </div>
   );

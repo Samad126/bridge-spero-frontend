@@ -2,50 +2,161 @@
 
 import Image from "next/image";
 import Schedule from "./Schedule";
-import Syllabus from "./Syllabus";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { createGroupSchema } from "../schemas/groupFormSchema";
+import { Language } from "../types/groupFormTypes";
+import { useCreateGroupMutation } from "../api/groupFormApi";
+import { useState } from "react";
+
+interface FormData {
+  name: string;
+  categoryId: number;
+  language: Language;
+  startDate: string;
+  durationInMonths: number;
+  minStudents: number;
+  maxStudents: number;
+  price: number;
+  description?: string;
+}
 
 function Form() {
   const { id } = useParams();
+  const router = useRouter();
+  const [createGroup, { isLoading }] = useCreateGroupMutation();
+  const [apiError, setApiError] = useState<string>("");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(createGroupSchema),
+    defaultValues: {
+      categoryId: 1,
+      language: Language.AZERBAIJANI,
+      durationInMonths: 1,
+      minStudents: 1,
+      maxStudents: 15,
+    },
+  });
+
+  const [groupImageFile, setGroupImageFile] = useState<File | null>(null);
+  const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
+
+  const onSubmit = async (data: FormData) => {
+    try {
+      setApiError("");
+
+      // Prepare payload - FormData creation happens in the API
+      const payload = {
+        name: data.name,
+        categoryId: data.categoryId,
+        language: data.language,
+        startDate: data.startDate,
+        durationInMonths: data.durationInMonths,
+        minStudents: data.minStudents,
+        maxStudents: data.maxStudents,
+        price: data.price,
+        description: data.description,
+        groupImage: groupImageFile || undefined,
+        syllabus: syllabusFile || undefined,
+      };
+
+      await createGroup(payload).unwrap();
+
+      // Redirect to group details or my groups page
+      router.push(`/my-groups`);
+    } catch (error) {
+      console.error("Failed to create group:", error);
+      const errorMessage =
+        (error as { data?: { errorMessage?: string } })?.data?.errorMessage ||
+        "Failed to create group. Please try again.";
+      setApiError(errorMessage);
+    }
+  };
+
+  const handleCancel = () => {
+    router.push("/my-groups");
+  };
 
   return (
     <div className="container">
-      <form action="">
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {apiError && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {apiError}
+          </div>
+        )}
+
         <div className="grid grid-cols-1 gap-[18px] lg:grid-cols-4 xxl:gap-x-[12px] xxl:gap-y-[24px]">
-          <p>
-            <label className="block mb-[8px]" htmlFor="name">
-              Group Name
-            </label>
-            <input
-              type="text"
-              className="h-[43px] px-[12px] outline-0 w-full border border-gray-light"
-            />
-          </p>
-          <p>
-            <label className="block mb-[8px]" htmlFor="name">
-              Degree
-            </label>
-            <select className="h-[43px] px-[12px] outline-0 w-full border border-gray-light">
-              <option value="all">Language</option>
-            </select>
-          </p>
-          <p>
-            <label className="block mb-[8px]" htmlFor="name">
-              Teaching Language
-            </label>
-            <input
-              type="text"
-              className="h-[43px] px-[12px] outline-0 w-full border border-gray-light"
-            />
-          </p>
           <div>
             <label className="block mb-[8px]" htmlFor="name">
+              Group Name *
+            </label>
+            <input
+              id="name"
+              type="text"
+              {...register("name")}
+              className={`h-[43px] px-[12px] outline-0 w-full border ${
+                errors.name ? "border-red-500" : "border-gray-light"
+              }`}
+            />
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block mb-[8px]" htmlFor="categoryId">
+              Category *
+            </label>
+            <input
+              id="categoryId"
+              type="number"
+              {...register("categoryId", { valueAsNumber: true })}
+              className={`h-[43px] px-[12px] outline-0 w-full border ${
+                errors.categoryId ? "border-red-500" : "border-gray-light"
+              }`}
+              readOnly
+            />
+            {errors.categoryId && (
+              <p className="text-red-500 text-sm mt-1">{errors.categoryId.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block mb-[8px]" htmlFor="language">
+              Teaching Language *
+            </label>
+            <select
+              id="language"
+              {...register("language")}
+              className={`h-[43px] px-[12px] outline-0 w-full border ${
+                errors.language ? "border-red-500" : "border-gray-light"
+              }`}
+            >
+              <option value={Language.AZERBAIJANI}>Azerbaijani</option>
+              <option value={Language.ENGLISH}>English</option>
+              <option value={Language.RUSSIAN}>Russian</option>
+              <option value={Language.TURKISH}>Turkish</option>
+            </select>
+            {errors.language && (
+              <p className="text-red-500 text-sm mt-1">{errors.language.message}</p>
+            )}
+          </div>
+          <div>
+            <label className="block mb-[8px]" htmlFor="startDate">
               Lesson Start Date *
             </label>
-            <div className="flex items-center border border-gray-light gap-[12px]">
+            <div className={`flex items-center border gap-[12px] ${
+              errors.startDate ? "border-red-500" : "border-gray-light"
+            }`}>
               <label
                 className="pl-[12px] flex items-center justify-center h-[43px] select-none"
-                htmlFor="lesson-start-date"
+                htmlFor="startDate"
               >
                 <Image
                   src={"/calendar.svg"}
@@ -56,95 +167,220 @@ function Form() {
                 />
               </label>
               <input
-                id="lesson-start-date"
+                id="startDate"
                 type="date"
+                {...register("startDate")}
                 className="h-[43px] pr-[12px] outline-0 w-full"
               />
             </div>
+            {errors.startDate && (
+              <p className="text-red-500 text-sm mt-1">{errors.startDate.message}</p>
+            )}
           </div>
-          <p>
-            <label className="block mb-[8px]" htmlFor="duration">
+
+          <div>
+            <label className="block mb-[8px]" htmlFor="durationInMonths">
               Duration (months) *
             </label>
-            <select className="h-[43px] px-[12px] outline-0 w-full border border-gray-light">
-              <option value="">1</option>
+            <select
+              id="durationInMonths"
+              {...register("durationInMonths", { valueAsNumber: true })}
+              className={`h-[43px] px-[12px] outline-0 w-full border ${
+                errors.durationInMonths ? "border-red-500" : "border-gray-light"
+              }`}
+            >
+              {[...Array(24)].map((_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}
+                </option>
+              ))}
             </select>
-          </p>
-          <p>
-            <label className="block mb-[8px]" htmlFor="min-students">
+            {errors.durationInMonths && (
+              <p className="text-red-500 text-sm mt-1">{errors.durationInMonths.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block mb-[8px]" htmlFor="minStudents">
               Minimum Students *
             </label>
-            <select className="h-[43px] px-[12px] outline-0 w-full border border-gray-light">
-              <option value="">1</option>
+            <select
+              id="minStudents"
+              {...register("minStudents", { valueAsNumber: true })}
+              className={`h-[43px] px-[12px] outline-0 w-full border ${
+                errors.minStudents ? "border-red-500" : "border-gray-light"
+              }`}
+            >
+              {[...Array(50)].map((_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}
+                </option>
+              ))}
             </select>
-          </p>
-          <p>
-            <label className="block mb-[8px]" htmlFor="max-students">
+            {errors.minStudents && (
+              <p className="text-red-500 text-sm mt-1">{errors.minStudents.message}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block mb-[8px]" htmlFor="maxStudents">
               Maximum Students *
             </label>
-            <select className="h-[43px] px-[12px] outline-0 w-full border border-gray-light">
-              <option value="">1</option>
+            <select
+              id="maxStudents"
+              {...register("maxStudents", { valueAsNumber: true })}
+              className={`h-[43px] px-[12px] outline-0 w-full border ${
+                errors.maxStudents ? "border-red-500" : "border-gray-light"
+              }`}
+            >
+              {[...Array(50)].map((_, i) => (
+                <option key={i + 1} value={i + 1}>
+                  {i + 1}
+                </option>
+              ))}
             </select>
-          </p>
-          <p>
+            {errors.maxStudents && (
+              <p className="text-red-500 text-sm mt-1">{errors.maxStudents.message}</p>
+            )}
+          </div>
+
+          <div>
             <label className="block mb-[8px]" htmlFor="price">
               Price (monthly) *
             </label>
             <input
               id="price"
-              type="text"
+              type="number"
+              step="0.01"
               placeholder="Price"
-              className="h-[43px] px-[12px] outline-0 w-full border border-gray-light"
+              {...register("price", { valueAsNumber: true })}
+              className={`h-[43px] px-[12px] outline-0 w-full border ${
+                errors.price ? "border-red-500" : "border-gray-light"
+              }`}
             />
-          </p>
+            {errors.price && (
+              <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>
+            )}
+          </div>
         </div>
+
         {id ? null : (
           <div className="flex flex-col items-start gap-[18px] lg:gap-[12px] my-[18px] lg:flex-row lg:my-[24px]">
             <Schedule />
-            <Syllabus />
+            <div className="flex-1 w-full">
+              <label htmlFor="syllabus" className="block mb-[8px]">
+                Syllabus
+              </label>
+              <label
+                htmlFor="syllabus"
+                className="flex items-center h-[43px] border border-gray-light cursor-pointer"
+              >
+                <div className="h-[43px] w-[43px] flex items-center justify-center border-r border-gray-light">
+                  <Image
+                    src="/upload.svg"
+                    alt="upload"
+                    width={20}
+                    height={20}
+                    className="min-w-[20px] h-[20px]"
+                  />
+                </div>
+                <span className="flex-1 px-[12px] text-gray-400">
+                  {syllabusFile ? syllabusFile.name : "Upload File (PDF)"}
+                </span>
+              </label>
+              <input
+                id="syllabus"
+                type="file"
+                accept=".pdf"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  setSyllabusFile(file || null);
+                }}
+                className="hidden"
+              />
+            </div>
           </div>
         )}
+
         <div className="mb-[18px] flex flex-col gap-[18px] lg:mb-[42px] lg:flex-row lg:gap-[12px]">
           <div>
-            <label className="block mb-[8px]" htmlFor="group-image">
+            <label className="block mb-[8px]" htmlFor="groupImage">
               Group Image
             </label>
             <label
-              htmlFor="group-image"
-              className="w-full h-[233px] bg-gray-light border border-gray-light flex flex-col items-center justify-center cursor-pointer lg:w-[249px] lg:h-[166px]">
-              <span className="text-3xl text-gray-600">
-                <Image
-                  src={'/camera.svg'}
-                  width={22}
-                  height={22}
-                  alt=""
-                />
-              </span>
-              <p className="text-secondary mt-2">Upload Image</p>
+              htmlFor="groupImage"
+              className="w-full h-[233px] bg-gray-light border border-gray-light flex flex-col items-center justify-center cursor-pointer lg:w-[249px] lg:h-[166px]"
+            >
+              {groupImageFile ? (
+                <div className="flex flex-col items-center">
+                  <Image
+                    src={'/camera.svg'}
+                    width={22}
+                    height={22}
+                    alt=""
+                  />
+                  <p className="text-secondary mt-2 text-sm px-2 text-center">
+                    {groupImageFile.name}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <span className="text-3xl text-gray-600">
+                    <Image
+                      src={'/camera.svg'}
+                      width={22}
+                      height={22}
+                      alt=""
+                    />
+                  </span>
+                  <p className="text-secondary mt-2">Upload Image</p>
+                </>
+              )}
             </label>
             <input
               type="file"
+              accept="image/jpeg,image/png,image/jpg,image/webp"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                setGroupImageFile(file || null);
+              }}
               className="hidden"
-              id="group-image"
-            />
-          </div>
-          <div>
-            <label className="block mb-[8px]" htmlFor="description">
-              Description*
-            </label>
-            <textarea
-              className="w-full h-[166px] border border-gray-light p-[12px] outline-0 resize-none lg:w-[1119px]"
-              placeholder="Description"
-              id="description"
+              id="groupImage"
             />
           </div>
 
+          <div className="flex-1">
+            <label className="block mb-[8px]" htmlFor="description">
+              Description
+            </label>
+            <textarea
+              {...register("description")}
+              className={`w-full h-[166px] border p-[12px] outline-0 resize-none ${
+                errors.description ? "border-red-500" : "border-gray-light"
+              }`}
+              placeholder="Description"
+              id="description"
+            />
+            {errors.description && (
+              <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+            )}
+          </div>
         </div>
-        <div className="flex justify-center gap-[12px] mt-[18px]">
-          <button className="w-full h-[43px] bg-secondary text-white lg:w-[200px]">
-            Create
+
+        <div className="flex justify-center gap-[12px] mt-[18px] mb-[42px]">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full h-[43px] bg-secondary text-white lg:w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoading ? "Creating..." : id ? "Update" : "Create"}
           </button>
-          <button className="w-full h-[43px] bg-white border border-gray-light lg:w-[200px]">
+          <button
+            type="button"
+            onClick={handleCancel}
+            disabled={isLoading}
+            className="w-full h-[43px] bg-white border border-gray-light lg:w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             Cancel
           </button>
         </div>

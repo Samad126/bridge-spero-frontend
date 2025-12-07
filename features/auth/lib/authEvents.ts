@@ -1,17 +1,6 @@
 // src/lib/auth/authEvents.ts
 
-export enum AuthEventType {
-  REDIRECT_TO_LOGIN = "auth:redirect-to-login",
-  SESSION_EXPIRED = "auth:session-expired",
-  AUTH_SUCCESS = "auth:success",
-  AUTH_FAILED = "auth:failed",
-}
-
-export interface AuthEventDetail {
-  mode: "strict" | "optional";
-  reason?: string;
-  timestamp: number;
-}
+import { AuthEventDetail, AuthEventType } from "../types/authTypes";
 
 export class AuthEventEmitter {
   static dispatch(type: AuthEventType, detail: AuthEventDetail) {

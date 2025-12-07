@@ -7,6 +7,7 @@ interface GroupCardProps extends GroupCardItem {
 }
 
 const GroupCard = ({
+  id,
   imageUrl,
   degree,
   language,
@@ -59,7 +60,7 @@ const GroupCard = ({
         <div className="flex justify-between items-center gap-[24px]">
           <span className="text-[20px] text-secondary">{price}$</span>
           <Link
-            href="/"
+            href={id ? `/groups/${id}` : "#"}
             className="w-[80%] text-[18px] block text-center bg-secondary text-white py-[12px]"
           >
             Details

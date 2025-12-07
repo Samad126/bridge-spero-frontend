@@ -11,10 +11,8 @@ import {
   setAuthenticated,
   setRefreshing,
 } from "@/features/auth/slices/authSlice";
-import {
-  AuthEventEmitter,
-  AuthEventType,
-} from "@/features/auth/lib/authEvents";
+import { AuthEventEmitter } from "@/features/auth/lib/authEvents";
+import { AuthEventType } from "@/features/auth/types/authTypes";
 
 const mutex = new Mutex();
 
@@ -55,7 +53,7 @@ const baseQuery: BaseQueryFn<
   if (shouldGoDirectToBackend(adjustedArgs.url)) {
     adjustedArgs.url = `${process.env.NEXT_PUBLIC_API_URL}${adjustedArgs.url}`;
   } else {
-    adjustedArgs.url = `/api/proxy${adjustedArgs.url}`;
+    adjustedArgs.url = `/api${adjustedArgs.url}`;
   }
 
   return dynamicBaseQuery(adjustedArgs, api, extraOptions);
@@ -72,7 +70,10 @@ const baseQueryWithReauth: BaseQueryFn<
 
   console.log("Result from baseApi.ts is ", result);
 
-  if (result.error && result.error.status === 401) {
+  if (
+    (result.error && result.error.status === 401) ||
+    (result.error && result.error.status === 403)
+  ) {
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
 
@@ -141,6 +142,6 @@ const baseQueryWithReauth: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Dashboard", "User", "Zoom"],
+  tagTypes: ["Dashboard", "User", "Zoom", "Groups"],
   endpoints: () => ({}),
 });
