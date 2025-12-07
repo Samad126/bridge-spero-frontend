@@ -3,7 +3,8 @@ import {
   IsJoinedResponse,
   ScheduleResponse,
   CreateScheduleRequest,
-  UpdateScheduleRequest
+  UpdateScheduleRequest,
+  SyllabusResponse
 } from "../types/groupDetailsTypes";
 
 export const groupDetailsApi = baseApi.injectEndpoints({
@@ -56,6 +57,43 @@ export const groupDetailsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Groups"],
     }),
+
+    getGroupSyllabus: builder.query<SyllabusResponse, number>({
+      query: (groupId) => ({
+        url: `/groups/${groupId}/syllabus`,
+        meta: { authMode: "optional" },
+      }),
+      providesTags: (result, error, groupId) => [
+        { type: "Groups", id: `syllabus-${groupId}` },
+      ],
+    }),
+
+    uploadSyllabus: builder.mutation<void, { groupId: number; file: File }>({
+      query: ({ groupId, file }) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        return {
+          url: `/groups/${groupId}/syllabus`,
+          method: "POST",
+          body: formData,
+          meta: { authMode: "strict" },
+        };
+      },
+      invalidatesTags: (result, error, { groupId }) => [
+        { type: "Groups", id: `syllabus-${groupId}` },
+      ],
+    }),
+
+    deleteSyllabus: builder.mutation<void, number>({
+      query: (groupId) => ({
+        url: `/groups/${groupId}/syllabus`,
+        method: "DELETE",
+        meta: { authMode: "strict" },
+      }),
+      invalidatesTags: (result, error, groupId) => [
+        { type: "Groups", id: `syllabus-${groupId}` },
+      ],
+    }),
   }),
 });
 
@@ -65,5 +103,8 @@ export const {
   useCreateScheduleMutation,
   useUpdateScheduleMutation,
   useDeleteScheduleMutation,
+  useGetGroupSyllabusQuery,
+  useUploadSyllabusMutation,
+  useDeleteSyllabusMutation,
 } = groupDetailsApi;
 

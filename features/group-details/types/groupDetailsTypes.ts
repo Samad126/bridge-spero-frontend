@@ -48,3 +48,5 @@ export interface UpdateScheduleRequest {
   endTime: string;
 }
 
+export type SyllabusResponse = string;
+
