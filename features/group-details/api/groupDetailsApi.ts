@@ -124,17 +124,6 @@ export const groupDetailsApi = baseApi.injectEndpoints({
         { type: "Groups", id: `recordings-${groupId}` },
       ],
     }),
-
-    deleteRecording: builder.mutation<void, { groupId: number; recordingId: number }>({
-      query: ({ groupId, recordingId }) => ({
-        url: `/groups/${groupId}/recordings/${recordingId}`,
-        method: "DELETE",
-        meta: { authMode: "strict" },
-      }),
-      invalidatesTags: (result, error, { groupId }) => [
-        { type: "Groups", id: `recordings-${groupId}` },
-      ],
-    }),
   }),
 });
 
@@ -149,6 +138,5 @@ export const {
   useDeleteSyllabusMutation,
   useGetGroupRecordingsQuery,
   useUploadRecordingMutation,
-  useDeleteRecordingMutation,
 } = groupDetailsApi;
 
