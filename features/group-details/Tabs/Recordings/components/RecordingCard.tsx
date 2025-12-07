@@ -4,7 +4,7 @@ function RecordingCard() {
   return (
     <div className="flex gap-[12px] items-center border border-gray-light p-[24px]">
       <Image
-        src={"download.svg"}
+        src={"/download.svg"}
         alt="download"
         width={32}
         height={32}

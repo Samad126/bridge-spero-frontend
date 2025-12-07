@@ -7,7 +7,7 @@ function ResourcesCard({ cardStatus }: { cardStatus: "view-edit" | "add" }) {
         <div className="p-[24px] flex items-center justify-between w-full">
           <div className="w-full flex items-center gap-[12px]">
             <Image
-              src={"file-text.svg"}
+              src={"/file-text.svg"}
               alt="file text"
               width={32}
               height={32}
