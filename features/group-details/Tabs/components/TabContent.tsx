@@ -4,10 +4,16 @@ import Syllabus from "../Syllabus/components/Syllabus";
 import Resources from "../Resources/components/Resources";
 import Members from "../Members/components/Index";
 
-function TabContent({ activeTabId }: { activeTabId: number }) {
+interface TabContentProps {
+  activeTabId: number;
+  groupId: string;
+  userRole?: "TEACHER" | "USER";
+}
+
+function TabContent({ activeTabId, groupId, userRole }: TabContentProps) {
   return (
     <div>
-      {activeTabId === 1 && <Schedule />}
+      {activeTabId === 1 && <Schedule groupId={groupId} userRole={userRole} />}
       {activeTabId === 2 && <Syllabus />}
       {activeTabId === 3 && <Recording />}
       {activeTabId === 4 && <Resources />}

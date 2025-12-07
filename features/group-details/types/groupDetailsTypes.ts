@@ -27,3 +27,24 @@ export interface IsJoinedResponse {
   isJoined: boolean;
 }
 
+export interface ScheduleItem {
+  id: number;
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
+}
+
+export type ScheduleResponse = ScheduleItem[];
+
+export interface CreateScheduleRequest {
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
+}
+
+export interface UpdateScheduleRequest {
+  dayOfWeek: string;
+  startTime: string;
+  endTime: string;
+}
+

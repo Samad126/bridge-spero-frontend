@@ -35,7 +35,7 @@ function GroupInfo({ group, groupId }: GroupInfoProps) {
             rating={group.teacher.rating}
             activeStudents={group.teacher.activeStudents}
           />
-          <Tabs />
+          <Tabs groupId={groupId} />
         </div>
         <PricingCard
           price={group.price}
