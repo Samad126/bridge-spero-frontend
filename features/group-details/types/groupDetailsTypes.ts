@@ -50,3 +50,13 @@ export interface UpdateScheduleRequest {
 
 export type SyllabusResponse = string;
 
+export interface RecordingItem {
+  id: number;
+  name: string;
+  path: string;
+  contentType: string;
+  createdAt: string;
+}
+
+export type RecordingsResponse = RecordingItem[];
+

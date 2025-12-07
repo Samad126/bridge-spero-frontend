@@ -4,7 +4,8 @@ import {
   ScheduleResponse,
   CreateScheduleRequest,
   UpdateScheduleRequest,
-  SyllabusResponse
+  SyllabusResponse,
+  RecordingsResponse
 } from "../types/groupDetailsTypes";
 
 export const groupDetailsApi = baseApi.injectEndpoints({
@@ -94,6 +95,46 @@ export const groupDetailsApi = baseApi.injectEndpoints({
         { type: "Groups", id: `syllabus-${groupId}` },
       ],
     }),
+
+    getGroupRecordings: builder.query<RecordingsResponse, number>({
+      query: (groupId) => ({
+        url: `/groups/${groupId}/recordings`,
+        meta: { authMode: "optional" },
+      }),
+      providesTags: (result, error, groupId) => [
+        { type: "Groups", id: `recordings-${groupId}` },
+      ],
+    }),
+
+    uploadRecording: builder.mutation<void, { groupId: number; file: File; name?: string }>({
+      query: ({ groupId, file, name }) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        if (name) {
+          formData.append("name", name);
+        }
+        return {
+          url: `/groups/${groupId}/recordings`,
+          method: "POST",
+          body: formData,
+          meta: { authMode: "strict" },
+        };
+      },
+      invalidatesTags: (result, error, { groupId }) => [
+        { type: "Groups", id: `recordings-${groupId}` },
+      ],
+    }),
+
+    deleteRecording: builder.mutation<void, { groupId: number; recordingId: number }>({
+      query: ({ groupId, recordingId }) => ({
+        url: `/groups/${groupId}/recordings/${recordingId}`,
+        method: "DELETE",
+        meta: { authMode: "strict" },
+      }),
+      invalidatesTags: (result, error, { groupId }) => [
+        { type: "Groups", id: `recordings-${groupId}` },
+      ],
+    }),
   }),
 });
 
@@ -106,5 +147,8 @@ export const {
   useGetGroupSyllabusQuery,
   useUploadSyllabusMutation,
   useDeleteSyllabusMutation,
+  useGetGroupRecordingsQuery,
+  useUploadRecordingMutation,
+  useDeleteRecordingMutation,
 } = groupDetailsApi;
 
