@@ -6,7 +6,8 @@ import {
   UpdateScheduleRequest,
   SyllabusResponse,
   RecordingsResponse,
-  ResourcesResponse
+  ResourcesResponse,
+  MembersResponse
 } from "../types/groupDetailsTypes";
 
 export const groupDetailsApi = baseApi.injectEndpoints({
@@ -165,6 +166,35 @@ export const groupDetailsApi = baseApi.injectEndpoints({
         { type: "Groups", id: `resources-${groupId}` },
       ],
     }),
+
+    getGroupMembers: builder.query<MembersResponse, { groupId: number; fullName?: string }>({
+      query: ({ groupId, fullName }) => {
+        const params = new URLSearchParams();
+        if (fullName) {
+          params.append("fullName", fullName);
+        }
+        const queryString = params.toString();
+        return {
+          url: `/groups/${groupId}/members${queryString ? `?${queryString}` : ""}`,
+          meta: { authMode: "optional" },
+        };
+      },
+      providesTags: (result, error, { groupId }) => [
+        { type: "Groups", id: `members-${groupId}` },
+      ],
+      keepUnusedDataFor: 0,
+    }),
+
+    deleteMember: builder.mutation<void, { groupId: number; studentId: number }>({
+      query: ({ groupId, studentId }) => ({
+        url: `/groups/${groupId}/members/${studentId}`,
+        method: "DELETE",
+        meta: { authMode: "strict" },
+      }),
+      invalidatesTags: (result, error, { groupId }) => [
+        { type: "Groups", id: `members-${groupId}` },
+      ],
+    }),
   }),
 });
 
@@ -182,5 +212,7 @@ export const {
   useGetGroupResourcesQuery,
   useUploadResourceMutation,
   useDeleteResourceMutation,
+  useGetGroupMembersQuery,
+  useDeleteMemberMutation,
 } = groupDetailsApi;
 

@@ -70,3 +70,14 @@ export interface ResourceItem {
 
 export type ResourcesResponse = ResourceItem[];
 
+export interface MemberStudent {
+  id: number;
+  name: string;
+  surname: string;
+}
+
+export interface MembersResponse {
+  count: number;
+  students: MemberStudent[];
+}
+

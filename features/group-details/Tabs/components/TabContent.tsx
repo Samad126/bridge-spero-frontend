@@ -17,7 +17,7 @@ function TabContent({ activeTabId, groupId, userRole }: TabContentProps) {
       {activeTabId === 2 && <Syllabus groupId={groupId} userRole={userRole} />}
       {activeTabId === 3 && <Recording groupId={groupId} userRole={userRole} />}
       {activeTabId === 4 && <Resources groupId={groupId} userRole={userRole} />}
-      {activeTabId === 5 && <Members />}
+      {activeTabId === 5 && <Members groupId={groupId} userRole={userRole} />}
     </div>
   );
 }

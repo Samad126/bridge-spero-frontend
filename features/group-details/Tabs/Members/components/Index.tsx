@@ -1,11 +1,41 @@
+"use client";
+
 import Image from "next/image";
 import MemberList from "./MemberList";
+import { useGetGroupMembersQuery } from "@/features/group-details/api/groupDetailsApi";
+import { useState, useEffect } from "react";
 
-function Members() {
+interface MembersProps {
+  groupId: string;
+  userRole?: "TEACHER" | "USER";
+}
+
+function Members({ groupId, userRole }: MembersProps) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+  // Debounce the search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500); // 500ms debounce delay
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchTerm]);
+
+  const { data: membersData, isLoading, isFetching } = useGetGroupMembersQuery({
+    groupId: Number(groupId),
+    fullName: debouncedSearchTerm || undefined,
+  });
+
+  const isTeacher = userRole === "TEACHER";
+
   return (
     <div className="border border-gray-light p-[24px]">
       <div className="flex items-center gap-[12px]">
-        <p className="text-secondary">300</p>
+        <p className="text-secondary">{membersData?.count || 0}</p>
         <Image
           src="/users-dark.svg"
           alt="users"
@@ -14,7 +44,14 @@ function Members() {
           className="w-[18px] h-[18px]"
         />
       </div>
-      <MemberList />
+      <MemberList
+        members={membersData?.students || []}
+        isLoading={isLoading || isFetching}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        groupId={Number(groupId)}
+        isTeacher={isTeacher}
+      />
     </div>
   );
 }
