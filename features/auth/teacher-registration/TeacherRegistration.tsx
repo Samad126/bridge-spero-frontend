@@ -103,7 +103,6 @@ const TeacherRegistration = () => {
         formData.append("subjects", subjectId.toString());
       });
 
-      formData.append("experience", data.experience);
       if (data.bio) {
         formData.append("bio", data.bio);
       }
@@ -325,25 +324,6 @@ const TeacherRegistration = () => {
                 <p className="text-red-500 text-sm mt-1">
                   {errors.subjects?.message || fieldErrors.subjects}
                 </p>
-              )}
-            </div>
-
-            <div className="w-full lg:col-span-2">
-              <label
-                htmlFor="experience"
-                className="leading-[100%] block w-full mb-[8px]"
-              >
-                Years of Experience *
-              </label>
-              <input
-                id="experience"
-                type="text"
-                placeholder="e.g., 5 years"
-                {...register("experience")}
-                className="w-full p-[12px] gap-[10px] border border-gray-light placeholder-gray-light outline-0 h-[43px]"
-              />
-              {errors.experience && (
-                <p className="text-red-500 text-sm mt-1">{errors.experience.message}</p>
               )}
             </div>
 

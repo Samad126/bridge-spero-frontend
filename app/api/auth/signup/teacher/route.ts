@@ -12,13 +12,17 @@ export async function POST(request: NextRequest) {
       body: formData,
     });
 
+    console.log(response);
+
+    if (response.status === 200) {
+      return NextResponse.json(null, { status: 201 });
+    }
+
     const data = await response.json();
 
     if (!response.ok) {
       return NextResponse.json(data, { status: response.status });
     }
-
-    return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("Teacher registration error:", error);
     return NextResponse.json(

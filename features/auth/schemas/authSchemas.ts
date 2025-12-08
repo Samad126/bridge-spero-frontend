@@ -77,7 +77,6 @@ export const teacherRegistrationSchema = yup.object({
     .of(yup.number().required())
     .min(1, "Please select at least one subject")
     .required("Subjects are required"),
-  experience: yup.string().required("Experience is required"),
   bio: yup.string().optional(),
   agreedToTerms: yup
     .boolean()
@@ -88,4 +87,3 @@ export const teacherRegistrationSchema = yup.object({
 export type TeacherRegistrationFormData = yup.InferType<
   typeof teacherRegistrationSchema
 >;
-
