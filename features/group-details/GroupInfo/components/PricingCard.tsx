@@ -2,9 +2,13 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
-// import { useCheckIsJoinedQuery } from "../../api/groupDetailsApi";
+import {
+  useCheckIsJoinedQuery,
+  useJoinGroupMutation,
+} from "../../api/groupDetailsApi";
 import Link from "next/link";
 import PricingCardSkeleton from "./PricingCardSkeleton";
+import { useRouter } from "next/navigation";
 
 interface PricingCardProps {
   price: number;
@@ -14,6 +18,7 @@ interface PricingCardProps {
 
 function PricingCard({ price, groupId }: PricingCardProps) {
   const [isOpened, setIsOpened] = useState(true);
+  const router = useRouter();
 
   // Fetch user data using RTK Query (optional auth - won't redirect if not authenticated)
   const { data: userData, isLoading } = useGetUserProfileOptionalQuery();
@@ -24,8 +29,23 @@ function PricingCard({ price, groupId }: PricingCardProps) {
   // });
 
   // const isJoined = isJoinedData?.isJoined || false;
-  const isJoined = true;
+  const isJoined = false;
+
+  const [joinGroup, { isLoading: isJoining }] = useJoinGroupMutation();
+
+  // const isJoined = isJoinedData?.isJoined || false;
   const isTeacher = userData?.role === "TEACHER";
+
+  const handleJoinGroup = async () => {
+    try {
+      await joinGroup(Number(groupId)).unwrap();
+      console.log("Successfully joined group");
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to join group:", error);
+      alert("Failed to join group. Please try again.");
+    }
+  };
 
   // Show loading skeleton while fetching user data
   if (isLoading) {
@@ -194,8 +214,16 @@ function PricingCard({ price, groupId }: PricingCardProps) {
             <button className="p-[12px] min-w-[46px] border border-tertiary">
               <Image src="/share.svg" alt="share" width={22} height={22} />
             </button>
-            <button className="w-full bg-white text-secondary h-[46px] text-[18px]">
-              {isJoined ? "Join Lesson" : "Enroll Now"}
+            <button
+              onClick={isJoined ? undefined : handleJoinGroup}
+              disabled={isJoining}
+              className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
+            >
+              {isJoining
+                ? "Joining..."
+                : isJoined
+                ? "Join Lesson"
+                : "Enroll Now"}
             </button>
           </div>
         </div>

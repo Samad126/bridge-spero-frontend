@@ -195,6 +195,18 @@ export const groupDetailsApi = baseApi.injectEndpoints({
         { type: "Groups", id: `members-${groupId}` },
       ],
     }),
+
+    joinGroup: builder.mutation<void, number>({
+      query: (groupId) => ({
+        url: `/groups/${groupId}/members`,
+        method: "POST",
+        meta: { authMode: "strict" },
+      }),
+      invalidatesTags: (result, error, groupId) => [
+        { type: "Groups", id: `members-${groupId}` },
+        "Groups",
+      ],
+    }),
   }),
 });
 
@@ -214,5 +226,6 @@ export const {
   useDeleteResourceMutation,
   useGetGroupMembersQuery,
   useDeleteMemberMutation,
+  useJoinGroupMutation,
 } = groupDetailsApi;
 

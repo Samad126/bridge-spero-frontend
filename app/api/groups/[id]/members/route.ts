@@ -66,3 +66,65 @@ export async function GET(
     );
   }
 }
+
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const cookieStore = await cookies();
+    const access_token = cookieStore.get("access_token");
+
+    if (!access_token) {
+      return new Response(
+        JSON.stringify({
+          errorCode: "UNAUTHORIZED",
+          errorMessage: "No access token found",
+        }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    const { id } = await params;
+
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${access_token.value}`);
+    headers.append("Content-Type", "application/json");
+
+    const response = await fetch(`${API_BASE_URL}/groups/${id}/members`, {
+      method: "POST",
+      headers,
+      cache: "no-store",
+    });
+
+    if (response.status === 201) {
+      return new Response(null, {
+        status: 204,
+      });
+    }
+
+    const data = await response.json();
+
+    return new Response(JSON.stringify(data), {
+      status: response.status,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Error joining group:", error);
+    return new Response(
+      JSON.stringify({
+        errorCode: "INTERNAL_ERROR",
+        errorMessage: "Failed to join group",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+}
