@@ -11,7 +11,8 @@ import {
   useUpdateGroupMutation,
   useGetGroupQuery,
 } from "../api/groupFormApi";
-import { useState, useEffect } from "react";
+import { useGetCategoriesQuery } from "@/features/my-groups/api/myGroupsApi";
+import { useState, useEffect, useMemo } from "react";
 
 interface FormData {
   name: string;
@@ -38,11 +39,20 @@ function Form() {
       skip: !groupId,
     }
   );
+  const { data: categoriesData } = useGetCategoriesQuery();
 
   const [apiError, setApiError] = useState<string>("");
   const [groupImageFile, setGroupImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
+
+  // Derive the image preview from existing group or uploaded file
+  const displayImagePreview = imagePreview || (isEditMode && existingGroup?.imageUrl) || null;
+
+  // Parse categories data (handles both array and {data: array} formats)
+  const categories = useMemo(() => {
+    return Array.isArray(categoriesData) ? categoriesData : categoriesData?.data || [];
+  }, [categoriesData]);
 
   const {
     register,
@@ -61,28 +71,40 @@ function Form() {
 
   // Load existing group data when editing
   useEffect(() => {
-    if (existingGroup && isEditMode) {
+    if (existingGroup && isEditMode && categories.length > 0) {
       // Convert dd.MM.yyyy to YYYY-MM-DD
       const [day, month, year] = existingGroup.startDate.split(".");
       const formattedDate = `${year}-${month}-${day}`;
 
+      // Convert language string to enum
+      const languageMap: Record<string, Language> = {
+        "Azerbaijani": Language.AZERBAIJANI,
+        "English": Language.ENGLISH,
+        "Russian": Language.RUSSIAN,
+        "Turkish": Language.TURKISH,
+      };
+
+      // Convert weeks to months (approximate)
+      const durationInMonths = Math.ceil(existingGroup.durationInWeeks / 4);
+
+      // Find the categoryId from category name
+      const matchedCategory = categories.find(
+        (cat) => cat.name.toLowerCase() === existingGroup.category.toLowerCase()
+      );
+      const categoryId = matchedCategory ? matchedCategory.id : categories[0]?.id || 1;
+
       reset({
         name: existingGroup.name,
-        categoryId: existingGroup.categoryId,
-        language: existingGroup.language,
+        categoryId: categoryId,
+        language: languageMap[existingGroup.language] || Language.AZERBAIJANI,
         startDate: formattedDate,
-        durationInMonths: existingGroup.durationInMonths,
+        durationInMonths: durationInMonths,
         maxStudents: existingGroup.maxStudents,
         price: existingGroup.price,
         description: existingGroup.description || "",
       });
-
-      // Set existing image if available
-      if (existingGroup.imageUrl) {
-        setImagePreview(existingGroup.imageUrl);
-      }
     }
-  }, [existingGroup, isEditMode, reset]);
+  }, [existingGroup, isEditMode, categories, reset]);
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -159,15 +181,19 @@ function Form() {
             <label className="block mb-[8px]" htmlFor="categoryId">
               Category *
             </label>
-            <input
+            <select
               id="categoryId"
-              type="number"
               {...register("categoryId", { valueAsNumber: true })}
               className={`h-[43px] px-[12px] outline-0 w-full border ${
                 errors.categoryId ? "border-red-500" : "border-gray-light"
               }`}
-              readOnly
-            />
+            >
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
             {errors.categoryId && (
               <p className="text-red-500 text-sm mt-1">
                 {errors.categoryId.message}
@@ -346,10 +372,10 @@ function Form() {
               htmlFor="groupImage"
               className="w-full h-[233px] bg-gray-light border border-gray-light flex flex-col items-center justify-center cursor-pointer lg:w-[249px] lg:h-[166px] overflow-hidden relative"
             >
-              {imagePreview ? (
+              {displayImagePreview ? (
                 <>
                   <img
-                    src={imagePreview}
+                    src={displayImagePreview}
                     alt="Group preview"
                     className="w-full h-full object-cover"
                   />
