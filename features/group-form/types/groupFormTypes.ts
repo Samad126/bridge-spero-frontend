@@ -18,7 +18,6 @@ export interface CreateGroupPayload {
   language: Language;
   startDate: string;
   durationInMonths: number;
-  minStudents: number;
   maxStudents: number;
   price: number;
   description?: string;
@@ -33,7 +32,6 @@ export interface CreateGroupResponse {
   language: Language;
   startDate: string;
   durationInMonths: number;
-  minStudents: number;
   maxStudents: number;
   price: number;
   status: string;

@@ -7,8 +7,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createGroupSchema } from "../schemas/groupFormSchema";
 import { Language } from "../types/groupFormTypes";
-import { useCreateGroupMutation } from "../api/groupFormApi";
-import { useState } from "react";
+import { useCreateGroupMutation, useUpdateGroupMutation, useGetGroupQuery } from "../api/groupFormApi";
+import { useState, useEffect } from "react";
 
 interface FormData {
   name: string;
@@ -16,7 +16,6 @@ interface FormData {
   language: Language;
   startDate: string;
   durationInMonths: number;
-  minStudents: number;
   maxStudents: number;
   price: number;
   description?: string;
@@ -25,39 +24,64 @@ interface FormData {
 function Form() {
   const { id } = useParams();
   const router = useRouter();
-  const [createGroup, { isLoading }] = useCreateGroupMutation();
+  const isEditMode = !!id;
+  const groupId = id ? parseInt(id as string) : undefined;
+
+  const [createGroup, { isLoading: isCreating }] = useCreateGroupMutation();
+  const [updateGroup, { isLoading: isUpdating }] = useUpdateGroupMutation();
+  const { data: existingGroup, isLoading: isLoadingGroup } = useGetGroupQuery(groupId!, {
+    skip: !groupId,
+  });
+
   const [apiError, setApiError] = useState<string>("");
+  const [groupImageFile, setGroupImageFile] = useState<File | null>(null);
+  const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(createGroupSchema),
     defaultValues: {
       categoryId: 1,
       language: Language.AZERBAIJANI,
       durationInMonths: 1,
-      minStudents: 1,
       maxStudents: 15,
     },
   });
 
-  const [groupImageFile, setGroupImageFile] = useState<File | null>(null);
-  const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
+  // Load existing group data when editing
+  useEffect(() => {
+    if (existingGroup && isEditMode) {
+      // Convert dd.MM.yyyy to YYYY-MM-DD
+      const [day, month, year] = existingGroup.startDate.split('.');
+      const formattedDate = `${year}-${month}-${day}`;
+
+      reset({
+        name: existingGroup.name,
+        categoryId: existingGroup.categoryId,
+        language: existingGroup.language,
+        startDate: formattedDate,
+        durationInMonths: existingGroup.durationInMonths,
+        maxStudents: existingGroup.maxStudents,
+        price: existingGroup.price,
+        description: "", // Description not available in response
+      });
+    }
+  }, [existingGroup, isEditMode, reset]);
 
   const onSubmit = async (data: FormData) => {
     try {
       setApiError("");
 
-      // Prepare payload - FormData creation happens in the API
       const payload = {
         name: data.name,
         categoryId: data.categoryId,
         language: data.language,
         startDate: data.startDate,
         durationInMonths: data.durationInMonths,
-        minStudents: data.minStudents,
         maxStudents: data.maxStudents,
         price: data.price,
         description: data.description,
@@ -65,18 +89,23 @@ function Form() {
         syllabus: syllabusFile || undefined,
       };
 
-      await createGroup(payload).unwrap();
-
-      // Redirect to group details or my groups page
-      router.push(`/my-groups`);
+      if (isEditMode && groupId) {
+        await updateGroup({ groupId, payload }).unwrap();
+        router.push(`/groups/${groupId}`);
+      } else {
+        await createGroup(payload).unwrap();
+        router.push(`/my-groups`);
+      }
     } catch (error) {
-      console.error("Failed to create group:", error);
+      console.error(`Failed to ${isEditMode ? 'update' : 'create'} group:`, error);
       const errorMessage =
         (error as { data?: { errorMessage?: string } })?.data?.errorMessage ||
-        "Failed to create group. Please try again.";
+        `Failed to ${isEditMode ? 'update' : 'create'} group. Please try again.`;
       setApiError(errorMessage);
     }
   };
+
+  const isLoading = isCreating || isUpdating || isLoadingGroup;
 
   const handleCancel = () => {
     router.push("/my-groups");
@@ -201,30 +230,8 @@ function Form() {
           </div>
 
           <div>
-            <label className="block mb-[8px]" htmlFor="minStudents">
-              Minimum Students *
-            </label>
-            <select
-              id="minStudents"
-              {...register("minStudents", { valueAsNumber: true })}
-              className={`h-[43px] px-[12px] outline-0 w-full border ${
-                errors.minStudents ? "border-red-500" : "border-gray-light"
-              }`}
-            >
-              {[...Array(50)].map((_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {i + 1}
-                </option>
-              ))}
-            </select>
-            {errors.minStudents && (
-              <p className="text-red-500 text-sm mt-1">{errors.minStudents.message}</p>
-            )}
-          </div>
-
-          <div>
             <label className="block mb-[8px]" htmlFor="maxStudents">
-              Maximum Students *
+              Max Students *
             </label>
             <select
               id="maxStudents"
@@ -373,7 +380,9 @@ function Form() {
             disabled={isLoading}
             className="w-full h-[43px] bg-secondary text-white lg:w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Creating..." : id ? "Update" : "Create"}
+            {isLoading
+              ? (isEditMode ? "Updating..." : "Creating...")
+              : (isEditMode ? "Update" : "Create")}
           </button>
           <button
             type="button"

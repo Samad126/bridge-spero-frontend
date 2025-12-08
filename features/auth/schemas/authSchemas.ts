@@ -36,11 +36,10 @@ export const studentRegistrationSchema = yup.object({
     .string()
     .oneOf([yup.ref("password")], "Passwords must match")
     .required("Confirm password is required"),
-  interests: yup
-    .array()
-    .of(yup.string().required())
-    .min(1, "Please select at least one subject")
-    .required("Interests are required"),
+  categoryId: yup
+    .number()
+    .required("Category is required")
+    .positive("Category must be selected"),
   bio: yup.string().optional(),
   agreedToTerms: yup
     .boolean()
@@ -72,11 +71,10 @@ export const teacherRegistrationSchema = yup.object({
     .string()
     .oneOf([yup.ref("password")], "Passwords must match")
     .required("Confirm password is required"),
-  subjects: yup
-    .array()
-    .of(yup.string().required())
-    .min(1, "Please select at least one subject")
-    .required("Subjects are required"),
+  categoryId: yup
+    .number()
+    .required("Category is required")
+    .positive("Category must be selected"),
   experience: yup.string().required("Experience is required"),
   bio: yup.string().optional(),
   agreedToTerms: yup

@@ -45,7 +45,7 @@ export const myGroupsApi = baseApi.injectEndpoints({
     getCategories: builder.query<CategoriesResponse, void>({
       query: () => ({
         url: "/categories",
-        meta: { authMode: "strict" },
+        meta: { authMode: "optional" },
       }),
     }),
   }),

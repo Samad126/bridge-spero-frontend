@@ -10,7 +10,7 @@ import {
   teacherRegistrationSchema,
   TeacherRegistrationFormData,
 } from "../schemas/authSchemas";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface BackendError {
   field: string;
@@ -25,48 +25,45 @@ interface BackendErrorResponse {
   timestamp?: string;
 }
 
-const DEMO_SUBJECTS = [
-  "Mathematics",
-  "Physics",
-  "Chemistry",
-  "Biology",
-  "English",
-  "History",
-  "Geography",
-  "Computer Science",
-];
+interface Category {
+  id: number;
+  name: string;
+}
 
 const TeacherRegistration = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [demoVideoFile, setDemoVideoFile] = useState<File | null>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm({
     resolver: yupResolver(teacherRegistrationSchema),
     mode: "onChange",
     defaultValues: {
       phoneCode: "+994",
-      subjects: [] as string[],
+      categoryId: 0,
       agreedToTerms: false,
     },
   });
 
-  const handleSubjectChange = (subject: string) => {
-    const newSelectedSubjects = selectedSubjects.includes(subject)
-      ? selectedSubjects.filter((s) => s !== subject)
-      : [...selectedSubjects, subject];
-
-    setSelectedSubjects(newSelectedSubjects);
-    setValue("subjects", newSelectedSubjects);
-  };
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        setCategories(Array.isArray(data) ? data : data.data || []);
+      } catch (error) {
+        console.error("Failed to fetch categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -89,9 +86,7 @@ const TeacherRegistration = () => {
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("password", data.password);
       formData.append("confirmPassword", data.confirmPassword);
-      data.subjects.forEach((subject) => {
-        formData.append("subjects", subject);
-      });
+      formData.append("categoryId", data.categoryId.toString());
       formData.append("experience", data.experience);
       if (data.bio) {
         formData.append("bio", data.bio);
@@ -294,24 +289,28 @@ const TeacherRegistration = () => {
             </div>
 
             <div className="w-full lg:col-span-2">
-              <label className="leading-[100%] block w-full mb-[8px]">
-                Choose Subjects *
+              <label
+                htmlFor="categoryId"
+                className="leading-[100%] block w-full mb-[8px]"
+              >
+                Choose Category *
               </label>
-              <div className="grid grid-cols-2 gap-2 p-[12px] border border-gray-light">
-                {DEMO_SUBJECTS.map((subject) => (
-                  <label key={subject} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={selectedSubjects.includes(subject)}
-                      onChange={() => handleSubjectChange(subject)}
-                      className="w-[18px] h-[18px] border border-gray-light"
-                    />
-                    <span className="text-sm">{subject}</span>
-                  </label>
+              <select
+                id="categoryId"
+                {...register("categoryId", { valueAsNumber: true })}
+                className="w-full p-[12px] gap-[10px] border border-gray-light outline-0 h-[43px]"
+              >
+                <option value={0}>Select a category</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
                 ))}
-              </div>
-              {errors.subjects && (
-                <p className="text-red-500 text-sm mt-1">{errors.subjects.message}</p>
+              </select>
+              {(errors.categoryId || fieldErrors.categoryId) && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.categoryId?.message || fieldErrors.categoryId}
+                </p>
               )}
             </div>
 
