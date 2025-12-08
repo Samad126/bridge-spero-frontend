@@ -1,15 +1,21 @@
-import GroupList from "@/features/common/groups/components/GroupList";
-import { demoGroupsMultiple } from "../../common/groups/constants/demoGroups";
+import MyGroupsWrapper from "./MyGroupsWrapper";
 
-function Groups() {
+interface GroupsProps {
+  searchParams: {
+    groupName?: string;
+    language?: string;
+    status?: string;
+    categoryId?: string;
+  };
+}
+
+function Groups({ searchParams }: GroupsProps) {
+  const key = JSON.stringify(searchParams);
+
   return (
     <div>
       <div className="container">
-        <GroupList
-          demoGroups={demoGroupsMultiple}
-          hideLastCard={false}
-          col={2}
-        />
+        <MyGroupsWrapper key={key} searchParams={searchParams} />
       </div>
     </div>
   );

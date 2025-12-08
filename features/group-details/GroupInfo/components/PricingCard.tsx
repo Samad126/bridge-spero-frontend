@@ -161,9 +161,12 @@ function PricingCard({ price, groupId }: PricingCardProps) {
               ${price} / <span className="text-[20px]">month</span>
             </p>
 
-            <button className="w-full bg-white text-secondary h-[46px] text-[18px]">
+            <Link
+              href={"/login"}
+              className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50 flex items-center justify-center"
+            >
               Enroll Now
-            </button>
+            </Link>
           </div>
         </div>
       </div>
