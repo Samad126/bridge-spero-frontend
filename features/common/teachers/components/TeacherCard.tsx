@@ -26,12 +26,14 @@ function TeacherCard({ experience, profileUrl, star, name, col = 1 }: TeacherCar
     ? "text-[18px] md:text-[24px]"
     : "text-[24px]";
 
+  const fullPath = profileUrl ? `${process.env.NEXT_PUBLIC_PAGE_URL}${profileUrl}` : "/none.png";
+
   return (
     <div className="p-[24px] flex-1 border border-gray-light">
       <div className={`flex ${containerLayout} items-center gap-[12px] mb-[24px]`}>
         <div className={imageContainerClass}>
           <Image
-            src={profileUrl}
+            src={fullPath}
             width={80}
             height={80}
             alt={`${name} profile picture`}
