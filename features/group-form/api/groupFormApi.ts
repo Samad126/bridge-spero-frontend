@@ -40,7 +40,7 @@ export const groupFormApi = baseApi.injectEndpoints({
         }
 
         if (payload.groupImage) {
-          formData.append("groupImage", payload.groupImage);
+          formData.append("image", payload.groupImage);
         }
 
         if (payload.syllabus) {
@@ -84,7 +84,7 @@ export const groupFormApi = baseApi.injectEndpoints({
         }
 
         if (payload.groupImage) {
-          formData.append("groupImage", payload.groupImage);
+          formData.append("image", payload.groupImage);
         }
 
         if (payload.syllabus) {

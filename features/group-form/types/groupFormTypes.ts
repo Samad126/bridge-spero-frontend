@@ -35,5 +35,7 @@ export interface CreateGroupResponse {
   maxStudents: number;
   price: number;
   status: string;
+  imageUrl?: string;
+  description?: string;
 }
 

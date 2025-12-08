@@ -25,7 +25,7 @@ interface BackendErrorResponse {
   timestamp?: string;
 }
 
-interface Category {
+interface Subject {
   id: number;
   name: string;
 }
@@ -35,34 +35,45 @@ const TeacherRegistration = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [selectedSubjects, setSelectedSubjects] = useState<number[]>([]);
   const [demoVideoFile, setDemoVideoFile] = useState<File | null>(null);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: yupResolver(teacherRegistrationSchema),
     mode: "onChange",
     defaultValues: {
       phoneCode: "+994",
-      categoryId: 0,
+      subjects: [] as number[],
       agreedToTerms: false,
     },
   });
 
+  const handleSubjectChange = (subjectId: number) => {
+    const newSelectedSubjects = selectedSubjects.includes(subjectId)
+      ? selectedSubjects.filter((id) => id !== subjectId)
+      : [...selectedSubjects, subjectId];
+
+    setSelectedSubjects(newSelectedSubjects);
+    setValue("subjects", newSelectedSubjects);
+  };
+
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchSubjects = async () => {
       try {
         const response = await fetch("/api/categories");
         const data = await response.json();
-        setCategories(Array.isArray(data) ? data : data.data || []);
+        setSubjects(Array.isArray(data) ? data : data.data || []);
       } catch (error) {
-        console.error("Failed to fetch categories:", error);
+        console.error("Failed to fetch subjects:", error);
       }
     };
-    fetchCategories();
+    fetchSubjects();
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,7 +97,12 @@ const TeacherRegistration = () => {
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("password", data.password);
       formData.append("confirmPassword", data.confirmPassword);
-      formData.append("categoryId", data.categoryId.toString());
+
+      // Append each subject ID individually
+      data.subjects.forEach((subjectId) => {
+        formData.append("subjects", subjectId.toString());
+      });
+
       formData.append("experience", data.experience);
       if (data.bio) {
         formData.append("bio", data.bio);
@@ -289,27 +305,25 @@ const TeacherRegistration = () => {
             </div>
 
             <div className="w-full lg:col-span-2">
-              <label
-                htmlFor="categoryId"
-                className="leading-[100%] block w-full mb-[8px]"
-              >
-                Choose Category *
+              <label className="leading-[100%] block w-full mb-[8px]">
+                Choose Subjects *
               </label>
-              <select
-                id="categoryId"
-                {...register("categoryId", { valueAsNumber: true })}
-                className="w-full p-[12px] gap-[10px] border border-gray-light outline-0 h-[43px]"
-              >
-                <option value={0}>Select a category</option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
+              <div className="grid grid-cols-2 gap-2 p-[12px] border border-gray-light">
+                {subjects.map((subject) => (
+                  <label key={subject.id} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedSubjects.includes(subject.id)}
+                      onChange={() => handleSubjectChange(subject.id)}
+                      className="w-[18px] h-[18px] border border-gray-light"
+                    />
+                    <span className="text-sm">{subject.name}</span>
+                  </label>
                 ))}
-              </select>
-              {(errors.categoryId || fieldErrors.categoryId) && (
+              </div>
+              {(errors.subjects || fieldErrors.subjects) && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.categoryId?.message || fieldErrors.categoryId}
+                  {errors.subjects?.message || fieldErrors.subjects}
                 </p>
               )}
             </div>

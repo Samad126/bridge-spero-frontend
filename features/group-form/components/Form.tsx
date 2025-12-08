@@ -35,6 +35,7 @@ function Form() {
 
   const [apiError, setApiError] = useState<string>("");
   const [groupImageFile, setGroupImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
 
   const {
@@ -67,8 +68,13 @@ function Form() {
         durationInMonths: existingGroup.durationInMonths,
         maxStudents: existingGroup.maxStudents,
         price: existingGroup.price,
-        description: "", // Description not available in response
+        description: existingGroup.description || "",
       });
+
+      // Set existing image if available
+      if (existingGroup.imageUrl) {
+        setImagePreview(existingGroup.imageUrl);
+      }
     }
   }, [existingGroup, isEditMode, reset]);
 
@@ -316,9 +322,20 @@ function Form() {
             </label>
             <label
               htmlFor="groupImage"
-              className="w-full h-[233px] bg-gray-light border border-gray-light flex flex-col items-center justify-center cursor-pointer lg:w-[249px] lg:h-[166px]"
+              className="w-full h-[233px] bg-gray-light border border-gray-light flex flex-col items-center justify-center cursor-pointer lg:w-[249px] lg:h-[166px] overflow-hidden relative"
             >
-              {groupImageFile ? (
+              {imagePreview ? (
+                <>
+                  <img
+                    src={imagePreview}
+                    alt="Group preview"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute bottom-2 right-2 bg-secondary text-white px-2 py-1 rounded text-xs">
+                    Change Image
+                  </div>
+                </>
+              ) : groupImageFile ? (
                 <div className="flex flex-col items-center">
                   <Image
                     src={'/camera.svg'}
@@ -349,7 +366,18 @@ function Form() {
               accept="image/jpeg,image/png,image/jpg,image/webp"
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                setGroupImageFile(file || null);
+                if (file) {
+                  setGroupImageFile(file);
+                  // Create preview URL
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    setImagePreview(reader.result as string);
+                  };
+                  reader.readAsDataURL(file);
+                } else {
+                  setGroupImageFile(null);
+                  setImagePreview(null);
+                }
               }}
               className="hidden"
               id="groupImage"

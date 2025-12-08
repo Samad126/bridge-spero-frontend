@@ -5,10 +5,11 @@ const API_BASE_URL =
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const response = await fetch(`${API_BASE_URL}/groups/${params.id}`, {
+    const { id } = await params;
+    const response = await fetch(`${API_BASE_URL}/groups/${id}`, {
       cache: "no-store",
     });
 
@@ -47,9 +48,10 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const cookieStore = await cookies();
     const access_token = cookieStore.get("access_token");
 
@@ -71,7 +73,7 @@ export async function PUT(
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${access_token.value}`);
 
-    const response = await fetch(`${API_BASE_URL}/groups/${params.id}`, {
+    const response = await fetch(`${API_BASE_URL}/groups/${id}`, {
       method: "PUT",
       headers,
       body: formData,
