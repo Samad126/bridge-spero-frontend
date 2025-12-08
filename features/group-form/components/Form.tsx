@@ -1,13 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import Schedule from "./Schedule";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createGroupSchema } from "../schemas/groupFormSchema";
 import { Language } from "../types/groupFormTypes";
-import { useCreateGroupMutation, useUpdateGroupMutation, useGetGroupQuery } from "../api/groupFormApi";
+import {
+  useCreateGroupMutation,
+  useUpdateGroupMutation,
+  useGetGroupQuery,
+} from "../api/groupFormApi";
 import { useState, useEffect } from "react";
 
 interface FormData {
@@ -29,9 +32,12 @@ function Form() {
 
   const [createGroup, { isLoading: isCreating }] = useCreateGroupMutation();
   const [updateGroup, { isLoading: isUpdating }] = useUpdateGroupMutation();
-  const { data: existingGroup, isLoading: isLoadingGroup } = useGetGroupQuery(groupId!, {
-    skip: !groupId,
-  });
+  const { data: existingGroup, isLoading: isLoadingGroup } = useGetGroupQuery(
+    groupId!,
+    {
+      skip: !groupId,
+    }
+  );
 
   const [apiError, setApiError] = useState<string>("");
   const [groupImageFile, setGroupImageFile] = useState<File | null>(null);
@@ -57,7 +63,7 @@ function Form() {
   useEffect(() => {
     if (existingGroup && isEditMode) {
       // Convert dd.MM.yyyy to YYYY-MM-DD
-      const [day, month, year] = existingGroup.startDate.split('.');
+      const [day, month, year] = existingGroup.startDate.split(".");
       const formattedDate = `${year}-${month}-${day}`;
 
       reset({
@@ -103,10 +109,15 @@ function Form() {
         router.push(`/my-groups`);
       }
     } catch (error) {
-      console.error(`Failed to ${isEditMode ? 'update' : 'create'} group:`, error);
+      console.error(
+        `Failed to ${isEditMode ? "update" : "create"} group:`,
+        error
+      );
       const errorMessage =
         (error as { data?: { errorMessage?: string } })?.data?.errorMessage ||
-        `Failed to ${isEditMode ? 'update' : 'create'} group. Please try again.`;
+        `Failed to ${
+          isEditMode ? "update" : "create"
+        } group. Please try again.`;
       setApiError(errorMessage);
     }
   };
@@ -126,7 +137,7 @@ function Form() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-[18px] lg:grid-cols-4 xxl:gap-x-[12px] xxl:gap-y-[24px]">
+        <div className="grid grid-cols-1 gap-[18px] mb-[18px] lg:grid-cols-4 xxl:gap-x-[12px] xxl:gap-y-[24px] xxl:mb-[24px]">
           <div>
             <label className="block mb-[8px]" htmlFor="name">
               Group Name *
@@ -158,7 +169,9 @@ function Form() {
               readOnly
             />
             {errors.categoryId && (
-              <p className="text-red-500 text-sm mt-1">{errors.categoryId.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.categoryId.message}
+              </p>
             )}
           </div>
 
@@ -179,16 +192,20 @@ function Form() {
               <option value={Language.TURKISH}>Turkish</option>
             </select>
             {errors.language && (
-              <p className="text-red-500 text-sm mt-1">{errors.language.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.language.message}
+              </p>
             )}
           </div>
           <div>
             <label className="block mb-[8px]" htmlFor="startDate">
               Lesson Start Date *
             </label>
-            <div className={`flex items-center border gap-[12px] ${
-              errors.startDate ? "border-red-500" : "border-gray-light"
-            }`}>
+            <div
+              className={`flex items-center border gap-[12px] ${
+                errors.startDate ? "border-red-500" : "border-gray-light"
+              }`}
+            >
               <label
                 className="pl-[12px] flex items-center justify-center h-[43px] select-none"
                 htmlFor="startDate"
@@ -209,7 +226,9 @@ function Form() {
               />
             </div>
             {errors.startDate && (
-              <p className="text-red-500 text-sm mt-1">{errors.startDate.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.startDate.message}
+              </p>
             )}
           </div>
 
@@ -231,7 +250,9 @@ function Form() {
               ))}
             </select>
             {errors.durationInMonths && (
-              <p className="text-red-500 text-sm mt-1">{errors.durationInMonths.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.durationInMonths.message}
+              </p>
             )}
           </div>
 
@@ -253,7 +274,9 @@ function Form() {
               ))}
             </select>
             {errors.maxStudents && (
-              <p className="text-red-500 text-sm mt-1">{errors.maxStudents.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.maxStudents.message}
+              </p>
             )}
           </div>
 
@@ -272,14 +295,13 @@ function Form() {
               }`}
             />
             {errors.price && (
-              <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.price.message}
+              </p>
             )}
           </div>
-        </div>
 
-        {id ? null : (
-          <div className="flex flex-col items-start gap-[18px] lg:gap-[12px] my-[18px] lg:flex-row lg:my-[24px]">
-            <Schedule />
+          {id ? null : (
             <div className="flex-1 w-full">
               <label htmlFor="syllabus" className="block mb-[8px]">
                 Syllabus
@@ -312,8 +334,8 @@ function Form() {
                 className="hidden"
               />
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="mb-[18px] flex flex-col gap-[18px] lg:mb-[42px] lg:flex-row lg:gap-[12px]">
           <div>
@@ -337,12 +359,7 @@ function Form() {
                 </>
               ) : groupImageFile ? (
                 <div className="flex flex-col items-center">
-                  <Image
-                    src={'/camera.svg'}
-                    width={22}
-                    height={22}
-                    alt=""
-                  />
+                  <Image src={"/camera.svg"} width={22} height={22} alt="" />
                   <p className="text-secondary mt-2 text-sm px-2 text-center">
                     {groupImageFile.name}
                   </p>
@@ -350,12 +367,7 @@ function Form() {
               ) : (
                 <>
                   <span className="text-3xl text-gray-600">
-                    <Image
-                      src={'/camera.svg'}
-                      width={22}
-                      height={22}
-                      alt=""
-                    />
+                    <Image src={"/camera.svg"} width={22} height={22} alt="" />
                   </span>
                   <p className="text-secondary mt-2">Upload Image</p>
                 </>
@@ -397,7 +409,9 @@ function Form() {
               id="description"
             />
             {errors.description && (
-              <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.description.message}
+              </p>
             )}
           </div>
         </div>
@@ -409,8 +423,12 @@ function Form() {
             className="w-full h-[43px] bg-secondary text-white lg:w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading
-              ? (isEditMode ? "Updating..." : "Creating...")
-              : (isEditMode ? "Update" : "Create")}
+              ? isEditMode
+                ? "Updating..."
+                : "Creating..."
+              : isEditMode
+              ? "Update"
+              : "Create"}
           </button>
           <button
             type="button"
