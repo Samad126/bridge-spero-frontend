@@ -56,18 +56,24 @@ const Teachers = [
 const StudentProfile = () => {
   const [isStudentProfilePic, setIsStudentProfilePic] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [ isSelected, setIsSelected ] = useState('teachers');
-
+  const [isSelected, setIsSelected] = useState("teachers");
+  const [ currentPage, setCurrentPage ] = useState(1);
+  const isStudent = true;
 
   const handleSelectedCategory = (category: string) => {
     setIsSelected(category);
-  }
+  };
 
   useEffect(() => {
     // handleSelectedCategory('teachers');
-  }, [isSelected])
+  }, [isSelected]);
 
-  const pagination = 6;
+  const itemsPerPage = 6;
+  const totalPages = Math.ceil(Teachers.length / itemsPerPage);
+  const paginatedTeachers = Teachers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage* itemsPerPage
+  );
 
   return (
     <section className="container">
@@ -120,23 +126,35 @@ const StudentProfile = () => {
               urna ipsum nunc. Sit gravida tempus quis laoreet aenean nunc enim
               facilisi bibendum. Maecenas et risus{" "}
             </p>
-            <button className="bg-secondary text-white py-[12px] px-[42px] cursor-pointer">
-              Edit Profile Info
-            </button>
+            {isStudent ? (
+              <button className="bg-secondary text-white py-[12px] px-[42px] cursor-pointer">
+                Edit Profile Info
+              </button>
+            ) : null}
           </div>
 
           <div className="xxl:flex-1 flex flex-col gap-[24px] items-center px-[12px] pb-[12px] xxl:p-0">
             <div className="flex items-center w-full select-none">
-              <div onClick={() => handleSelectedCategory('groups')} className={`${isSelected !== 'groups' ? "text-secondary" : "text-primary"} text-center border-b-1 py-[12px] flex-1 cursor-pointer`}>
+              <div
+                onClick={() => handleSelectedCategory("groups")}
+                className={`${
+                  isSelected !== "groups" ? "text-secondary" : "text-primary"
+                } text-center border-b-1 py-[12px] flex-1 cursor-pointer`}
+              >
                 Groups 10
               </div>
-              <div onClick={() => handleSelectedCategory('teachers')} className={`${isSelected !== 'teachers' ? "text-secondary" : "text-primary"} text-center border-b-1 py-[12px] flex-1 cursor-pointer`}>
+              <div
+                onClick={() => handleSelectedCategory("teachers")}
+                className={`${
+                  isSelected !== "teachers" ? "text-secondary" : "text-primary"
+                } text-center border-b-1 py-[12px] flex-1 cursor-pointer`}
+              >
                 Teachers {Teachers.length}
               </div>
             </div>
 
             <div className="grid w-full grid-cols-2 xxl:grid-cols-3 gap-[12px]">
-              {Teachers.map((teacher) => (
+              {paginatedTeachers.map((teacher) => (
                 <div
                   key={teacher.id}
                   className="border border-1 border-gray-light p-[24px]"
@@ -176,7 +194,43 @@ const StudentProfile = () => {
               ))}
             </div>
 
-            <div>pagination</div>
+            <div className="flex justify-center items-center">
+              {Array.from({ length: totalPages }).map((_, index) => {
+                const page = index + 1;
+
+                return (
+                  <button 
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`
+                      w-[40px] h-[40px] font-medium border-gray-light text flex items-center justify-center cursor-pointer
+                      ${
+                        currentPage === page
+                          ? "bg-secondary text-white"
+                          : "text-secondary"
+                      }
+                    `}
+                  >
+                    {page}
+                  </button>
+                )
+              })}
+
+              <button
+                onClick={() => 
+                  setCurrentPage((p) => Math.min(p + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className="w-[40px] h-[40px] border border-gray-light flex items-center justify-center cursor-pointer disabled:opacity-40"
+              >
+                <Image
+                  src="/arrow-right.svg"
+                  width={22}
+                  height={22}
+                  alt="right-arrow"
+                />
+              </button>
+            </div>
           </div>
         </div>
       </div>
