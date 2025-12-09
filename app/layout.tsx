@@ -22,7 +22,7 @@ export default function RootLayout({
           content="ZOOM_verify_0b2df51ec84e43fdbc97704f7bb39801"
         />
       </head>
-      <body className={`${urbanist.variable}`}>
+      <body className={`${urbanist.variable} bg-white`}>
         <StoreProvider>
           <AuthWrapper>
             <SessionExpiredPopup />
