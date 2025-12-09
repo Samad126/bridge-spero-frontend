@@ -66,6 +66,7 @@ function Form() {
       language: Language.AZERBAIJANI,
       durationInMonths: 1,
       maxStudents: 15,
+      price: 0,
     },
   });
 
@@ -92,6 +93,8 @@ function Form() {
         (cat) => cat.name.toLowerCase() === existingGroup.category.toLowerCase()
       );
       const categoryId = matchedCategory ? matchedCategory.id : categories[0]?.id || 1;
+
+      setImagePreview(process.env.NEXT_PUBLIC_PAGE_URL + existingGroup.imageUrl);
 
       reset({
         name: existingGroup.name,

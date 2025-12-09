@@ -46,6 +46,13 @@ export const createGroupSchema = yup.object().shape({
   
   price: yup
     .number()
+    .transform((value, originalValue) => {
+      // Handle empty string or invalid input
+      if (originalValue === "" || originalValue === null || originalValue === undefined) {
+        return undefined;
+      }
+      return isNaN(value) ? undefined : value;
+    })
     .required("Price is required")
     .positive("Price must be a positive number")
     .min(0.01, "Price must be at least 0.01"),
