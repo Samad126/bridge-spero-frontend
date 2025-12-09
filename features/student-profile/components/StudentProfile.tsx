@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Teachers = [
   {
@@ -54,34 +54,63 @@ const Teachers = [
 ];
 
 const StudentProfile = () => {
-    const [ isStudentProfilePic, setIsStudentProfilePic ] = useState(null);
-    const pagination = 6;
+  const [isStudentProfilePic, setIsStudentProfilePic] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [ isSelected, setIsSelected ] = useState('teachers');
+
+
+  const handleSelectedCategory = (category: string) => {
+    setIsSelected(category);
+  }
+
+  useEffect(() => {
+    // handleSelectedCategory('teachers');
+  }, [isSelected])
+
+  const pagination = 6;
 
   return (
     <section className="container">
       <div className="border border-1 border-gray-light">
-        <div className="xxl:w-full xxl:h-[262px]">
-          <Image
+        <div className="w-full xxl:h-[262px] h-[146px] xxl:static relative">
+          <img
             src={"/teacher-profile-hero.jpg"}
-            width={0}
-            height={0}
-            sizes="100vw"
-            className="xxl:w-full xxl:max-h-full object-cover"
-            alt="student-profile-hero"
+            className="size-full object-cover overflow-hidden"
+            alt=""
+          />
+          <div className="xxl:hidden absolute inset-0 bg-[#00000099] z-10"></div>
+          <Image
+            src={"/camera_white.svg"}
+            width={22}
+            height={22}
+            alt=""
+            className="xxl:hidden absolute inset-0 m-auto cursor-pointer z-100"
           />
         </div>
         <div className="xxl:flex xxl:p-[30px]">
-          <div className="xxl:w-[314px] xxl:mt-[-99px]  xxl:flex xxl:flex-col xxl:justify-start xxl:items-start xxl:gap-[24px]">
-            <Image
-              src={isStudentProfilePic ? "/kamila-sultanli.jpg" : "/user.svg"} // student profile varsa bura oturulmelidir.
-              alt="student"
-              width={178}
-              height={178}
-              className={`xxl:rounded-full xxl:bg-gray-light ${isStudentProfilePic ? "xxl:p-0" : "p-[38px]"}`}
-            />
+          <div className="mb-[24px] xxl:w-[314px] mt-[-34px] xxl:mt-[-99px] flex flex-col justify-center items-center xxl:justify-start xxl:items-start gap-[24px] mx-[18px] xxl:mx-0">
+            <div className="relative">
+              <Image
+                src={isStudentProfilePic ? "/kamila-sultanli.jpg" : "/user.svg"} // student profile varsa bura oturulmelidir.
+                alt="student"
+                width={178}
+                height={178}
+                className={`relative z-20 w-[100px] h-[100px] xxl:w-[178px] xxl:h-[178px] rounded-full bg-gray-light ${
+                  isStudentProfilePic ? "p-0" : "xxl:p-[38px] p-[21px]"
+                }`}
+              />
+              <div className="xxl:hidden absolute inset-0 bg-[#00000099] rounded-full z-30"></div>
+              <Image
+                src={"/camera_white.svg"}
+                width={22}
+                height={22}
+                alt=""
+                className="xxl:hidden absolute inset-0 m-auto cursor-pointer z-100"
+              />
+            </div>
             <div>
               <h3 className="text-[32px] text-secondary leading-[130%] font-medium">
-                Kamila Sultanli
+                Ilham Qadalov
               </h3>
             </div>
 
@@ -91,27 +120,28 @@ const StudentProfile = () => {
               urna ipsum nunc. Sit gravida tempus quis laoreet aenean nunc enim
               facilisi bibendum. Maecenas et risus{" "}
             </p>
-            <button className="bg-secondary text-white py-[12px] xxl:px-[42px] cursor-pointer">
+            <button className="bg-secondary text-white py-[12px] px-[42px] cursor-pointer">
               Edit Profile Info
             </button>
           </div>
-          <div className="xxl:flex-1 xxl:flex xxl:flex-col xxl:gap-[24px] xxl:items-center">
-            <div className="xxl:flex xxl:items-center xxl:w-full">
-              <div className="xxl:text-secondary xxl:text-center xxl:border-b-1 border-[#252525] py-[12px] xxl:flex-1 xxl:cursor-pointer">
+
+          <div className="xxl:flex-1 flex flex-col gap-[24px] items-center px-[12px] pb-[12px] xxl:p-0">
+            <div className="flex items-center w-full select-none">
+              <div onClick={() => handleSelectedCategory('groups')} className={`${isSelected !== 'groups' ? "text-secondary" : "text-primary"} text-center border-b-1 py-[12px] flex-1 cursor-pointer`}>
                 Groups 10
               </div>
-              <div className="xxl:text-primary xxl:text-center xxl:border-b-1 border-[primary] py-[12px] xxl:flex-1 xxl:cursor-pointer">
+              <div onClick={() => handleSelectedCategory('teachers')} className={`${isSelected !== 'teachers' ? "text-secondary" : "text-primary"} text-center border-b-1 py-[12px] flex-1 cursor-pointer`}>
                 Teachers {Teachers.length}
               </div>
             </div>
 
-            <div className="xxl:grid xxl:grid-cols-3 xxl:gap-[12px]">
+            <div className="grid w-full grid-cols-2 xxl:grid-cols-3 gap-[12px]">
               {Teachers.map((teacher) => (
                 <div
                   key={teacher.id}
-                  className="border border-1 border-gray-light xxl:p-[24px]"
+                  className="border border-1 border-gray-light p-[24px]"
                 >
-                  <div className="xxl:mb-[24px] xxl:flex xxl:gap-[12px] xxl:items-center">
+                  <div className="xxl:mb-[24px] mb-[12px] xxl:flex-row flex flex-col gap-[12px] items-center">
                     <div>
                       <Image
                         width={80}
@@ -122,10 +152,10 @@ const StudentProfile = () => {
                       />
                     </div>
                     <div>
-                      <div className="xxl:text-[24px] text-secondary leading-[130%] font-medium">
+                      <div className="xxl:text-[24px] text-[18px] text-secondary leading-[130%] font-medium break-all">
                         {teacher.name}
                       </div>
-                      <div className="xxl:flex xxl:gap-[6px] xxl:items-center">
+                      <div className="flex gap-[6px] items-center">
                         <Image
                           src={"/star.svg"}
                           width={16}
@@ -139,7 +169,7 @@ const StudentProfile = () => {
                       </div>
                     </div>
                   </div>
-                  <button className="cursor-pointer bg-secondary text-white py-[12px] xxl:w-full">
+                  <button className="cursor-pointer bg-secondary text-white py-[12px] w-full">
                     View Profile
                   </button>
                 </div>
