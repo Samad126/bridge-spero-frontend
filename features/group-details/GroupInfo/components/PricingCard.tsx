@@ -14,11 +14,17 @@ interface PricingCardProps {
   price: number;
   groupId: string;
   teacherId: number;
+  imageUrl?: string;
 }
 
-function PricingCard({ price, groupId }: PricingCardProps) {
+function PricingCard({ price, groupId, imageUrl }: PricingCardProps) {
   const [isOpened, setIsOpened] = useState(true);
   const router = useRouter();
+
+  // Construct the full image URL
+  const backgroundImage = imageUrl
+    ? `${process.env.NEXT_PUBLIC_PAGE_URL}${imageUrl}`
+    : '/groupimage.png';
 
   // Fetch user data using RTK Query (optional auth - won't redirect if not authenticated)
   const { data: userData, isLoading } = useGetUserProfileOptionalQuery();
@@ -70,9 +76,10 @@ function PricingCard({ price, groupId }: PricingCardProps) {
         </button>
 
         <div
-          className={`relative w-full bg-[url('/groupimage.png')] bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
+          className={`relative w-full bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
             isOpened ? "py-[30px]" : "h-[6px]"
           }`}
+          style={{ backgroundImage: `url('${backgroundImage}')` }}
         >
           <div className="absolute inset-0 bg-black/70 pointer-events-none"></div>
 
@@ -141,9 +148,10 @@ function PricingCard({ price, groupId }: PricingCardProps) {
         </button>
 
         <div
-          className={`relative w-full bg-[url('/groupimage.png')] bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
+          className={`relative w-full bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
             isOpened ? "py-[30px]" : "h-[6px]"
           }`}
+          style={{ backgroundImage: `url('${backgroundImage}')` }}
         >
           <div className="absolute inset-0 bg-black/70 pointer-events-none"></div>
 
@@ -190,9 +198,10 @@ function PricingCard({ price, groupId }: PricingCardProps) {
       </button>
 
       <div
-        className={`relative w-full bg-[url('/groupimage.png')] bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
+        className={`relative w-full bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
           isOpened ? "py-[30px]" : "h-[6px]"
         }`}
+        style={{ backgroundImage: `url('${backgroundImage}')` }}
       >
         <div className="absolute inset-0 bg-black/70 pointer-events-none"></div>
 

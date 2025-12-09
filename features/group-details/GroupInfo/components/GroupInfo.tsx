@@ -45,6 +45,7 @@ function GroupInfo({ group, groupId, isAuthenticated }: GroupInfoProps) {
           price={group.price}
           groupId={groupId}
           teacherId={group.teacher.id}
+          imageUrl={group.imageUrl}
         />
       </div>
     </section>

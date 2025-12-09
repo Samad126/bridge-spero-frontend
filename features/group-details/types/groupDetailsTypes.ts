@@ -17,6 +17,7 @@ export interface GroupDetails {
   maxStudents: number;
   startDate: string;
   price: number;
+  imageUrl?: string;
   teacher: Teacher;
 }
 
