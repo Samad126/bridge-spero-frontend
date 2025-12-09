@@ -79,10 +79,10 @@ const Groups = [
 
 const TeacherProfile = () => {
   const [isZoomConnected, setIsZoomConnected] = useState(false);
-  const [isBecomeStudent, setIsBecomeStudent] = useState(false);
+  const [isBecomeStudent, setIsBecomeStudent] = useState(true);
   const [isSelected, setIsSelected] = useState("demo");
   const [currentPage, setCurrentPage] = useState(1);
-  const isTeacherLoggedIn = false;
+  const isTeacherLoggedIn = true;
 
   const itemsPerPage = 8;
   const totalPages = Math.ceil(Groups.length / itemsPerPage);
@@ -151,9 +151,16 @@ const TeacherProfile = () => {
               facilisi bibendum. Maecenas et risus{" "}
             </p>
             {isTeacherLoggedIn ? (
-              <button className="bg-secondary text-white py-[12px] px-[30px] cursor-pointer">
-                Edit Profile Info
-              </button>
+              <div className="flex flex-col xxl:gap-[12px] w-[200px]">
+                <button className="bg-secondary text-white py-[12px] px-[30px] cursor-pointer">
+                  Edit Profile Info
+                </button>
+                {isBecomeStudent && (
+                  <button className="text-secondary border border-secondary py-[12px] px-[30px] cursor-pointer">
+                    Switch To Student
+                  </button>
+                )}
+              </div>
             ) : (
               <div className="flex flex-col xxl:gap-[12px] w-[200px]">
                 <button className="bg-secondary text-white py-[12px] px-[30px] cursor-pointer">
