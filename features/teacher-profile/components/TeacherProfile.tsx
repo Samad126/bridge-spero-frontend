@@ -3,29 +3,30 @@ import React from 'react'
 
 const TeacherProfile = () => {
     return (
-        <section className="container flex flex-col gap-[24px]">
-            <div className='border border-1 border-gray-light'>
-                <div className=''>
+        <section className="container flex flex-col gap-[24px] lg:flex-row">
+            <div className='border border-1 border-gray-light flex flex-col '>
+                <div className='w-full relative overflow-hidden h-[146px] w-[471px] lg:h-[262px]'>
                     <Image
                         src={'/teacher-profile-hero.jpg'}
                         alt='teacher-profile-hero'
-                        width={471}
-                        height={233}
+                        // width={471}
+                        // height={146}
+                        fill
                         className='object-cover'
                     />
                 </div>
-                <div className='flex flex-col p-[12px]'>
-                    <div className='flex flex-col justify-center items-center gap-[24px]'>
+                <div className='flex flex-col p-[12px] lg:flex-row lg:gap-[24px]'>
+                    <div className='w-[314px] flex flex-col justify-center items-center lg:items-start pl-[24px] gap-[24px]'>
                         <Image
                             src={'/kamila-sultanli.jpg'}
                             alt='teacher'
                             width={100}
                             height={100}
-                            className='rounded-full'
+                            className='rounded-full mt-[-50px] z-10 mx-auto lg:mx-0'
                         />
                         <div>
-                            <h3 className='text-[32px] text-secondary text-center leading-[130%] font-medium'>Kamila Sultanli</h3>
-                            <div className="flex items-center mx-auto">
+                            <h3 className='text-[32px] text-secondary text-center leading-[130%] font-medium lg:text-left'>Kamila Sultanli</h3>
+                            <div className="w-[200px] flex items-center mx-auto lg:mx-0">
                                 <Image
                                     src={"/star.svg"}
                                     width={16}
@@ -46,17 +47,22 @@ const TeacherProfile = () => {
                             </div>
                         </div>
 
-                        <p className='text-center'>Lorem ipsum dolor sit amet consectetur. Est enim morbi vivamus viverra maecenas etiam. Nisl fringilla ut sed lacus amet habitant urna ipsum nunc. Sit gravida tempus quis laoreet aenean nunc enim facilisi bibendum. Maecenas et risus </p>
+                        <p className='text-center lg:text-left'>Lorem ipsum dolor sit amet consectetur. Est enim morbi vivamus viverra maecenas etiam. Nisl fringilla ut sed lacus amet habitant urna ipsum nunc. Sit gravida tempus quis laoreet aenean nunc enim facilisi bibendum. Maecenas et risus </p>
                         <button className='bg-secondary text-white py-[12px] px-[30px]'>Edit Profile Info</button>
                     </div>
-                    <div className='mt-5'>
+                    <div className='lg:w-[577px] mt-5'>
                         <p className='text-primary text-center my-5'>Demo Lesson</p>
-                        <Image
-                            src={'/demo-lesson.jpg'}
-                            alt='demo-lesson'
-                            width={326}
-                            height={159}
-                        />
+                        <div className='w-[326px] h-[159px] relative lg:w-[570px] lg:h-[278px]'>
+                            <Image
+                                src={'/demo-lesson.jpg'}
+                                alt='demo-lesson'
+                                // width={326}
+                                // height={159}
+                                fill
+                                className='object-cover'
+                            />
+                        </div>
+
                     </div>
                 </div>
             </div>
