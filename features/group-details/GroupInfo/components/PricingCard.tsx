@@ -6,6 +6,11 @@ import {
   useCheckIsJoinedQuery,
   useJoinGroupMutation,
 } from "../../api/groupDetailsApi";
+import {
+  useGetZoomAuthorizeQuery,
+  useVerifyZoomConnectionQuery,
+  useStartLessonMutation,
+} from "@/features/zoom/api/zoomApi";
 import Link from "next/link";
 import PricingCardSkeleton from "./PricingCardSkeleton";
 import { useRouter } from "next/navigation";
@@ -19,6 +24,7 @@ interface PricingCardProps {
 
 function PricingCard({ price, groupId, imageUrl }: PricingCardProps) {
   const [isOpened, setIsOpened] = useState(true);
+  const [isStartingLesson, setIsStartingLesson] = useState(false);
   const router = useRouter();
 
   // Construct the full image URL
@@ -38,9 +44,18 @@ function PricingCard({ price, groupId, imageUrl }: PricingCardProps) {
   const isJoined = false;
 
   const [joinGroup, { isLoading: isJoining }] = useJoinGroupMutation();
+  const [startLesson] = useStartLessonMutation();
 
   // const isJoined = isJoinedData?.isJoined || false;
   const isTeacher = userData?.role === "TEACHER";
+
+  // Zoom OAuth queries (only fetch for teachers)
+  const { data: zoomVerifyData, refetch: refetchZoomVerify } = useVerifyZoomConnectionQuery(undefined, {
+    skip: !isTeacher,
+  });
+  const { data: zoomAuthorizeData } = useGetZoomAuthorizeQuery(undefined, {
+    skip: !isTeacher,
+  });
 
   const handleJoinGroup = async () => {
     try {
@@ -50,6 +65,44 @@ function PricingCard({ price, groupId, imageUrl }: PricingCardProps) {
     } catch (error) {
       console.error("Failed to join group:", error);
       alert("Failed to join group. Please try again.");
+    }
+  };
+
+  const handleStartLesson = async () => {
+    setIsStartingLesson(true);
+    try {
+      // First, verify Zoom connection
+      const verifyResult = await refetchZoomVerify();
+      const isConnected = verifyResult.data?.connected;
+
+      if (!isConnected) {
+        // If not connected, open Zoom authorization in new tab
+        if (zoomAuthorizeData?.authorizeUrl) {
+          // Extract the redirect URL from the "redirect:URL" format
+          const authorizeUrl = zoomAuthorizeData.authorizeUrl.replace(/^redirect:/, '');
+          window.open(authorizeUrl, '_blank');
+          alert('Please authorize Zoom in the opened tab, then try starting the lesson again.');
+        } else {
+          alert('Failed to get Zoom authorization URL. Please try again.');
+        }
+        setIsStartingLesson(false);
+        return;
+      }
+
+      // If connected, start the lesson
+      const lessonResult = await startLesson(Number(groupId)).unwrap();
+
+      if (lessonResult.zoomUrl) {
+        // Open Zoom URL in new tab
+        window.open(lessonResult.zoomUrl, '_blank');
+      } else {
+        alert('Failed to get Zoom meeting URL. Please try again.');
+      }
+    } catch (error) {
+      console.error('Failed to start lesson:', error);
+      alert('Failed to start lesson. Please try again.');
+    } finally {
+      setIsStartingLesson(false);
     }
   };
 
@@ -117,8 +170,12 @@ function PricingCard({ price, groupId, imageUrl }: PricingCardProps) {
               <button className="p-[12px] min-w-[46px] border border-tertiary">
                 <Image src="/share.svg" alt="share" width={22} height={22} />
               </button>
-              <button className="w-full bg-white text-secondary h-[46px] text-[18px]">
-                Start Lesson
+              <button
+                onClick={handleStartLesson}
+                disabled={isStartingLesson}
+                className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
+              >
+                {isStartingLesson ? "Starting..." : "Start Lesson"}
               </button>
             </div>
           </div>
