@@ -27,12 +27,13 @@ const GroupCard = ({
   const textSize = col === 1 ? "text-[14px] md:text-[14px]" : "text-[12px] md:text-[14px]";
   const titleSize = col === 1 ? "text-[24px] md:text-[24px]" : "text-[20px] md:text-[24px]";
   const marginBottom = col === 1 ? "mb-[24px] mt-[12px]" : "mb-[12px] mt-[6px] md:mb-[24px] md:mt-[12px]";
+  const fullPath = imageUrl ? `${process.env.NEXT_PUBLIC_PAGE_URL}${imageUrl}` : "/none.png";
 
   return (
     <div className="flex-1 border border-gray-light">
       <div className={`relative w-full ${imageHeight}`}>
         <Image
-          src={imageUrl}
+          src={fullPath}
           fill
           alt={`${subjectName} image`}
           className="object-cover"

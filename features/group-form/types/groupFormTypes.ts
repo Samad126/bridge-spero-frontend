@@ -18,7 +18,6 @@ export interface CreateGroupPayload {
   language: Language;
   startDate: string;
   durationInMonths: number;
-  minStudents: number;
   maxStudents: number;
   price: number;
   description?: string;
@@ -29,13 +28,23 @@ export interface CreateGroupPayload {
 export interface CreateGroupResponse {
   id: number;
   name: string;
-  categoryId: number;
-  language: Language;
+  category: string;
+  language: string;
   startDate: string;
-  durationInMonths: number;
-  minStudents: number;
+  durationInWeeks: number;
   maxStudents: number;
+  activeStudents: number;
   price: number;
-  status: string;
+  status?: string;
+  imageUrl?: string;
+  description: string | null;
+  teacher?: {
+    id: number;
+    profilePictureName: string | null;
+    name: string;
+    surname: string;
+    rating: number | null;
+    activeStudents: number;
+  };
 }
 

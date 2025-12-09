@@ -5,7 +5,7 @@ const API_BASE_URL =
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();    
+    const body = await request.json();
 
     const response = await fetch(`${API_BASE_URL}/auth/signup/user`, {
       method: "POST",
@@ -15,22 +15,25 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(body),
     });
 
+    console.log(response);
+
+    if (response.status === 200) {
+      return NextResponse.json(null, { status: 201 });
+    }
+
     const data = await response.json();
 
     if (!response.ok) {
       return NextResponse.json(data, { status: response.status });
     }
-
-    return NextResponse.json(data, { status: 201 });
   } catch (error) {
     console.error("Student registration error:", error);
     return NextResponse.json(
       {
         errorCode: "INTERNAL_SERVER_ERROR",
-        errorMessage: "An error occurred during registration"
+        errorMessage: "An error occurred during registration",
       },
       { status: 500 }
     );
   }
 }
-

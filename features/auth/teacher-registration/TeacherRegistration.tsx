@@ -10,7 +10,7 @@ import {
   teacherRegistrationSchema,
   TeacherRegistrationFormData,
 } from "../schemas/authSchemas";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface BackendError {
   field: string;
@@ -25,23 +25,18 @@ interface BackendErrorResponse {
   timestamp?: string;
 }
 
-const DEMO_SUBJECTS = [
-  "Mathematics",
-  "Physics",
-  "Chemistry",
-  "Biology",
-  "English",
-  "History",
-  "Geography",
-  "Computer Science",
-];
+interface Subject {
+  id: number;
+  name: string;
+}
 
 const TeacherRegistration = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [selectedSubjects, setSelectedSubjects] = useState<number[]>([]);
   const [demoVideoFile, setDemoVideoFile] = useState<File | null>(null);
 
   const {
@@ -54,19 +49,32 @@ const TeacherRegistration = () => {
     mode: "onChange",
     defaultValues: {
       phoneCode: "+994",
-      subjects: [] as string[],
+      subjects: [] as number[],
       agreedToTerms: false,
     },
   });
 
-  const handleSubjectChange = (subject: string) => {
-    const newSelectedSubjects = selectedSubjects.includes(subject)
-      ? selectedSubjects.filter((s) => s !== subject)
-      : [...selectedSubjects, subject];
+  const handleSubjectChange = (subjectId: number) => {
+    const newSelectedSubjects = selectedSubjects.includes(subjectId)
+      ? selectedSubjects.filter((id) => id !== subjectId)
+      : [...selectedSubjects, subjectId];
 
     setSelectedSubjects(newSelectedSubjects);
     setValue("subjects", newSelectedSubjects);
   };
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        setSubjects(Array.isArray(data) ? data : data.data || []);
+      } catch (error) {
+        console.error("Failed to fetch subjects:", error);
+      }
+    };
+    fetchSubjects();
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -89,10 +97,12 @@ const TeacherRegistration = () => {
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("password", data.password);
       formData.append("confirmPassword", data.confirmPassword);
-      data.subjects.forEach((subject) => {
-        formData.append("subjects", subject);
+
+      // Append each subject ID individually
+      data.subjects.forEach((subjectId) => {
+        formData.append("subjects", subjectId.toString());
       });
-      formData.append("experience", data.experience);
+
       if (data.bio) {
         formData.append("bio", data.bio);
       }
@@ -298,39 +308,22 @@ const TeacherRegistration = () => {
                 Choose Subjects *
               </label>
               <div className="grid grid-cols-2 gap-2 p-[12px] border border-gray-light">
-                {DEMO_SUBJECTS.map((subject) => (
-                  <label key={subject} className="flex items-center gap-2 cursor-pointer">
+                {subjects.map((subject) => (
+                  <label key={subject.id} className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={selectedSubjects.includes(subject)}
-                      onChange={() => handleSubjectChange(subject)}
+                      checked={selectedSubjects.includes(subject.id)}
+                      onChange={() => handleSubjectChange(subject.id)}
                       className="w-[18px] h-[18px] border border-gray-light"
                     />
-                    <span className="text-sm">{subject}</span>
+                    <span className="text-sm">{subject.name}</span>
                   </label>
                 ))}
               </div>
-              {errors.subjects && (
-                <p className="text-red-500 text-sm mt-1">{errors.subjects.message}</p>
-              )}
-            </div>
-
-            <div className="w-full lg:col-span-2">
-              <label
-                htmlFor="experience"
-                className="leading-[100%] block w-full mb-[8px]"
-              >
-                Years of Experience *
-              </label>
-              <input
-                id="experience"
-                type="text"
-                placeholder="e.g., 5 years"
-                {...register("experience")}
-                className="w-full p-[12px] gap-[10px] border border-gray-light placeholder-gray-light outline-0 h-[43px]"
-              />
-              {errors.experience && (
-                <p className="text-red-500 text-sm mt-1">{errors.experience.message}</p>
+              {(errors.subjects || fieldErrors.subjects) && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.subjects?.message || fieldErrors.subjects}
+                </p>
               )}
             </div>
 

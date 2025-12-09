@@ -1,14 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import Schedule from "./Schedule";
 import { useParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { createGroupSchema } from "../schemas/groupFormSchema";
 import { Language } from "../types/groupFormTypes";
-import { useCreateGroupMutation } from "../api/groupFormApi";
-import { useState } from "react";
+import {
+  useCreateGroupMutation,
+  useUpdateGroupMutation,
+  useGetGroupQuery,
+} from "../api/groupFormApi";
+import { useGetCategoriesQuery } from "@/features/my-groups/api/myGroupsApi";
+import { useState, useEffect, useMemo } from "react";
 
 interface FormData {
   name: string;
@@ -16,7 +20,6 @@ interface FormData {
   language: Language;
   startDate: string;
   durationInMonths: number;
-  minStudents: number;
   maxStudents: number;
   price: number;
   description?: string;
@@ -25,39 +28,94 @@ interface FormData {
 function Form() {
   const { id } = useParams();
   const router = useRouter();
-  const [createGroup, { isLoading }] = useCreateGroupMutation();
+  const isEditMode = !!id;
+  const groupId = id ? parseInt(id as string) : undefined;
+
+  const [createGroup, { isLoading: isCreating }] = useCreateGroupMutation();
+  const [updateGroup, { isLoading: isUpdating }] = useUpdateGroupMutation();
+  const { data: existingGroup, isLoading: isLoadingGroup } = useGetGroupQuery(
+    groupId!,
+    {
+      skip: !groupId,
+    }
+  );
+  const { data: categoriesData } = useGetCategoriesQuery();
+
   const [apiError, setApiError] = useState<string>("");
+  const [groupImageFile, setGroupImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
+
+  // Derive the image preview from existing group or uploaded file
+  const displayImagePreview = imagePreview || (isEditMode && existingGroup?.imageUrl) || null;
+
+  // Parse categories data (handles both array and {data: array} formats)
+  const categories = useMemo(() => {
+    return Array.isArray(categoriesData) ? categoriesData : categoriesData?.data || [];
+  }, [categoriesData]);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(createGroupSchema),
     defaultValues: {
       categoryId: 1,
       language: Language.AZERBAIJANI,
       durationInMonths: 1,
-      minStudents: 1,
       maxStudents: 15,
     },
   });
 
-  const [groupImageFile, setGroupImageFile] = useState<File | null>(null);
-  const [syllabusFile, setSyllabusFile] = useState<File | null>(null);
+  // Load existing group data when editing
+  useEffect(() => {
+    if (existingGroup && isEditMode && categories.length > 0) {
+      // Convert dd.MM.yyyy to YYYY-MM-DD
+      const [day, month, year] = existingGroup.startDate.split(".");
+      const formattedDate = `${year}-${month}-${day}`;
+
+      // Convert language string to enum
+      const languageMap: Record<string, Language> = {
+        "Azerbaijani": Language.AZERBAIJANI,
+        "English": Language.ENGLISH,
+        "Russian": Language.RUSSIAN,
+        "Turkish": Language.TURKISH,
+      };
+
+      // Convert weeks to months (approximate)
+      const durationInMonths = Math.ceil(existingGroup.durationInWeeks / 4);
+
+      // Find the categoryId from category name
+      const matchedCategory = categories.find(
+        (cat) => cat.name.toLowerCase() === existingGroup.category.toLowerCase()
+      );
+      const categoryId = matchedCategory ? matchedCategory.id : categories[0]?.id || 1;
+
+      reset({
+        name: existingGroup.name,
+        categoryId: categoryId,
+        language: languageMap[existingGroup.language] || Language.AZERBAIJANI,
+        startDate: formattedDate,
+        durationInMonths: durationInMonths,
+        maxStudents: existingGroup.maxStudents,
+        price: existingGroup.price,
+        description: existingGroup.description || "",
+      });
+    }
+  }, [existingGroup, isEditMode, categories, reset]);
 
   const onSubmit = async (data: FormData) => {
     try {
       setApiError("");
 
-      // Prepare payload - FormData creation happens in the API
       const payload = {
         name: data.name,
         categoryId: data.categoryId,
         language: data.language,
         startDate: data.startDate,
         durationInMonths: data.durationInMonths,
-        minStudents: data.minStudents,
         maxStudents: data.maxStudents,
         price: data.price,
         description: data.description,
@@ -65,18 +123,28 @@ function Form() {
         syllabus: syllabusFile || undefined,
       };
 
-      await createGroup(payload).unwrap();
-
-      // Redirect to group details or my groups page
-      router.push(`/my-groups`);
+      if (isEditMode && groupId) {
+        await updateGroup({ groupId, payload }).unwrap();
+        router.push(`/groups/${groupId}`);
+      } else {
+        await createGroup(payload).unwrap();
+        router.push(`/my-groups`);
+      }
     } catch (error) {
-      console.error("Failed to create group:", error);
+      console.error(
+        `Failed to ${isEditMode ? "update" : "create"} group:`,
+        error
+      );
       const errorMessage =
         (error as { data?: { errorMessage?: string } })?.data?.errorMessage ||
-        "Failed to create group. Please try again.";
+        `Failed to ${
+          isEditMode ? "update" : "create"
+        } group. Please try again.`;
       setApiError(errorMessage);
     }
   };
+
+  const isLoading = isCreating || isUpdating || isLoadingGroup;
 
   const handleCancel = () => {
     router.push("/my-groups");
@@ -91,7 +159,7 @@ function Form() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 gap-[18px] lg:grid-cols-4 xxl:gap-x-[12px] xxl:gap-y-[24px]">
+        <div className="grid grid-cols-1 gap-[18px] mb-[18px] lg:grid-cols-4 xxl:gap-x-[12px] xxl:gap-y-[24px] xxl:mb-[24px]">
           <div>
             <label className="block mb-[8px]" htmlFor="name">
               Group Name *
@@ -113,17 +181,23 @@ function Form() {
             <label className="block mb-[8px]" htmlFor="categoryId">
               Category *
             </label>
-            <input
+            <select
               id="categoryId"
-              type="number"
               {...register("categoryId", { valueAsNumber: true })}
               className={`h-[43px] px-[12px] outline-0 w-full border ${
                 errors.categoryId ? "border-red-500" : "border-gray-light"
               }`}
-              readOnly
-            />
+            >
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
             {errors.categoryId && (
-              <p className="text-red-500 text-sm mt-1">{errors.categoryId.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.categoryId.message}
+              </p>
             )}
           </div>
 
@@ -144,16 +218,20 @@ function Form() {
               <option value={Language.TURKISH}>Turkish</option>
             </select>
             {errors.language && (
-              <p className="text-red-500 text-sm mt-1">{errors.language.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.language.message}
+              </p>
             )}
           </div>
           <div>
             <label className="block mb-[8px]" htmlFor="startDate">
               Lesson Start Date *
             </label>
-            <div className={`flex items-center border gap-[12px] ${
-              errors.startDate ? "border-red-500" : "border-gray-light"
-            }`}>
+            <div
+              className={`flex items-center border gap-[12px] ${
+                errors.startDate ? "border-red-500" : "border-gray-light"
+              }`}
+            >
               <label
                 className="pl-[12px] flex items-center justify-center h-[43px] select-none"
                 htmlFor="startDate"
@@ -174,7 +252,9 @@ function Form() {
               />
             </div>
             {errors.startDate && (
-              <p className="text-red-500 text-sm mt-1">{errors.startDate.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.startDate.message}
+              </p>
             )}
           </div>
 
@@ -196,35 +276,15 @@ function Form() {
               ))}
             </select>
             {errors.durationInMonths && (
-              <p className="text-red-500 text-sm mt-1">{errors.durationInMonths.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block mb-[8px]" htmlFor="minStudents">
-              Minimum Students *
-            </label>
-            <select
-              id="minStudents"
-              {...register("minStudents", { valueAsNumber: true })}
-              className={`h-[43px] px-[12px] outline-0 w-full border ${
-                errors.minStudents ? "border-red-500" : "border-gray-light"
-              }`}
-            >
-              {[...Array(50)].map((_, i) => (
-                <option key={i + 1} value={i + 1}>
-                  {i + 1}
-                </option>
-              ))}
-            </select>
-            {errors.minStudents && (
-              <p className="text-red-500 text-sm mt-1">{errors.minStudents.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.durationInMonths.message}
+              </p>
             )}
           </div>
 
           <div>
             <label className="block mb-[8px]" htmlFor="maxStudents">
-              Maximum Students *
+              Max Students *
             </label>
             <select
               id="maxStudents"
@@ -240,7 +300,9 @@ function Form() {
               ))}
             </select>
             {errors.maxStudents && (
-              <p className="text-red-500 text-sm mt-1">{errors.maxStudents.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.maxStudents.message}
+              </p>
             )}
           </div>
 
@@ -259,14 +321,13 @@ function Form() {
               }`}
             />
             {errors.price && (
-              <p className="text-red-500 text-sm mt-1">{errors.price.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.price.message}
+              </p>
             )}
           </div>
-        </div>
 
-        {id ? null : (
-          <div className="flex flex-col items-start gap-[18px] lg:gap-[12px] my-[18px] lg:flex-row lg:my-[24px]">
-            <Schedule />
+          {id ? null : (
             <div className="flex-1 w-full">
               <label htmlFor="syllabus" className="block mb-[8px]">
                 Syllabus
@@ -299,8 +360,8 @@ function Form() {
                 className="hidden"
               />
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="mb-[18px] flex flex-col gap-[18px] lg:mb-[42px] lg:flex-row lg:gap-[12px]">
           <div>
@@ -309,16 +370,22 @@ function Form() {
             </label>
             <label
               htmlFor="groupImage"
-              className="w-full h-[233px] bg-gray-light border border-gray-light flex flex-col items-center justify-center cursor-pointer lg:w-[249px] lg:h-[166px]"
+              className="w-full h-[233px] bg-gray-light border border-gray-light flex flex-col items-center justify-center cursor-pointer lg:w-[249px] lg:h-[166px] overflow-hidden relative"
             >
-              {groupImageFile ? (
-                <div className="flex flex-col items-center">
-                  <Image
-                    src={'/camera.svg'}
-                    width={22}
-                    height={22}
-                    alt=""
+              {displayImagePreview ? (
+                <>
+                  <img
+                    src={displayImagePreview}
+                    alt="Group preview"
+                    className="w-full h-full object-cover"
                   />
+                  <div className="absolute bottom-2 right-2 bg-secondary text-white px-2 py-1 rounded text-xs">
+                    Change Image
+                  </div>
+                </>
+              ) : groupImageFile ? (
+                <div className="flex flex-col items-center">
+                  <Image src={"/camera.svg"} width={22} height={22} alt="" />
                   <p className="text-secondary mt-2 text-sm px-2 text-center">
                     {groupImageFile.name}
                   </p>
@@ -326,12 +393,7 @@ function Form() {
               ) : (
                 <>
                   <span className="text-3xl text-gray-600">
-                    <Image
-                      src={'/camera.svg'}
-                      width={22}
-                      height={22}
-                      alt=""
-                    />
+                    <Image src={"/camera.svg"} width={22} height={22} alt="" />
                   </span>
                   <p className="text-secondary mt-2">Upload Image</p>
                 </>
@@ -342,7 +404,18 @@ function Form() {
               accept="image/jpeg,image/png,image/jpg,image/webp"
               onChange={(e) => {
                 const file = e.target.files?.[0];
-                setGroupImageFile(file || null);
+                if (file) {
+                  setGroupImageFile(file);
+                  // Create preview URL
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    setImagePreview(reader.result as string);
+                  };
+                  reader.readAsDataURL(file);
+                } else {
+                  setGroupImageFile(null);
+                  setImagePreview(null);
+                }
               }}
               className="hidden"
               id="groupImage"
@@ -362,7 +435,9 @@ function Form() {
               id="description"
             />
             {errors.description && (
-              <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+              <p className="text-red-500 text-sm mt-1">
+                {errors.description.message}
+              </p>
             )}
           </div>
         </div>
@@ -373,7 +448,13 @@ function Form() {
             disabled={isLoading}
             className="w-full h-[43px] bg-secondary text-white lg:w-[200px] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Creating..." : id ? "Update" : "Create"}
+            {isLoading
+              ? isEditMode
+                ? "Updating..."
+                : "Creating..."
+              : isEditMode
+              ? "Update"
+              : "Create"}
           </button>
           <button
             type="button"

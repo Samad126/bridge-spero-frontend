@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import GroupInfoSkeleton from "@/features/group-details/GroupInfo/components/GroupInfoSkeleton";
+import { cookies } from "next/headers";
 
 interface PageProps {
   params: Promise<{
@@ -32,12 +33,22 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 async function page({ params }: PageProps) {
   const { id } = await params;
 
+  const cookieStore = await cookies();
+  const access_token = cookieStore.get("access_token");
+  const refresh_token = cookieStore.get("refresh_token");
+
+  const isAuthenticated = !!access_token || !!refresh_token;
+
   try {
     const group = await fetchGroupDetails(id);
 
     return (
       <Suspense fallback={<GroupInfoSkeleton />}>
-        <GroupInfo group={group} groupId={id} />
+        <GroupInfo
+          group={group}
+          groupId={id}
+          isAuthenticated={isAuthenticated}
+        />
       </Suspense>
     );
   } catch (error) {

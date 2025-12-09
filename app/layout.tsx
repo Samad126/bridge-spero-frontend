@@ -16,7 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${urbanist.variable}`}>
+      <head>
+        <meta
+          name="zoom-domain-verification"
+          content="ZOOM_verify_0b2df51ec84e43fdbc97704f7bb39801"
+        />
+      </head>
+      <body className={`${urbanist.variable} bg-white`}>
         <StoreProvider>
           <AuthWrapper>
             <SessionExpiredPopup />

@@ -22,6 +22,8 @@ export default function SessionExpiredPopup() {
     fetch("/api/logout", {
       method: "POST",
     }).then(() => {});
+
+    router.refresh();
   };
 
   return (

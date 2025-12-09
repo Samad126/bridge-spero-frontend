@@ -38,9 +38,9 @@ export const studentRegistrationSchema = yup.object({
     .required("Confirm password is required"),
   interests: yup
     .array()
-    .of(yup.string().required())
+    .of(yup.number().required())
     .min(1, "Please select at least one subject")
-    .required("Interests are required"),
+    .required("Subjects are required"),
   bio: yup.string().optional(),
   agreedToTerms: yup
     .boolean()
@@ -74,10 +74,9 @@ export const teacherRegistrationSchema = yup.object({
     .required("Confirm password is required"),
   subjects: yup
     .array()
-    .of(yup.string().required())
+    .of(yup.number().required())
     .min(1, "Please select at least one subject")
     .required("Subjects are required"),
-  experience: yup.string().required("Experience is required"),
   bio: yup.string().optional(),
   agreedToTerms: yup
     .boolean()
@@ -88,4 +87,3 @@ export const teacherRegistrationSchema = yup.object({
 export type TeacherRegistrationFormData = yup.InferType<
   typeof teacherRegistrationSchema
 >;
-

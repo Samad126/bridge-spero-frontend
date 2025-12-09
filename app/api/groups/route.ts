@@ -21,21 +21,17 @@ export async function POST(request: Request) {
       );
     }
 
-    // // Get the FormData from the request
-    // const formData = await request.formData();
-
-    const body = await request.json();
+    // Get the FormData from the request
+    const formData = await request.formData();
 
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${access_token.value}`);
-    // Don't set Content-Type for FormData - browser will set it with boundary
-    headers.append("Content-Type", "application/json");
+    // Don't set Content-Type for FormData - fetch will set it with boundary
 
     const response = await fetch(`${API_BASE_URL}/groups`, {
       method: "POST",
       headers,
-      // body: formData,
-      body: JSON.stringify(body),
+      body: formData,
     });
 
     // If response is not ok (4xx or 5xx), still try to parse and return with original status

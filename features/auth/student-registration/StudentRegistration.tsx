@@ -9,7 +9,7 @@ import {
   StudentRegistrationFormData,
   studentRegistrationSchema,
 } from "../schemas/authSchemas";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface BackendError {
   field: string;
@@ -24,23 +24,18 @@ interface BackendErrorResponse {
   timestamp?: string;
 }
 
-const DEMO_SUBJECTS = [
-  "Mathematics",
-  "Physics",
-  "Chemistry",
-  "Biology",
-  "English",
-  "History",
-  "Geography",
-  "Computer Science",
-];
+interface Subject {
+  id: number;
+  name: string;
+}
 
 const StudentRegistration = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [selectedSubjects, setSelectedSubjects] = useState<number[]>([]);
 
   const {
     register,
@@ -52,19 +47,32 @@ const StudentRegistration = () => {
     mode: "onChange",
     defaultValues: {
       phoneCode: "+994",
-      interests: [] as string[],
+      interests: [] as number[],
       agreedToTerms: false,
     },
   });
 
-  const handleSubjectChange = (subject: string) => {
-    const newSelectedSubjects = selectedSubjects.includes(subject)
-      ? selectedSubjects.filter((s) => s !== subject)
-      : [...selectedSubjects, subject];
+  const handleSubjectChange = (subjectId: number) => {
+    const newSelectedSubjects = selectedSubjects.includes(subjectId)
+      ? selectedSubjects.filter((id) => id !== subjectId)
+      : [...selectedSubjects, subjectId];
 
     setSelectedSubjects(newSelectedSubjects);
     setValue("interests", newSelectedSubjects);
   };
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        setSubjects(Array.isArray(data) ? data : data.data || []);
+      } catch (error) {
+        console.error("Failed to fetch subjects:", error);
+      }
+    };
+    fetchSubjects();
+  }, []);
 
   const onSubmit = async (data: StudentRegistrationFormData) => {
     setIsLoading(true);
@@ -271,20 +279,22 @@ const StudentRegistration = () => {
                 Which Subjects Interest You? *
               </label>
               <div className="grid grid-cols-2 gap-2 p-[12px] border border-gray-light">
-                {DEMO_SUBJECTS.map((subject) => (
-                  <label key={subject} className="flex items-center gap-2 cursor-pointer">
+                {subjects.map((subject) => (
+                  <label key={subject.id} className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={selectedSubjects.includes(subject)}
-                      onChange={() => handleSubjectChange(subject)}
+                      checked={selectedSubjects.includes(subject.id)}
+                      onChange={() => handleSubjectChange(subject.id)}
                       className="w-[18px] h-[18px] border border-gray-light"
                     />
-                    <span className="text-sm">{subject}</span>
+                    <span className="text-sm">{subject.name}</span>
                   </label>
                 ))}
               </div>
-              {errors.interests && (
-                <p className="text-red-500 text-sm mt-1">{errors.interests.message}</p>
+              {(errors.interests || fieldErrors.interests) && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.interests?.message || fieldErrors.interests}
+                </p>
               )}
             </div>
 

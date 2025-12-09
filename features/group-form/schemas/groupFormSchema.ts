@@ -36,28 +36,13 @@ export const createGroupSchema = yup.object().shape({
     .integer("Duration must be a whole number")
     .min(1, "Duration must be at least 1 month")
     .max(24, "Duration must not exceed 24 months"),
-  
-  minStudents: yup
-    .number()
-    .required("Minimum students is required")
-    .positive("Minimum students must be a positive number")
-    .integer("Minimum students must be a whole number")
-    .min(1, "Minimum students must be at least 1"),
-  
+
   maxStudents: yup
     .number()
     .required("Maximum students is required")
     .positive("Maximum students must be a positive number")
     .integer("Maximum students must be a whole number")
-    .min(1, "Maximum students must be at least 1")
-    .test(
-      "max-greater-than-min",
-      "Maximum students must be greater than or equal to minimum students",
-      function (value) {
-        const { minStudents } = this.parent;
-        return !value || !minStudents || value >= minStudents;
-      }
-    ),
+    .min(1, "Maximum students must be at least 1"),
   
   price: yup
     .number()
