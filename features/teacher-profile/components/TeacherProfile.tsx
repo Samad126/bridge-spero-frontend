@@ -125,6 +125,7 @@ const TeacherProfile = () => {
                 src={"/kamila-sultanli.jpg"}
                 alt="teacher"
                 width={178}
+                
                 height={178}
                 className="xxl:size-[178px] w-[100px] h-[100px] rounded-full "
               />
