@@ -4,9 +4,9 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { useUploadResourceMutation, useDeleteResourceMutation } from "@/features/group-details/api/groupDetailsApi";
 import { ResourceItem } from "@/features/group-details/types/groupDetailsTypes";
-import FileActionModal from "@/components/FileViewer/FileActionModal";
-import FilePreviewPopup from "@/components/FileViewer/FilePreviewPopup";
-import { useFileViewer } from "@/hooks/useFileViewer";
+import FileActionModal from "@/features/group-details/Tabs/components/FileViewer/FileActionModal";
+import FilePreviewPopup from "@/features/group-details/Tabs/components/FileViewer/FilePreviewPopup";
+import { useFileViewer } from "@/features/group-details/Tabs/hooks/useFileViewer";
 
 interface ResourcesCardProps {
   cardStatus: "view" | "add";

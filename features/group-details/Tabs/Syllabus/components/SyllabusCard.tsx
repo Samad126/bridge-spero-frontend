@@ -6,8 +6,8 @@ import {
   useUploadSyllabusMutation,
   useDeleteSyllabusMutation,
 } from "@/features/group-details/api/groupDetailsApi";
-import FileActionModal from "@/components/FileViewer/FileActionModal";
-import FilePreviewPopup from "@/components/FileViewer/FilePreviewPopup";
+import FileActionModal from "@/features/group-details/Tabs/components/FileViewer/FileActionModal";
+import FilePreviewPopup from "@/features/group-details/Tabs/components/FileViewer/FilePreviewPopup";
 
 interface SyllabusCardProps {
   cardStatus: "view" | "add";

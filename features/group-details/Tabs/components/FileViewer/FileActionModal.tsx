@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { getFileTypeInfo } from "@/lib/utils/fileTypeUtils";
+import { getFileTypeInfo } from "@/features/group-details/Tabs/utils/fileTypeUtils";
 
 interface FileActionModalProps {
   isOpen: boolean;

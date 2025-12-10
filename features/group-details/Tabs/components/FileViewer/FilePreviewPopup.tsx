@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import { getFileTypeInfo } from "@/lib/utils/fileTypeUtils";
+import { getFileTypeInfo } from "@/features/group-details/Tabs/utils/fileTypeUtils";
 
 interface FilePreviewPopupProps {
   isOpen: boolean;
