@@ -23,7 +23,7 @@ export function ProfilePopup({
 }: ProfilePopupProps) {
   const dispatch = useAppDispatch();
   const { data: userData } = useGetUserProfileOptionalQuery(undefined, {
-    refetchOnMountOrArgChange: true,
+    
   });
 
   const router = useRouter();

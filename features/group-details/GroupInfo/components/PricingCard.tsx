@@ -34,7 +34,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
 
   // Fetch user data using RTK Query (optional auth - won't redirect if not authenticated)
   const { data: userData, isLoading } = useGetUserProfileOptionalQuery(undefined, {
-    refetchOnMountOrArgChange: true,
+    
   });
 
   // Check if user is joined (only if user is authenticated and is a student)

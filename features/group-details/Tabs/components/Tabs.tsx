@@ -18,7 +18,7 @@ function Tabs({ groupId, isAuthenticated, teacherId }: TabsProps) {
 
   const { data: userData, isLoading } = useGetUserProfileOptionalQuery(undefined, {
     skip: !isAuthenticated,
-    refetchOnMountOrArgChange: true,
+    
   });
 
   const userRole = userData?.role || "USER";
