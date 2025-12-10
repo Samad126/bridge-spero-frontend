@@ -1,6 +1,6 @@
 import { baseApi } from "@/lib/redux/baseApi";
 import {
-  IsJoinedResponse,
+  IsMemberResponse,
   ScheduleResponse,
   CreateScheduleRequest,
   UpdateScheduleRequest,
@@ -12,9 +12,9 @@ import {
 
 export const groupDetailsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    checkIsJoined: builder.query<IsJoinedResponse, number>({
+    checkIsMember: builder.query<IsMemberResponse, number>({
       query: (groupId) => ({
-        url: `/groups/${groupId}/isJoined`,
+        url: `/groups/${groupId}/is-member`,
         meta: { authMode: "strict" },
       }),
       providesTags: ["Groups"],
@@ -211,7 +211,7 @@ export const groupDetailsApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useCheckIsJoinedQuery,
+  useCheckIsMemberQuery,
   useGetGroupScheduleQuery,
   useCreateScheduleMutation,
   useUpdateScheduleMutation,

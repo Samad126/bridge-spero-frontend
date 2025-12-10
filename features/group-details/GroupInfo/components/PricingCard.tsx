@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
 import {
-  useCheckIsJoinedQuery,
+  useCheckIsMemberQuery,
   useJoinGroupMutation,
 } from "../../api/groupDetailsApi";
 import {
@@ -38,13 +38,12 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
     
   });
 
-  // Check if user is joined (only if user is authenticated and is a student)
-  // const { data: isJoinedData } = useCheckIsJoinedQuery(Number(groupId), {
-  //   skip: !userData || userData.role !== "USER",
-  // });
+  // Check if user is a member (only if user is authenticated and is a student)
+  const { data: isMemberData } = useCheckIsMemberQuery(Number(groupId), {
+    skip: !userData || userData.role !== "USER",
+  });
 
-  // const isJoined = isJoinedData?.isJoined || false;
-  const isJoined = true;
+  const isMember = isMemberData?.isMember || false;
 
   const [joinGroup, { isLoading: isJoining }] = useJoinGroupMutation();
   const [getZoomAuthorize] = useLazyGetZoomAuthorizeQuery();
@@ -52,7 +51,6 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
   const [startLessonTrigger] = useLazyStartLessonQuery();
   const [joinLessonTrigger] = useLazyJoinLessonQuery();
 
-  // const isJoined = isJoinedData?.isJoined || false;
   const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
 
   const handleJoinGroup = async () => {
@@ -107,8 +105,8 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
   };
 
   const handleJoinLesson = async () => {
-    // Check if student is joined to the group
-    if (!isJoined) {
+    // Check if student is a member of the group
+    if (!isMember) {
       alert('You must enroll in this group before joining a lesson.');
       return;
     }
@@ -310,7 +308,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
               <Image src="/share.svg" alt="share" width={22} height={22} />
             </button>
             <button
-              onClick={isJoined ? handleJoinLesson : handleJoinGroup}
+              onClick={isMember ? handleJoinLesson : handleJoinGroup}
               disabled={isJoining || isStartingLesson}
               className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
             >
@@ -318,7 +316,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
                 ? "Joining..."
                 : isStartingLesson
                 ? "Starting..."
-                : isJoined
+                : isMember
                 ? "Join Lesson"
                 : "Enroll Now"}
             </button>
