@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Groups = [
   {
@@ -77,6 +77,57 @@ const Groups = [
   },
 ];
 
+type RatingStarProps = {
+  rate: number;
+}
+
+ function RatingStar({ rate }: RatingStarProps) {
+    return (
+      <div className="flex items-center gap-[24px]">
+        {Array.from({length: 5}, (_, i) => {
+          const starNumber = i + 1;
+
+          if(rate >= starNumber) {
+            return (
+              <Image
+                  src={"/star.svg"}
+                  width={32}
+                  height={32}
+                  alt={`star`}
+                  key={i}
+                  className="w-[32px] h-[32px]"
+                />
+            );
+          }
+
+          if (rate >= starNumber - 0.5) {
+            return (
+              <Image
+                  src={"/half-star.svg"}
+                  width={32}
+                  height={32}
+                  key={i}
+                  alt={`star`}
+                  className="w-[32px] h-[32px] block translate-y-[1px]"
+                />
+            );
+          }
+
+          return (
+            <Image
+                  src={"/white-star.svg"}
+                  key={i}
+                  width={32}
+                  height={32}
+                  alt={`star`}
+                  className="w-[32px] h-[32px]"
+                />
+          );
+        })}
+      </div>
+    );
+  }
+
 const TeacherProfile = () => {
   const [isZoomConnected, setIsZoomConnected] = useState(false);
   const [isBecomeStudent, setIsBecomeStudent] = useState(true);
@@ -84,7 +135,13 @@ const TeacherProfile = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isHeroHovered, setisHeroHovered] = useState(false);
   const [isPpHovered, setIsPpHovered] = useState(false);
+  const [showRateModal, setShowRateModal] = useState(false);
+  const [rate, setRate] = useState(2.5);
   const isTeacherLoggedIn = false;
+ 
+  
+  const percentage = rate / 5 * 100;
+
 
   const itemsPerPage = 8;
   const totalPages = Math.ceil(Groups.length / itemsPerPage);
@@ -97,6 +154,20 @@ const TeacherProfile = () => {
   const handleSelectedCategory = (category: string) => {
     setIsSelected(category);
   };
+
+  const openRateModule = () => {
+    setShowRateModal(true);
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeRateModule = () => {
+    setShowRateModal(false);
+    document.body.style.overflow = "unset";
+  };
+
+ 
+
+
 
   return (
     <section className="container flex flex-col gap-[24px] xxl:flex-row">
@@ -115,14 +186,18 @@ const TeacherProfile = () => {
             className="object-cover"
           />
           <div
-            className={`xxl:${isHeroHovered ? "block" : "hidden"} absolute inset-0 bg-[#00000099] z-10 block`}
+            className={`xxl:${
+              isHeroHovered ? "block" : "hidden"
+            } absolute inset-0 bg-[#00000099] z-10 block`}
           ></div>
           <Image
             src={"/camera_white.svg"}
             width={22}
             height={22}
             alt=""
-            className={`xxl:${isHeroHovered ? "block" : "hidden"} absolute block inset-0 m-auto cursor-pointer z-20`}
+            className={`xxl:${
+              isHeroHovered ? "block" : "hidden"
+            } absolute block inset-0 m-auto cursor-pointer z-20`}
           />
         </div>
 
@@ -141,14 +216,18 @@ const TeacherProfile = () => {
                 className="xxl:size-[178px] w-[100px] h-[100px] rounded-full "
               />
               <div
-                className={`xxl:${isPpHovered ? "block" : "hidden"} block absolute inset-0 bg-[#00000099] rounded-full z-30`}
+                className={`xxl:${
+                  isPpHovered ? "block" : "hidden"
+                } block absolute inset-0 bg-[#00000099] rounded-full z-30`}
               ></div>
               <Image
                 src={"/camera_white.svg"}
                 width={22}
                 height={22}
                 alt=""
-                className={`xxl:${isPpHovered ? "block" : "hidden"} block absolute inset-0 m-auto cursor-pointer z-40`}
+                className={`xxl:${
+                  isPpHovered ? "block" : "hidden"
+                } block absolute inset-0 m-auto cursor-pointer z-40`}
               />
             </div>
 
@@ -199,7 +278,10 @@ const TeacherProfile = () => {
                 <button className="bg-secondary text-white py-[12px] cursor-pointer">
                   Follow
                 </button>
-                <button className="text-secondary border border-secondary py-[12px] cursor-pointer">
+                <button
+                  onClick={() => openRateModule()}
+                  className="text-secondary border border-secondary py-[12px] cursor-pointer"
+                >
                   Rate
                 </button>
               </div>
@@ -364,6 +446,41 @@ const TeacherProfile = () => {
               </div>
             </div>
           )}
+        </div>
+      )}
+      {showRateModal && (
+        <div>
+          <div onClick={(e) => e.stopPropagation()} className="fixed inset-0 w-[304px] p-[24px] flex flex-col gap-[32px] m-auto z-90 h-max bg-white text-secondary">
+            <div className="w-full flex flex-col items-center">
+              <span className="text-custom-yellow text-center font-medium text-[32px] mb-[12px]">
+                {rate}
+              </span>
+              <RatingStar rate = { rate } />
+            </div>
+            <div>
+              <input
+                id="volume"
+                type="range"
+                min={0}
+                max={5}
+                step={0.5}
+                value={rate}
+                onChange={(e) => setRate(Number(e.target.value))}
+                className="w-full bg-primary appearance-none h-[2px] cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 "
+                style={{
+                  background: `linear-gradient(
+            to right,
+            #C96129 ${percentage}%,
+            #C8C8C8 ${percentage}%
+          )`,
+                }}
+              />
+            </div>
+            <button onClick={() => closeRateModule()} className="bg-secondary mx-[28px] text-white py-[12px] text-[18px] cursor-pointer">
+              Submit
+            </button>
+          </div>
+          <div onClick={() => closeRateModule()} className="w-full h-full fixed inset-0 bg-[#00000099] z-80"></div>
         </div>
       )}
     </section>
