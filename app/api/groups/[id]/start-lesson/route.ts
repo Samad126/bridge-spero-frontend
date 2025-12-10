@@ -27,7 +27,6 @@ export async function POST(
 
   const headers = new Headers();
   headers.append("Authorization", `Bearer ${access_token.value}`);
-  headers.append("Content-Type", "text/plain");
 
   try {
     const response = await fetch(`${API_BASE_URL}/groups/${id}/start-lesson`, {
@@ -36,20 +35,25 @@ export async function POST(
       cache: "no-store",
     });
 
-    console.log("Start lesson response is ", response);
-
-    const data = await response.text();
-
     if (!response.ok) {
-      return new Response(JSON.stringify(data), {
-        status: response.status,
-        headers: { "Content-Type": "application/json" },
-      });
+      // Backend returns JSON error
+      const errorData = await response.json();
+      return new Response(
+        JSON.stringify(errorData),
+        {
+          status: response.status,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
-    return new Response(JSON.stringify(data), {
-      status: response.status,
-      headers: { "Content-Type": "application/json" },
+    // Backend returns plain text (the Zoom URL) on success
+    const zoomUrl = await response.text();
+
+    // Return the plain Zoom URL string
+    return new Response(zoomUrl, {
+      status: 200,
+      headers: { "Content-Type": "text/plain" },
     });
   } catch (error) {
     console.error("Start lesson error:", error);

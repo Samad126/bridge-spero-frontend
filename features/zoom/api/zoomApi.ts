@@ -1,23 +1,16 @@
 import { baseApi } from "@/lib/redux/baseApi";
 
-export interface ZoomAuthorizeResponse {
-  authorizeUrl: string;
-}
-
 export interface ZoomVerifyResponse {
   connected: boolean;
 }
 
-export interface StartLessonResponse {
-  zoomUrl: string;
-}
-
 export const zoomApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getZoomAuthorize: builder.query<ZoomAuthorizeResponse, void>({
+    getZoomAuthorize: builder.query<string, void>({
       query: () => ({
         url: `/zoom/oauth/authorize`,
         meta: { authMode: "strict" },
+        responseHandler: "text",
       }),
       providesTags: ["Zoom"],
     }),
@@ -30,11 +23,12 @@ export const zoomApi = baseApi.injectEndpoints({
       providesTags: ["Zoom"],
     }),
 
-    startLesson: builder.mutation<StartLessonResponse, number>({
+    startLesson: builder.mutation<string, number>({
       query: (groupId) => ({
         url: `/groups/${groupId}/start-lesson`,
         method: "POST",
         meta: { authMode: "strict" },
+        responseHandler: "text",
       }),
       invalidatesTags: ["Groups", "Zoom"],
     }),

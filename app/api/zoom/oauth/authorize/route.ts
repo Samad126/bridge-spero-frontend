@@ -30,18 +30,21 @@ export async function GET() {
       cache: "no-store",
     });
 
-    const data = await response.text();
-
     if (!response.ok) {
-      return new Response(data, {
+      // Backend returns JSON error
+      const errorData = await response.json();
+      return new Response(JSON.stringify(errorData), {
         status: response.status,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    return new Response(JSON.stringify({ authorizeUrl: data }), {
-      status: response.status,
-      headers: { "Content-Type": "application/json" },
+    // Backend returns plain text (the authorize URL) on success
+    const authorizeUrl = await response.text();
+
+    return new Response(authorizeUrl, {
+      status: 200,
+      headers: { "Content-Type": "text/plain" },
     });
   } catch (error) {
     console.error("Zoom authorize error:", error);

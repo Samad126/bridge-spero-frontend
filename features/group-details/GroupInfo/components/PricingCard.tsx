@@ -53,7 +53,7 @@ function PricingCard({ price, groupId, imageUrl }: PricingCardProps) {
   const { data: zoomVerifyData, refetch: refetchZoomVerify } = useVerifyZoomConnectionQuery(undefined, {
     skip: !isTeacher,
   });
-  const { data: zoomAuthorizeData } = useGetZoomAuthorizeQuery(undefined, {
+  const { data: zoomAuthorizeUrl } = useGetZoomAuthorizeQuery(undefined, {
     skip: !isTeacher,
   });
 
@@ -77,9 +77,9 @@ function PricingCard({ price, groupId, imageUrl }: PricingCardProps) {
 
       if (!isConnected) {
         // If not connected, open Zoom authorization in new tab
-        if (zoomAuthorizeData?.authorizeUrl) {
+        if (zoomAuthorizeUrl) {
           // Extract the redirect URL from the "redirect:URL" format
-          const authorizeUrl = zoomAuthorizeData.authorizeUrl.replace(/^redirect:/, '');
+          const authorizeUrl = zoomAuthorizeUrl.replace(/^redirect:/, '');
           window.open(authorizeUrl, '_blank');
           alert('Please authorize Zoom in the opened tab, then try starting the lesson again.');
         } else {
@@ -90,11 +90,11 @@ function PricingCard({ price, groupId, imageUrl }: PricingCardProps) {
       }
 
       // If connected, start the lesson
-      const lessonResult = await startLesson(Number(groupId)).unwrap();
+      const zoomUrl = await startLesson(Number(groupId)).unwrap();
 
-      if (lessonResult.zoomUrl) {
+      if (zoomUrl) {
         // Open Zoom URL in new tab
-        window.open(lessonResult.zoomUrl, '_blank');
+        window.open(zoomUrl, '_blank');
       } else {
         alert('Failed to get Zoom meeting URL. Please try again.');
       }
