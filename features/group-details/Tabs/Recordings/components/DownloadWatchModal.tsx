@@ -8,6 +8,7 @@ interface DownloadWatchModalProps {
   onDownload: () => void;
   onWatch: () => void;
   recordingName: string;
+  isDownloading: boolean;
 }
 
 function DownloadWatchModal({
@@ -16,6 +17,7 @@ function DownloadWatchModal({
   onDownload,
   onWatch,
   recordingName,
+  isDownloading,
 }: DownloadWatchModalProps) {
   if (!isOpen) return null;
 
@@ -62,10 +64,13 @@ function DownloadWatchModal({
             {/* Download button */}
             <button
               onClick={onDownload}
+              disabled={isDownloading}
               className="w-full border border-gray-light p-[16px] flex items-center gap-[12px] hover:bg-gray-50 transition-colors"
             >
               <Image src="/download.svg" alt="download" width={24} height={24} />
-              <span className="text-[18px]">Download Video</span>
+              <span className="text-[18px]">
+                {isDownloading ? "Downloading..." : "Download Video"}
+              </span>
             </button>
           </div>
         </div>

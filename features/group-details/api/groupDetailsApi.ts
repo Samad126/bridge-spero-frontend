@@ -211,10 +211,20 @@ export const groupDetailsApi = baseApi.injectEndpoints({
     getResourceStream: builder.query<string, number>({
       query: (resourceId) => ({
         url: `/resources/${resourceId}?download=false`,
-        meta: { authMode: "optional" },
+        meta: { authMode: "strict" },
         responseHandler: async (response) => {
           // Return the URL for streaming
           return response.url;
+        },
+      }),
+    }),
+
+    getResourceDownload: builder.query<Blob, number>({
+      query: (resourceId) => ({
+        url: `/resources/${resourceId}?download=true`,
+        meta: { authMode: "strict" },
+        responseHandler: async (response) => {
+          return response.blob();
         },
       }),
     }),
@@ -239,5 +249,7 @@ export const {
   useDeleteMemberMutation,
   useJoinGroupMutation,
   useGetResourceStreamQuery,
+  useGetResourceDownloadQuery,
+  useLazyGetResourceDownloadQuery,
 } = groupDetailsApi;
 

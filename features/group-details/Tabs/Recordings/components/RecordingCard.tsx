@@ -2,7 +2,10 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { useUploadRecordingMutation } from "@/features/group-details/api/groupDetailsApi";
+import {
+  useUploadRecordingMutation,
+  useLazyGetResourceDownloadQuery
+} from "@/features/group-details/api/groupDetailsApi";
 import { RecordingItem } from "@/features/group-details/types/groupDetailsTypes";
 import DownloadWatchModal from "./DownloadWatchModal";
 import VideoPlayerPopup from "./VideoPlayerPopup";
@@ -26,6 +29,8 @@ function RecordingCard({
   const [recordingName, setRecordingName] = useState("");
   const [uploadRecording, { isLoading: isUploading }] =
     useUploadRecordingMutation();
+  const [triggerDownload, { isLoading: isDownloading }] =
+    useLazyGetResourceDownloadQuery();
   const [showModal, setShowModal] = useState(false);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
 
@@ -93,22 +98,18 @@ function RecordingCard({
     if (!recording?.id) return;
 
     try {
-      // Fetch with download=true to get the file as download
-      const response = await fetch(`/api/resources/${recording.id}?download=true`);
-
-      if (!response.ok) {
-        throw new Error("Failed to download recording");
-      }
-
-      const data = await response.json();
+      // Use RTK Query to fetch the file blob with authentication
+      const blob = await triggerDownload(recording.id).unwrap();
 
       // Create download link
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = data.url || recording.path;
+      link.href = url;
       link.download = recording.name || recording.path.split("/").pop() || "recording";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Failed to download recording:", error);
       alert("Failed to download recording. Please try again.");
@@ -136,7 +137,7 @@ function RecordingCard({
     });
   };
 
-  const isLoading = isUploading;
+  const isLoading = isUploading || isDownloading;
 
   // Add mode with input form
   if (cardStatus === "add" && isTeacher && isAddMode) {
@@ -247,6 +248,7 @@ function RecordingCard({
             onDownload={handleDownload}
             onWatch={handleWatch}
             recordingName={recording.name || formatDate(recording.createdAt)}
+            isDownloading={isDownloading}
           />
 
           {/* Video Player Popup */}

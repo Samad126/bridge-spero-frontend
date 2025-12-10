@@ -11,14 +11,26 @@ export async function GET(
     const cookieStore = await cookies();
     const access_token = cookieStore.get("access_token");
 
+    // Require authentication for accessing recordings
+    if (!access_token) {
+      return new Response(
+        JSON.stringify({
+          errorCode: "UNAUTHORIZED",
+          errorMessage: "No access token found",
+        }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     const { id } = await params;
     const { searchParams } = new URL(request.url);
     const download = searchParams.get("download") === "true";
 
     const headers = new Headers();
-    if (access_token) {
-      headers.append("Authorization", `Bearer ${access_token.value}`);
-    }
+    headers.append("Authorization", `Bearer ${access_token.value}`);
 
     const response = await fetch(
       `${API_BASE_URL}/resources/${id}?download=${download}`,
@@ -39,18 +51,7 @@ export async function GET(
       });
     }
 
-    // If download=true, return JSON metadata
-    if (download) {
-      const data = await response.json();
-      return new Response(JSON.stringify(data), {
-        status: response.status,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-    }
-
-    // If download=false, stream the video/file
+    // Stream the video/file (works for both download=true and download=false)
     const contentType = response.headers.get("Content-Type") || "application/octet-stream";
     const contentDisposition = response.headers.get("Content-Disposition");
 
