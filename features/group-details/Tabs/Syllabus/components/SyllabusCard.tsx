@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   useUploadSyllabusMutation,
   useDeleteSyllabusMutation,
 } from "@/features/group-details/api/groupDetailsApi";
+import FileActionModal from "@/components/FileViewer/FileActionModal";
+import FilePreviewPopup from "@/components/FileViewer/FilePreviewPopup";
 
 interface SyllabusCardProps {
   cardStatus: "view" | "add";
@@ -18,6 +20,8 @@ function SyllabusCard({ cardStatus, syllabusPath, groupId, isTeacher }: Syllabus
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadSyllabus, { isLoading: isUploading }] = useUploadSyllabusMutation();
   const [deleteSyllabus, { isLoading: isDeleting }] = useDeleteSyllabusMutation();
+  const [showActionModal, setShowActionModal] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -53,6 +57,10 @@ function SyllabusCard({ cardStatus, syllabusPath, groupId, isTeacher }: Syllabus
     }
   };
 
+  const handleSyllabusClick = () => {
+    setShowActionModal(true);
+  };
+
   const handleDownload = () => {
     if (!syllabusPath) return;
 
@@ -62,60 +70,92 @@ function SyllabusCard({ cardStatus, syllabusPath, groupId, isTeacher }: Syllabus
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    setShowActionModal(false);
+  };
+
+  const handlePreview = () => {
+    setShowActionModal(false);
+    setShowPreview(true);
   };
 
   const isLoading = isUploading || isDeleting;
 
   return (
-    <div className="border border-gray-light w-full">
-      {cardStatus === "view" && syllabusPath && (
-        <div className="p-[24px] flex items-center justify-between w-full">
-          <button
-            onClick={handleDownload}
-            className="w-full flex items-center gap-[12px]"
-            disabled={isLoading}
-          >
-            <Image
-              src={"/file-text.svg"}
-              alt="file text"
-              width={32}
-              height={32}
-              className="w-[32px] h-[32px]"
-            />
-            <p className="text-[20px]">Syllabus</p>
-          </button>
-          {isTeacher && (
+    <>
+      <div className="border border-gray-light w-full">
+        {cardStatus === "view" && syllabusPath && (
+          <div className="p-[24px] flex items-center justify-between w-full">
             <button
-              onClick={handleDelete}
+              onClick={handleSyllabusClick}
+              className="w-full flex items-center gap-[12px]"
               disabled={isLoading}
-              className="disabled:opacity-50"
             >
-              <Image src={"/trash-2.svg"} alt="delete" width={22} height={22} />
+              <Image
+                src={"/file-text.svg"}
+                alt="file text"
+                width={32}
+                height={32}
+                className="w-[32px] h-[32px]"
+              />
+              <p className="text-[20px]">Syllabus</p>
             </button>
-          )}
-        </div>
-      )}
-      {cardStatus === "add" && isTeacher && (
+            {isTeacher && (
+              <button
+                onClick={handleDelete}
+                disabled={isLoading}
+                className="disabled:opacity-50"
+              >
+                <Image src={"/trash-2.svg"} alt="delete" width={22} height={22} />
+              </button>
+            )}
+          </div>
+        )}
+        {cardStatus === "add" && isTeacher && (
+          <>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/pdf"
+              onChange={handleFileSelect}
+              className="hidden"
+              disabled={isLoading}
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="p-[24px] flex gap-[12px] w-full h-full items-center disabled:opacity-50"
+              disabled={isLoading}
+            >
+              <Image src={"/plus.svg"} alt="plus" width={22} height={22} />
+              <span className="text-[20px]">{isLoading ? "Uploading..." : "Add"}</span>
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* File Action Modal */}
+      {syllabusPath && (
         <>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="application/pdf"
-            onChange={handleFileSelect}
-            className="hidden"
-            disabled={isLoading}
+          <FileActionModal
+            isOpen={showActionModal}
+            onClose={() => setShowActionModal(false)}
+            onDownload={handleDownload}
+            onPreview={handlePreview}
+            fileName="Syllabus"
+            contentType="application/pdf"
+            isDownloading={false}
           />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="p-[24px] flex gap-[12px] w-full h-full items-center disabled:opacity-50"
-            disabled={isLoading}
-          >
-            <Image src={"/plus.svg"} alt="plus" width={22} height={22} />
-            <span className="text-[20px]">{isLoading ? "Uploading..." : "Add"}</span>
-          </button>
+
+          {/* File Preview Popup */}
+          <FilePreviewPopup
+            isOpen={showPreview}
+            onClose={() => setShowPreview(false)}
+            fileUrl={syllabusPath}
+            fileName="Syllabus"
+            contentType="application/pdf"
+          />
         </>
       )}
-    </div>
+    </>
   );
 }
 

@@ -4,6 +4,9 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { useUploadResourceMutation, useDeleteResourceMutation } from "@/features/group-details/api/groupDetailsApi";
 import { ResourceItem } from "@/features/group-details/types/groupDetailsTypes";
+import FileActionModal from "@/components/FileViewer/FileActionModal";
+import FilePreviewPopup from "@/components/FileViewer/FilePreviewPopup";
+import { useFileViewer } from "@/hooks/useFileViewer";
 
 interface ResourcesCardProps {
   cardStatus: "view" | "add";
@@ -26,6 +29,19 @@ function ResourcesCard({
     useUploadResourceMutation();
   const [deleteResource, { isLoading: isDeleting }] =
     useDeleteResourceMutation();
+
+  const {
+    showActionModal,
+    showPreview,
+    currentFile,
+    isDownloading,
+    openFile,
+    handleDownload,
+    handlePreview,
+    closeActionModal,
+    closePreview,
+    getStreamUrl,
+  } = useFileViewer();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -81,16 +97,9 @@ function ResourcesCard({
     }
   };
 
-  const handleDownload = () => {
-    if (!resource?.path) return;
-
-    const link = document.createElement("a");
-    link.href = resource.path;
-    link.download =
-      resource.name || resource.path.split("/").pop() || "resource";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleResourceClick = () => {
+    if (!resource) return;
+    openFile(resource);
   };
 
   const handleDelete = async () => {
@@ -122,7 +131,7 @@ function ResourcesCard({
     });
   };
 
-  const isLoading = isUploading || isDeleting;
+  const isLoading = isUploading || isDeleting || isDownloading;
 
   if (cardStatus === "add" && isTeacher && isAddMode) {
     return (
@@ -179,54 +188,80 @@ function ResourcesCard({
   }
 
   return (
-    <div className="border border-gray-light flex items-center w-full">
-      {cardStatus === "view" && resource && (
-        <div className="p-[24px] flex items-center justify-between w-full">
-          <button
-            onClick={handleDownload}
-            className="flex items-center gap-[12px]"
-            disabled={isLoading}
-          >
-            <Image
-              src={"/file-text.svg"}
-              alt="file text"
-              width={32}
-              height={32}
-              className="w-[32px] h-[32px]"
-            />
-            <div className="flex flex-col items-start">
-              <p className="text-[20px]">
-                {resource.name || formatDate(resource.createdAt)}
-              </p>
-              {resource.name && (
-                <span className="text-[14px] text-gray-500">
-                  {formatDate(resource.createdAt)}
-                </span>
-              )}
-            </div>
-          </button>
-          {isTeacher && (
+    <>
+      <div className="border border-gray-light flex items-center w-full">
+        {cardStatus === "view" && resource && (
+          <div className="p-[24px] flex items-center justify-between w-full">
             <button
-              onClick={handleDelete}
-              className="disabled:opacity-50"
+              onClick={handleResourceClick}
+              className="flex items-center gap-[12px]"
               disabled={isLoading}
             >
-              <Image src={"/trash-2.svg"} alt="delete" width={22} height={22} />
+              <Image
+                src={"/file-text.svg"}
+                alt="file text"
+                width={32}
+                height={32}
+                className="w-[32px] h-[32px]"
+              />
+              <div className="flex flex-col items-start">
+                <p className="text-[20px]">
+                  {resource.name || formatDate(resource.createdAt)}
+                </p>
+                {resource.name && (
+                  <span className="text-[14px] text-gray-500">
+                    {formatDate(resource.createdAt)}
+                  </span>
+                )}
+              </div>
             </button>
-          )}
-        </div>
+            {isTeacher && (
+              <button
+                onClick={handleDelete}
+                className="disabled:opacity-50"
+                disabled={isLoading}
+              >
+                <Image src={"/trash-2.svg"} alt="delete" width={22} height={22} />
+              </button>
+            )}
+          </div>
+        )}
+        {cardStatus === "add" && isTeacher && !isAddMode && (
+          <button
+            onClick={handleAddClick}
+            className="p-[24px] flex gap-[12px] w-full h-full items-center disabled:opacity-50"
+            disabled={isLoading}
+          >
+            <Image src={"/plus.svg"} alt="plus" width={22} height={22} />
+            <span className="text-[20px]">Add</span>
+          </button>
+        )}
+      </div>
+
+      {/* File Action Modal */}
+      {currentFile && (
+        <>
+          <FileActionModal
+            isOpen={showActionModal}
+            onClose={closeActionModal}
+            onDownload={handleDownload}
+            onPreview={handlePreview}
+            fileName={currentFile.name || formatDate(currentFile.createdAt || "")}
+            contentType={currentFile.contentType}
+            isDownloading={isDownloading}
+          />
+
+          {/* File Preview Popup */}
+          <FilePreviewPopup
+            isOpen={showPreview}
+            onClose={closePreview}
+            fileUrl={getStreamUrl()}
+            fileName={currentFile.name || formatDate(currentFile.createdAt || "")}
+            contentType={currentFile.contentType}
+          />
+        </>
       )}
-      {cardStatus === "add" && isTeacher && !isAddMode && (
-        <button
-          onClick={handleAddClick}
-          className="p-[24px] flex gap-[12px] w-full h-full items-center disabled:opacity-50"
-          disabled={isLoading}
-        >
-          <Image src={"/plus.svg"} alt="plus" width={22} height={22} />
-          <span className="text-[20px]">Add</span>
-        </button>
-      )}
-    </div>
+    </>
   );
 }
 export default ResourcesCard;

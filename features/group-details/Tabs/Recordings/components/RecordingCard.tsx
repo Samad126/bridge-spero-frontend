@@ -2,13 +2,11 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
-import {
-  useUploadRecordingMutation,
-  useLazyGetResourceDownloadQuery
-} from "@/features/group-details/api/groupDetailsApi";
+import { useUploadRecordingMutation } from "@/features/group-details/api/groupDetailsApi";
 import { RecordingItem } from "@/features/group-details/types/groupDetailsTypes";
-import DownloadWatchModal from "./DownloadWatchModal";
-import VideoPlayerPopup from "./VideoPlayerPopup";
+import FileActionModal from "@/components/FileViewer/FileActionModal";
+import FilePreviewPopup from "@/components/FileViewer/FilePreviewPopup";
+import { useFileViewer } from "@/hooks/useFileViewer";
 
 interface RecordingCardProps {
   cardStatus: "view" | "add";
@@ -29,10 +27,19 @@ function RecordingCard({
   const [recordingName, setRecordingName] = useState("");
   const [uploadRecording, { isLoading: isUploading }] =
     useUploadRecordingMutation();
-  const [triggerDownload, { isLoading: isDownloading }] =
-    useLazyGetResourceDownloadQuery();
-  const [showModal, setShowModal] = useState(false);
-  const [showVideoPlayer, setShowVideoPlayer] = useState(false);
+
+  const {
+    showActionModal,
+    showPreview,
+    currentFile,
+    isDownloading,
+    openFile,
+    handleDownload,
+    handlePreview,
+    closeActionModal,
+    closePreview,
+    getStreamUrl,
+  } = useFileViewer();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -91,41 +98,8 @@ function RecordingCard({
   };
 
   const handleRecordingClick = () => {
-    setShowModal(true);
-  };
-
-  const handleDownload = async () => {
-    if (!recording?.id) return;
-
-    try {
-      // Use RTK Query to fetch the file blob with authentication
-      const blob = await triggerDownload(recording.id).unwrap();
-
-      // Create download link
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = recording.name || recording.path.split("/").pop() || "recording";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Failed to download recording:", error);
-      alert("Failed to download recording. Please try again.");
-    } finally {
-      setShowModal(false);
-    }
-  };
-
-  const handleWatch = () => {
-    setShowModal(false);
-    setShowVideoPlayer(true);
-  };
-
-  const getStreamUrl = () => {
-    if (!recording?.id) return "";
-    return `/api/resources/${recording.id}?download=false`;
+    if (!recording) return;
+    openFile(recording);
   };
 
   const formatDate = (dateString: string) => {
@@ -239,24 +213,26 @@ function RecordingCard({
         )}
       </div>
 
-      {/* Download/Watch Modal */}
-      {recording && (
+      {/* File Action Modal */}
+      {currentFile && (
         <>
-          <DownloadWatchModal
-            isOpen={showModal}
-            onClose={() => setShowModal(false)}
+          <FileActionModal
+            isOpen={showActionModal}
+            onClose={closeActionModal}
             onDownload={handleDownload}
-            onWatch={handleWatch}
-            recordingName={recording.name || formatDate(recording.createdAt)}
+            onPreview={handlePreview}
+            fileName={currentFile.name || formatDate(currentFile.createdAt || "")}
+            contentType={currentFile.contentType}
             isDownloading={isDownloading}
           />
 
-          {/* Video Player Popup */}
-          <VideoPlayerPopup
-            isOpen={showVideoPlayer}
-            onClose={() => setShowVideoPlayer(false)}
-            videoUrl={getStreamUrl()}
-            recordingName={recording.name || formatDate(recording.createdAt)}
+          {/* File Preview Popup */}
+          <FilePreviewPopup
+            isOpen={showPreview}
+            onClose={closePreview}
+            fileUrl={getStreamUrl()}
+            fileName={currentFile.name || formatDate(currentFile.createdAt || "")}
+            contentType={currentFile.contentType}
           />
         </>
       )}
