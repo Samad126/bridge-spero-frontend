@@ -29,6 +29,11 @@ const GroupCard = ({
   const marginBottom = col === 1 ? "mb-[24px] mt-[12px]" : "mb-[12px] mt-[6px] md:mb-[24px] md:mt-[12px]";
   const fullPath = imageUrl ? `${process.env.NEXT_PUBLIC_PAGE_URL}${imageUrl}` : "/none.png";
 
+  // Format language to display with first letter uppercase only
+  const formattedLanguage = language
+    ? language.charAt(0).toUpperCase() + language.slice(1).toLowerCase()
+    : "";
+
   return (
     <div className="flex-1 border border-gray-light">
       <div className={`relative w-full ${imageHeight}`}>
@@ -52,7 +57,7 @@ const GroupCard = ({
             alt=""
             className="w-[16px] h-[16px]"
           />
-          <span className={`ml-1 text-tertiary ${textSize}`}>{language}</span>
+          <span className={`ml-1 text-tertiary ${textSize}`}>{formattedLanguage}</span>
         </div>
         <div className={marginBottom}>
           <h3 className={`text-secondary ${titleSize}`}>{subjectName}</h3>

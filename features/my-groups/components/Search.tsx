@@ -38,7 +38,7 @@ function Search() {
 
     setFilters({
       groupName: groupName || "",
-      language: language || "",
+      language: language ? language.toUpperCase() : "",
       status: status || "ACTIVE",
       categoryId: categoryId || "",
     });
@@ -65,13 +65,12 @@ function Search() {
               <select
                 name="language"
                 className="border border-gray-light h-[46px] px-[12px] w-full inline-block text-tertiary"
-                defaultValue={filters.language}
+                defaultValue={filters.language.toLowerCase()}
               >
                 <option value="">Language</option>
-                <option value="English">English</option>
-                <option value="Spanish">Spanish</option>
-                <option value="French">French</option>
-                <option value="German">German</option>
+                <option value="azerbaijani">Azerbaijani</option>
+                <option value="english">English</option>
+                <option value="russian">Russian</option>
               </select>
             </p>
             <p className="flex-1 xxl:max-w-[268.67px] w-full">
