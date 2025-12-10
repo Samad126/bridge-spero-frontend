@@ -32,6 +32,16 @@ export const zoomApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Zoom"],
     }),
+
+    joinLesson: builder.query<string, number>({
+      query: (groupId) => ({
+        url: `/groups/${groupId}/join-lesson`,
+        method: "GET",
+        meta: { authMode: "strict" },
+        responseHandler: "text",
+      }),
+      providesTags: ["Zoom"],
+    }),
   }),
 });
 
@@ -42,4 +52,6 @@ export const {
   useLazyVerifyZoomConnectionQuery,
   useStartLessonQuery,
   useLazyStartLessonQuery,
+  useJoinLessonQuery,
+  useLazyJoinLessonQuery,
 } = zoomApi;

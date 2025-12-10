@@ -10,6 +10,7 @@ import {
   useLazyGetZoomAuthorizeQuery,
   useLazyVerifyZoomConnectionQuery,
   useLazyStartLessonQuery,
+  useLazyJoinLessonQuery,
 } from "@/features/zoom/api/zoomApi";
 import Link from "next/link";
 import PricingCardSkeleton from "./PricingCardSkeleton";
@@ -43,12 +44,13 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
   // });
 
   // const isJoined = isJoinedData?.isJoined || false;
-  const isJoined = false;
+  const isJoined = true;
 
   const [joinGroup, { isLoading: isJoining }] = useJoinGroupMutation();
   const [getZoomAuthorize] = useLazyGetZoomAuthorizeQuery();
   const [verifyZoomConnection] = useLazyVerifyZoomConnectionQuery();
   const [startLessonTrigger] = useLazyStartLessonQuery();
+  const [joinLessonTrigger] = useLazyJoinLessonQuery();
 
   // const isJoined = isJoinedData?.isJoined || false;
   const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
@@ -99,6 +101,32 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
     } catch (error) {
       console.error('Failed to start lesson:', error);
       alert('Failed to start lesson. Please try again.');
+    } finally {
+      setIsStartingLesson(false);
+    }
+  };
+
+  const handleJoinLesson = async () => {
+    // Check if student is joined to the group
+    if (!isJoined) {
+      alert('You must enroll in this group before joining a lesson.');
+      return;
+    }
+
+    setIsStartingLesson(true);
+    try {
+      // Join the lesson
+      const result = await joinLessonTrigger(Number(groupId));
+
+      if (result.data) {
+        // Open Zoom URL in new tab
+        window.open(result.data, '_blank');
+      } else {
+        alert('Failed to get Zoom meeting URL. Please try again.');
+      }
+    } catch (error) {
+      console.error('Failed to join lesson:', error);
+      alert('Failed to join lesson. Please try again.');
     } finally {
       setIsStartingLesson(false);
     }
@@ -282,12 +310,14 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
               <Image src="/share.svg" alt="share" width={22} height={22} />
             </button>
             <button
-              onClick={isJoined ? undefined : handleJoinGroup}
-              disabled={isJoining}
+              onClick={isJoined ? handleJoinLesson : handleJoinGroup}
+              disabled={isJoining || isStartingLesson}
               className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
             >
               {isJoining
                 ? "Joining..."
+                : isStartingLesson
+                ? "Starting..."
                 : isJoined
                 ? "Join Lesson"
                 : "Enroll Now"}
