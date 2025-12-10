@@ -60,7 +60,7 @@ const StudentProfile = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isHeroHovered, setisHeroHovered] = useState(false);
   const [isPpHovered, setIsPpHovered] = useState(false);
-  const isStudent = false;
+  const isStudentLoggedIn = false;
 
   const handleSelectedCategory = (category: string) => {
     setIsSelected(category);
@@ -160,7 +160,7 @@ const StudentProfile = () => {
               urna ipsum nunc. Sit gravida tempus quis laoreet aenean nunc enim
               facilisi bibendum. Maecenas et risus{" "}
             </p>
-            {isStudent ? (
+            {isStudentLoggedIn ? (
               <button className="bg-secondary text-white py-[12px] px-[42px] cursor-pointer">
                 Edit Profile Info
               </button>
@@ -169,7 +169,7 @@ const StudentProfile = () => {
 
           <div className="xxl:flex-1 flex flex-col gap-[24px] items-center px-[12px] pb-[12px] xxl:p-0">
             <div className="flex items-center w-full select-none">
-              {!isStudent && (
+              {!isStudentLoggedIn && (
                 <div
                   onClick={() => handleSelectedCategory("groups")}
                   className={`${
