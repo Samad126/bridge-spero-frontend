@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { useUploadRecordingMutation } from "@/features/group-details/api/groupDetailsApi";
 import { RecordingItem } from "@/features/group-details/types/groupDetailsTypes";
+import DownloadWatchModal from "./DownloadWatchModal";
+import VideoPlayerPopup from "./VideoPlayerPopup";
 
 interface RecordingCardProps {
   cardStatus: "view" | "add";
@@ -24,6 +26,8 @@ function RecordingCard({
   const [recordingName, setRecordingName] = useState("");
   const [uploadRecording, { isLoading: isUploading }] =
     useUploadRecordingMutation();
+  const [showModal, setShowModal] = useState(false);
+  const [showVideoPlayer, setShowVideoPlayer] = useState(false);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -81,16 +85,46 @@ function RecordingCard({
     }
   };
 
-  const handleDownload = () => {
-    if (!recording?.path) return;
+  const handleRecordingClick = () => {
+    setShowModal(true);
+  };
 
-    const link = document.createElement("a");
-    link.href = recording.path;
-    link.download =
-      recording.name || recording.path.split("/").pop() || "recording";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async () => {
+    if (!recording?.id) return;
+
+    try {
+      // Fetch with download=true to get the file as download
+      const response = await fetch(`/api/resources/${recording.id}?download=true`);
+
+      if (!response.ok) {
+        throw new Error("Failed to download recording");
+      }
+
+      const data = await response.json();
+
+      // Create download link
+      const link = document.createElement("a");
+      link.href = data.url || recording.path;
+      link.download = recording.name || recording.path.split("/").pop() || "recording";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Failed to download recording:", error);
+      alert("Failed to download recording. Please try again.");
+    } finally {
+      setShowModal(false);
+    }
+  };
+
+  const handleWatch = () => {
+    setShowModal(false);
+    setShowVideoPlayer(true);
+  };
+
+  const getStreamUrl = () => {
+    if (!recording?.id) return "";
+    return `/api/resources/${recording.id}?download=false`;
   };
 
   const formatDate = (dateString: string) => {
@@ -163,45 +197,68 @@ function RecordingCard({
   }
 
   return (
-    <div className="border border-gray-light flex items-center w-full">
-      {cardStatus === "view" && recording && (
-        <div className="p-[24px] flex items-center justify-between w-full">
+    <>
+      <div className="border border-gray-light flex items-center w-full">
+        {cardStatus === "view" && recording && (
+          <div className="p-[24px] flex items-center justify-between w-full">
+            <button
+              onClick={handleRecordingClick}
+              className="w-full flex items-center gap-[12px]"
+              disabled={isLoading}
+            >
+              <Image
+                src={"/download.svg"}
+                alt="download"
+                width={32}
+                height={32}
+                className="w-[32px] h-[32px]"
+              />
+              <div className="flex flex-col items-start">
+                <p className="text-[20px]">
+                  {recording.name || formatDate(recording.createdAt)}
+                </p>
+                {recording.name && (
+                  <span className="text-[14px] text-gray-500">
+                    {formatDate(recording.createdAt)}
+                  </span>
+                )}
+              </div>
+            </button>
+          </div>
+        )}
+        {cardStatus === "add" && isTeacher && !isAddMode && (
           <button
-            onClick={handleDownload}
-            className="w-full flex items-center gap-[12px]"
+            onClick={handleAddClick}
+            className="p-[24px] flex gap-[12px] w-full h-full items-center disabled:opacity-50"
             disabled={isLoading}
           >
-            <Image
-              src={"/download.svg"}
-              alt="download"
-              width={32}
-              height={32}
-              className="w-[32px] h-[32px]"
-            />
-            <div className="flex flex-col items-start">
-              <p className="text-[20px]">
-                {recording.name || formatDate(recording.createdAt)}
-              </p>
-              {recording.name && (
-                <span className="text-[14px] text-gray-500">
-                  {formatDate(recording.createdAt)}
-                </span>
-              )}
-            </div>
+            <Image src={"/plus.svg"} alt="plus" width={22} height={22} />
+            <span className="text-[20px]">Add</span>
           </button>
-        </div>
+        )}
+      </div>
+
+      {/* Download/Watch Modal */}
+      {recording && (
+        <>
+          <DownloadWatchModal
+            isOpen={showModal}
+            onClose={() => setShowModal(false)}
+            onDownload={handleDownload}
+            onWatch={handleWatch}
+            recordingName={recording.name || formatDate(recording.createdAt)}
+          />
+
+          {/* Video Player Popup */}
+          <VideoPlayerPopup
+            isOpen={showVideoPlayer}
+            onClose={() => setShowVideoPlayer(false)}
+            videoUrl={getStreamUrl()}
+            recordingName={recording.name || formatDate(recording.createdAt)}
+          />
+        </>
       )}
-      {cardStatus === "add" && isTeacher && !isAddMode && (
-        <button
-          onClick={handleAddClick}
-          className="p-[24px] flex gap-[12px] w-full h-full items-center disabled:opacity-50"
-          disabled={isLoading}
-        >
-          <Image src={"/plus.svg"} alt="plus" width={22} height={22} />
-          <span className="text-[20px]">Add</span>
-        </button>
-      )}
-    </div>
+    </>
   );
 }
 

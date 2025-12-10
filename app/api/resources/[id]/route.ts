@@ -3,6 +3,82 @@ import { cookies } from "next/headers";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "https://dev.bridgespero.com/api/v1";
 
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const cookieStore = await cookies();
+    const access_token = cookieStore.get("access_token");
+
+    const { id } = await params;
+    const { searchParams } = new URL(request.url);
+    const download = searchParams.get("download") === "true";
+
+    const headers = new Headers();
+    if (access_token) {
+      headers.append("Authorization", `Bearer ${access_token.value}`);
+    }
+
+    const response = await fetch(
+      `${API_BASE_URL}/resources/${id}?download=${download}`,
+      {
+        method: "GET",
+        headers,
+        cache: "no-store",
+      }
+    );
+
+    if (!response.ok) {
+      const data = await response.json();
+      return new Response(JSON.stringify(data), {
+        status: response.status,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
+    // If download=true, return JSON metadata
+    if (download) {
+      const data = await response.json();
+      return new Response(JSON.stringify(data), {
+        status: response.status,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
+    // If download=false, stream the video/file
+    const contentType = response.headers.get("Content-Type") || "application/octet-stream";
+    const contentDisposition = response.headers.get("Content-Disposition");
+
+    const responseHeaders = new Headers();
+    responseHeaders.set("Content-Type", contentType);
+    if (contentDisposition) {
+      responseHeaders.set("Content-Disposition", contentDisposition);
+    }
+
+    return new Response(response.body, {
+      status: response.status,
+      headers: responseHeaders,
+    });
+  } catch (error) {
+    console.error("Error fetching resource:", error);
+    return new Response(
+      JSON.stringify({
+        errorCode: "INTERNAL_ERROR",
+        errorMessage: "Failed to fetch resource",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+}
+
 export async function DELETE(
   request: Request,
   { params }: { params: Promise<{ id: string }> }

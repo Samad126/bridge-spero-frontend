@@ -207,6 +207,17 @@ export const groupDetailsApi = baseApi.injectEndpoints({
         "Groups",
       ],
     }),
+
+    getResourceStream: builder.query<string, number>({
+      query: (resourceId) => ({
+        url: `/resources/${resourceId}?download=false`,
+        meta: { authMode: "optional" },
+        responseHandler: async (response) => {
+          // Return the URL for streaming
+          return response.url;
+        },
+      }),
+    }),
   }),
 });
 
@@ -227,5 +238,6 @@ export const {
   useGetGroupMembersQuery,
   useDeleteMemberMutation,
   useJoinGroupMutation,
+  useGetResourceStreamQuery,
 } = groupDetailsApi;
 
