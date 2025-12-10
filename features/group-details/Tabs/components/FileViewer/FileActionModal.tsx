@@ -82,7 +82,7 @@ function FileActionModal({
                   <path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="2" />
                 </svg>
                 <span className="text-[16px]">
-                  Cannot preview {fileInfo.displayName} files in browser
+                  Cannot preview this file in browser
                 </span>
               </div>
             )}

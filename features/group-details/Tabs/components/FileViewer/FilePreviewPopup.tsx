@@ -98,7 +98,13 @@ function FilePreviewPopup({
 
   // Load DOCX with docx-preview
   useEffect(() => {
-    if (isOpen && fileInfo.category === "document" && fileUrl && docxContainerRef.current && renderAsync) {
+    if (
+      isOpen &&
+      fileInfo.category === "document" &&
+      fileUrl &&
+      docxContainerRef.current &&
+      renderAsync
+    ) {
       setIsLoading(true);
       fetch(fileUrl)
         .then((response) => response.blob())
@@ -133,7 +139,7 @@ function FilePreviewPopup({
           setIsLoading(false);
         });
     }
-  }, [isOpen, fileInfo.category, fileUrl]);
+  }, [isOpen, fileInfo.category, fileUrl, contentType]);
 
   useEffect(() => {
     // Pause media when closing

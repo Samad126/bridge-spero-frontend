@@ -1,6 +1,6 @@
 // Content type detection and handling utilities
 
-export type FileCategory = 'video' | 'audio' | 'image' | 'pdf' | 'document' | 'presentation' | 'unsupported';
+export type FileCategory = 'video' | 'audio' | 'image' | 'pdf' | 'document' | 'unsupported';
 
 export interface FileTypeInfo {
   category: FileCategory;
@@ -60,7 +60,6 @@ export function getFileTypeInfo(contentType: string): FileTypeInfo {
   // Documents - can preview with docx-preview
   if (
     lowerType.includes('word') ||
-    lowerType.includes('document') ||
     lowerType === 'application/msword' ||
     lowerType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ) {
@@ -70,22 +69,6 @@ export function getFileTypeInfo(contentType: string): FileTypeInfo {
       canPreview: true,
       icon: '/file-text.svg',
       displayName: 'Document',
-    };
-  }
-
-  // Presentations - download only
-  if (
-    lowerType.includes('presentation') ||
-    lowerType.includes('powerpoint') ||
-    lowerType === 'application/vnd.ms-powerpoint' ||
-    lowerType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
-  ) {
-    return {
-      category: 'presentation',
-      canStream: false,
-      canPreview: false,
-      icon: '/file-text.svg',
-      displayName: 'Presentation',
     };
   }
 
