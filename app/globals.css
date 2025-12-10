@@ -32,29 +32,8 @@
   }
 }
 
-/* docx-preview styles */
-.docx-preview-container {
-  font-family: Arial, sans-serif;
-  line-height: 1.5;
-}
-
-.docx-preview-container p {
-  margin-bottom: 1em;
-}
-
-.docx-preview-container table {
-  border-collapse: collapse;
-  width: 100%;
-  margin: 1em 0;
-}
-
-.docx-preview-container table td,
-.docx-preview-container table th {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-.docx-preview-container img {
-  max-width: 100%;
-  height: auto;
+.docx-preview-content {
+  padding: 10px !important;
+  width: 100% !important;
+  overflow: auto !important;
 }
