@@ -23,20 +23,23 @@ export const zoomApi = baseApi.injectEndpoints({
       providesTags: ["Zoom"],
     }),
 
-    startLesson: builder.mutation<string, number>({
+    startLesson: builder.query<string, number>({
       query: (groupId) => ({
         url: `/groups/${groupId}/start-lesson`,
-        method: "POST",
+        method: "GET",
         meta: { authMode: "strict" },
         responseHandler: "text",
       }),
-      invalidatesTags: ["Groups", "Zoom"],
+      providesTags: ["Zoom"],
     }),
   }),
 });
 
 export const {
   useGetZoomAuthorizeQuery,
+  useLazyGetZoomAuthorizeQuery,
   useVerifyZoomConnectionQuery,
-  useStartLessonMutation,
+  useLazyVerifyZoomConnectionQuery,
+  useStartLessonQuery,
+  useLazyStartLessonQuery,
 } = zoomApi;

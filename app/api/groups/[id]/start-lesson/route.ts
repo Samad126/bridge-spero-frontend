@@ -3,7 +3,7 @@ import { cookies } from "next/headers";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "https://dev.bridgespero.com/api/v1";
 
-export async function POST(
+export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -30,10 +30,12 @@ export async function POST(
 
   try {
     const response = await fetch(`${API_BASE_URL}/groups/${id}/start-lesson`, {
-      method: "POST",
+      method: "GET",
       headers,
       cache: "no-store",
     });
+
+    console.log("START LESSON RESPONSE", response);
 
     if (!response.ok) {
       // Backend returns JSON error
