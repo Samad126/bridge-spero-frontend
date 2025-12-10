@@ -94,7 +94,7 @@ function Form() {
       );
       const categoryId = matchedCategory ? matchedCategory.id : categories[0]?.id || 1;
 
-      setImagePreview(process.env.NEXT_PUBLIC_PAGE_URL + existingGroup.imageUrl);
+      setImagePreview(process.env.NEXT_PUBLIC_PAGE_URL! + existingGroup.imageUrl);
 
       reset({
         name: existingGroup.name,
