@@ -309,7 +309,7 @@ const TeacherProfile = () => {
               )}
             </div>
             {isSelected === "demo" ? (
-              <div className="w-full h-[159px] relative xxl:w-[570px] xxl:h-[278px]">
+              <div className="relative w-full h-[159px] relative xxl:w-[570px] xxl:h-[278px]">
                 <Image
                   src={"/demo-lesson.jpg"}
                   alt="demo-lesson"
@@ -318,6 +318,24 @@ const TeacherProfile = () => {
                   fill
                   className="object-cover"
                 />
+                <div className="absolute inset-0 bg-[#00000099]"></div>
+                <div className="absolute inset-0 flex items-center justify-center gap-[12px]">
+                  <Image 
+                    src={"/play.svg"}
+                    alt="play icon"
+                    width={46}
+                    height={46}
+                    className="border cursor-pointer border-[#EBEBEB] p-[12px]"
+                  />
+                  <Image 
+                    src={"/upload-white.svg"}
+                    alt="upload icon"
+                    width={46}
+                    height={46}
+                    color="#EBEBEB"
+                    className="border cursor-pointer border-[#EBEBEB] p-[12px]"
+                  />
+                </div>
               </div>
             ) : (
               <div>
