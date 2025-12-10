@@ -7,17 +7,17 @@ import Members from "../Members/components/Index";
 interface TabContentProps {
   activeTabId: number;
   groupId: string;
-  userRole?: "TEACHER" | "USER";
+  isGroupOwner: boolean;
 }
 
-function TabContent({ activeTabId, groupId, userRole }: TabContentProps) {
+function TabContent({ activeTabId, groupId, isGroupOwner }: TabContentProps) {
   return (
     <div>
-      {activeTabId === 1 && <Schedule groupId={groupId} userRole={userRole} />}
-      {activeTabId === 2 && <Syllabus groupId={groupId} userRole={userRole} />}
-      {activeTabId === 3 && <Recording groupId={groupId} userRole={userRole} />}
-      {activeTabId === 4 && <Resources groupId={groupId} userRole={userRole} />}
-      {activeTabId === 5 && <Members groupId={groupId} userRole={userRole} />}
+      {activeTabId === 1 && <Schedule groupId={groupId} isGroupOwner={isGroupOwner} />}
+      {activeTabId === 2 && <Syllabus groupId={groupId} isGroupOwner={isGroupOwner} />}
+      {activeTabId === 3 && <Recording groupId={groupId} isGroupOwner={isGroupOwner} />}
+      {activeTabId === 4 && <Resources groupId={groupId} isGroupOwner={isGroupOwner} />}
+      {activeTabId === 5 && <Members groupId={groupId} isGroupOwner={isGroupOwner} />}
     </div>
   );
 }

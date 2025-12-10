@@ -9,9 +9,10 @@ import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfi
 interface TabsProps {
   groupId: string;
   isAuthenticated: boolean;
+  teacherId: number;
 }
 
-function Tabs({ groupId, isAuthenticated }: TabsProps) {
+function Tabs({ groupId, isAuthenticated, teacherId }: TabsProps) {
   const [activeTabId, setActiveTabId] = useState(1);
   const isEnrolled = true;
 
@@ -20,6 +21,7 @@ function Tabs({ groupId, isAuthenticated }: TabsProps) {
   });
 
   const userRole = userData?.role || "USER";
+  const isGroupOwner = userData?.role === "TEACHER" && userData?.id === teacherId;
 
   const filteredTabs = useMemo(() => {
     // Not logged in: Show only Schedule and Syllabus
@@ -27,19 +29,19 @@ function Tabs({ groupId, isAuthenticated }: TabsProps) {
       return tabData.filter((tab) => tab.id === 1 || tab.id === 2);
     }
 
-    // Teacher: Show all tabs
-    if (userRole === "TEACHER") {
+    // Teacher who owns this group: Show all tabs
+    if (isGroupOwner) {
       return tabData;
     }
 
-    // Student enrolled: Show all tabs
-    if (userRole === "USER" && isEnrolled) {
+    // Enrolled user (student or non-owner teacher): Show all tabs
+    if (isEnrolled) {
       return tabData;
     }
 
-    // Student not enrolled: Show only Schedule and Syllabus
+    // Not enrolled: Show only Schedule and Syllabus
     return tabData.filter((tab) => tab.id === 1 || tab.id === 2);
-  }, [isAuthenticated, userRole, isEnrolled]);
+  }, [isAuthenticated, isGroupOwner, isEnrolled]);
 
   if (isLoading && isAuthenticated) {
     return (
@@ -64,7 +66,7 @@ function Tabs({ groupId, isAuthenticated }: TabsProps) {
         activeTabId={activeTabId}
         setActiveTabId={setActiveTabId}
       />
-      <TabContent activeTabId={activeTabId} groupId={groupId} userRole={userRole} />
+      <TabContent activeTabId={activeTabId} groupId={groupId} isGroupOwner={isGroupOwner} />
     </div>
   );
 }

@@ -22,7 +22,7 @@ interface PricingCardProps {
   imageUrl?: string;
 }
 
-function PricingCard({ price, groupId, imageUrl }: PricingCardProps) {
+function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) {
   const [isOpened, setIsOpened] = useState(true);
   const [isStartingLesson, setIsStartingLesson] = useState(false);
   const router = useRouter();
@@ -47,10 +47,10 @@ function PricingCard({ price, groupId, imageUrl }: PricingCardProps) {
   const [startLesson] = useStartLessonMutation();
 
   // const isJoined = isJoinedData?.isJoined || false;
-  const isTeacher = userData?.role === "TEACHER";
+  const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
 
   // Zoom OAuth queries (only fetch for teachers)
-  const { data: zoomVerifyData, refetch: refetchZoomVerify } = useVerifyZoomConnectionQuery(undefined, {
+  const { refetch: refetchZoomVerify } = useVerifyZoomConnectionQuery(undefined, {
     skip: !isTeacher,
   });
   const { data: zoomAuthorizeUrl } = useGetZoomAuthorizeQuery(undefined, {

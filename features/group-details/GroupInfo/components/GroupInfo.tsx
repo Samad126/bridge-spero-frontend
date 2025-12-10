@@ -39,6 +39,7 @@ function GroupInfo({ group, groupId, isAuthenticated }: GroupInfoProps) {
           <Tabs
             groupId={groupId}
             isAuthenticated={isAuthenticated}
+            teacherId={group.teacher.id}
           />
         </div>
         <PricingCard
