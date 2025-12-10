@@ -57,7 +57,9 @@ const StudentProfile = () => {
   const [isStudentProfilePic, setIsStudentProfilePic] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [isSelected, setIsSelected] = useState("teachers");
-  const [ currentPage, setCurrentPage ] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isHeroHovered, setisHeroHovered] = useState(false);
+  const [isPpHovered, setIsPpHovered] = useState(false);
   const isStudent = true;
 
   const handleSelectedCategory = (category: string) => {
@@ -72,30 +74,42 @@ const StudentProfile = () => {
   const totalPages = Math.ceil(Teachers.length / itemsPerPage);
   const paginatedTeachers = Teachers.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage* itemsPerPage
+    currentPage * itemsPerPage
   );
 
   return (
     <section className="container">
       <div className="border border-1 border-gray-light">
-        <div className="w-full xxl:h-[262px] h-[146px] xxl:static relative">
-          <img
-            src={"/teacher-profile-hero.jpg"}
-            className="size-full object-cover overflow-hidden"
-            alt=""
-          />
-          <div className="xxl:hidden absolute inset-0 bg-[#00000099] z-10"></div>
+        <div
+          onMouseEnter={() => setisHeroHovered(true)}
+          onMouseLeave={() => setisHeroHovered(false)}
+         className="cursor-pointer w-full relative overflow-hidden h-[146px] xxl:h-[262px]"
+        >
+          <Image
+                      src={"/teacher-profile-hero.jpg"}
+                      alt="teacher-profile-hero"
+                      // width={471}
+                      // height={146}
+                      fill
+                      className="object-cover"
+                    />
+        <div
+            className={`xxl:${isHeroHovered ? "block" : "hidden"} absolute inset-0 bg-[#00000099] z-10 block`}
+          ></div>
           <Image
             src={"/camera_white.svg"}
             width={22}
             height={22}
             alt=""
-            className="xxl:hidden absolute inset-0 m-auto cursor-pointer z-100"
+            className={`xxl:${isHeroHovered ? "block" : "hidden"} absolute block inset-0 m-auto cursor-pointer z-20`}
           />
         </div>
         <div className="xxl:flex xxl:p-[30px]">
           <div className="mb-[24px] xxl:w-[314px] mt-[-34px] xxl:mt-[-99px] flex flex-col justify-center items-center xxl:justify-start xxl:items-start gap-[24px] mx-[18px] xxl:mx-0">
-            <div className="relative">
+            <div onMouseEnter={() => setIsPpHovered(true)}
+              onMouseLeave={() => setIsPpHovered(false)}
+              className="relative cursor-pointer xxl:size-[178px] w-[100px] h-[100px] object-cover z-20 mx-auto xxl:mx-0"
+            >
               <Image
                 src={isStudentProfilePic ? "/kamila-sultanli.jpg" : "/user.svg"} // student profile varsa bura oturulmelidir.
                 alt="student"
@@ -105,13 +119,15 @@ const StudentProfile = () => {
                   isStudentProfilePic ? "p-0" : "xxl:p-[38px] p-[21px]"
                 }`}
               />
-              <div className="xxl:hidden absolute inset-0 bg-[#00000099] rounded-full z-30"></div>
+              <div
+                className={`xxl:${isPpHovered ? "block" : "hidden"} block absolute inset-0 bg-[#00000099] rounded-full z-30`}
+              ></div>
               <Image
                 src={"/camera_white.svg"}
                 width={22}
                 height={22}
                 alt=""
-                className="xxl:hidden absolute inset-0 m-auto cursor-pointer z-100"
+                className={`xxl:${isPpHovered ? "block" : "hidden"} block absolute inset-0 m-auto cursor-pointer z-40`}
               />
             </div>
             <div>
@@ -199,7 +215,7 @@ const StudentProfile = () => {
                 const page = index + 1;
 
                 return (
-                  <button 
+                  <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
                     className={`
@@ -213,11 +229,11 @@ const StudentProfile = () => {
                   >
                     {page}
                   </button>
-                )
+                );
               })}
 
               <button
-                onClick={() => 
+                onClick={() =>
                   setCurrentPage((p) => Math.min(p + 1, totalPages))
                 }
                 disabled={currentPage === totalPages}
