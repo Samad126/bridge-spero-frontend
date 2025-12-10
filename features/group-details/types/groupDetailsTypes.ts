@@ -17,14 +17,15 @@ export interface GroupDetails {
   maxStudents: number;
   startDate: string;
   price: number;
+  imageUrl?: string;
   teacher: Teacher;
 }
 
 // Backend returns the data directly, not wrapped in a data property
 export type GroupDetailsResponse = GroupDetails;
 
-export interface IsJoinedResponse {
-  isJoined: boolean;
+export interface IsMemberResponse {
+  isMember: boolean;
 }
 
 export interface ScheduleItem {

@@ -31,3 +31,9 @@
     font-family: var(--font-lesson);
   }
 }
+
+.docx-preview-content {
+  padding: 10px !important;
+  width: 100% !important;
+  overflow: auto !important;
+}

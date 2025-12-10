@@ -5,13 +5,11 @@ import { useGetGroupRecordingsQuery } from "@/features/group-details/api/groupDe
 
 interface RecordingProps {
   groupId: string;
-  userRole?: "TEACHER" | "USER";
+  isGroupOwner: boolean;
 }
 
-function Recording({ groupId, userRole }: RecordingProps) {
+function Recording({ groupId, isGroupOwner }: RecordingProps) {
   const { data: recordings, isLoading, error } = useGetGroupRecordingsQuery(Number(groupId));
-
-  const isTeacher = userRole === "TEACHER";
 
   if (isLoading) {
     return (
@@ -40,15 +38,15 @@ function Recording({ groupId, userRole }: RecordingProps) {
             cardStatus="view"
             recording={recording}
             groupId={Number(groupId)}
-            isTeacher={isTeacher}
+            isTeacher={isGroupOwner}
           />
         ))
       )}
-      {isTeacher && (
+      {isGroupOwner && (
         <RecordingCard
           cardStatus="add"
           groupId={Number(groupId)}
-          isTeacher={isTeacher}
+          isTeacher={isGroupOwner}
         />
       )}
     </div>

@@ -5,13 +5,11 @@ import { useGetGroupScheduleQuery } from "@/features/group-details/api/groupDeta
 
 interface ScheduleProps {
   groupId: string;
-  userRole?: "TEACHER" | "USER";
+  isGroupOwner: boolean;
 }
 
-function Schedule({ groupId, userRole }: ScheduleProps) {
+function Schedule({ groupId, isGroupOwner }: ScheduleProps) {
   const { data: scheduleData, isLoading, error } = useGetGroupScheduleQuery(Number(groupId));
-
-  const isTeacher = userRole === "TEACHER";
 
   if (isLoading) {
     return (
@@ -38,13 +36,13 @@ function Schedule({ groupId, userRole }: ScheduleProps) {
         scheduleData.map((schedule) => (
           <ScheduleCard
             key={schedule.id}
-            cardStatus={isTeacher ? "teacher-view" : "student-view"}
+            cardStatus={isGroupOwner ? "teacher-view" : "student-view"}
             scheduleData={schedule}
             groupId={Number(groupId)}
           />
         ))
       )}
-      {isTeacher && (
+      {isGroupOwner && (
         <ScheduleCard cardStatus="add" groupId={Number(groupId)} />
       )}
     </div>

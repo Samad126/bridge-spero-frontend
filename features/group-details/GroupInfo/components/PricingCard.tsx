@@ -3,9 +3,15 @@ import Image from "next/image";
 import { useState } from "react";
 import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
 import {
-  useCheckIsJoinedQuery,
+  useCheckIsMemberQuery,
   useJoinGroupMutation,
 } from "../../api/groupDetailsApi";
+import {
+  useLazyGetZoomAuthorizeQuery,
+  useLazyVerifyZoomConnectionQuery,
+  useLazyStartLessonQuery,
+  useLazyJoinLessonQuery,
+} from "@/features/zoom/api/zoomApi";
 import Link from "next/link";
 import PricingCardSkeleton from "./PricingCardSkeleton";
 import { useRouter } from "next/navigation";
@@ -14,27 +20,38 @@ interface PricingCardProps {
   price: number;
   groupId: string;
   teacherId: number;
+  imageUrl?: string;
 }
 
-function PricingCard({ price, groupId }: PricingCardProps) {
+function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) {
   const [isOpened, setIsOpened] = useState(true);
+  const [isStartingLesson, setIsStartingLesson] = useState(false);
   const router = useRouter();
 
+  // Construct the full image URL
+  const backgroundImage = imageUrl
+    ? `${process.env.NEXT_PUBLIC_PAGE_URL}${imageUrl}`
+    : '/groupimage.png';
+
   // Fetch user data using RTK Query (optional auth - won't redirect if not authenticated)
-  const { data: userData, isLoading } = useGetUserProfileOptionalQuery();
+  const { data: userData, isLoading } = useGetUserProfileOptionalQuery(undefined, {
+    
+  });
 
-  // Check if user is joined (only if user is authenticated and is a student)
-  // const { data: isJoinedData } = useCheckIsJoinedQuery(Number(groupId), {
-  //   skip: !userData || userData.role !== "USER",
-  // });
+  // Check if user is a member (only if user is authenticated and is a student)
+  const { data: isMemberData } = useCheckIsMemberQuery(Number(groupId), {
+    skip: !userData || userData.role !== "USER",
+  });
 
-  // const isJoined = isJoinedData?.isJoined || false;
-  const isJoined = false;
+  const isMember = isMemberData?.isMember || false;
 
   const [joinGroup, { isLoading: isJoining }] = useJoinGroupMutation();
+  const [getZoomAuthorize] = useLazyGetZoomAuthorizeQuery();
+  const [verifyZoomConnection] = useLazyVerifyZoomConnectionQuery();
+  const [startLessonTrigger] = useLazyStartLessonQuery();
+  const [joinLessonTrigger] = useLazyJoinLessonQuery();
 
-  // const isJoined = isJoinedData?.isJoined || false;
-  const isTeacher = userData?.role === "TEACHER";
+  const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
 
   const handleJoinGroup = async () => {
     try {
@@ -44,6 +61,72 @@ function PricingCard({ price, groupId }: PricingCardProps) {
     } catch (error) {
       console.error("Failed to join group:", error);
       alert("Failed to join group. Please try again.");
+    }
+  };
+
+  const handleStartLesson = async () => {
+    setIsStartingLesson(true);
+    try {
+      // First, verify Zoom connection
+      const verifyResult = await verifyZoomConnection();
+      const isConnected = verifyResult.data?.connected;
+
+      if (!isConnected) {
+        // If not connected, fetch authorization URL and open it in new tab
+        const authorizeResult = await getZoomAuthorize();
+
+        if (authorizeResult.data) {
+          // Extract the redirect URL from the "redirect:URL" format
+          const authorizeUrl = authorizeResult.data.replace(/^redirect:/, '');
+          window.open(authorizeUrl, '_blank');
+          alert('Please authorize Zoom in the opened tab, then try starting the lesson again.');
+        } else {
+          alert('Failed to get Zoom authorization URL. Please try again.');
+        }
+        setIsStartingLesson(false);
+        return;
+      }
+
+      // If connected, start the lesson
+      const result = await startLessonTrigger(Number(groupId));
+
+      if (result.data) {
+        // Open Zoom URL in new tab
+        window.open(result.data, '_blank');
+      } else {
+        alert('Failed to get Zoom meeting URL. Please try again.');
+      }
+    } catch (error) {
+      console.error('Failed to start lesson:', error);
+      alert('Failed to start lesson. Please try again.');
+    } finally {
+      setIsStartingLesson(false);
+    }
+  };
+
+  const handleJoinLesson = async () => {
+    // Check if student is a member of the group
+    if (!isMember) {
+      alert('You must enroll in this group before joining a lesson.');
+      return;
+    }
+
+    setIsStartingLesson(true);
+    try {
+      // Join the lesson
+      const result = await joinLessonTrigger(Number(groupId));
+
+      if (result.data) {
+        // Open Zoom URL in new tab
+        window.open(result.data, '_blank');
+      } else {
+        alert('Failed to get Zoom meeting URL. Please try again.');
+      }
+    } catch (error) {
+      console.error('Failed to join lesson:', error);
+      alert('Failed to join lesson. Please try again.');
+    } finally {
+      setIsStartingLesson(false);
     }
   };
 
@@ -70,9 +153,10 @@ function PricingCard({ price, groupId }: PricingCardProps) {
         </button>
 
         <div
-          className={`relative w-full bg-[url('/groupimage.png')] bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
+          className={`relative w-full bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
             isOpened ? "py-[30px]" : "h-[6px]"
           }`}
+          style={{ backgroundImage: `url('${backgroundImage}')` }}
         >
           <div className="absolute inset-0 bg-black/70 pointer-events-none"></div>
 
@@ -110,8 +194,12 @@ function PricingCard({ price, groupId }: PricingCardProps) {
               <button className="p-[12px] min-w-[46px] border border-tertiary">
                 <Image src="/share.svg" alt="share" width={22} height={22} />
               </button>
-              <button className="w-full bg-white text-secondary h-[46px] text-[18px]">
-                Start Lesson
+              <button
+                onClick={handleStartLesson}
+                disabled={isStartingLesson}
+                className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
+              >
+                {isStartingLesson ? "Starting..." : "Start Lesson"}
               </button>
             </div>
           </div>
@@ -141,9 +229,10 @@ function PricingCard({ price, groupId }: PricingCardProps) {
         </button>
 
         <div
-          className={`relative w-full bg-[url('/groupimage.png')] bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
+          className={`relative w-full bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
             isOpened ? "py-[30px]" : "h-[6px]"
           }`}
+          style={{ backgroundImage: `url('${backgroundImage}')` }}
         >
           <div className="absolute inset-0 bg-black/70 pointer-events-none"></div>
 
@@ -190,9 +279,10 @@ function PricingCard({ price, groupId }: PricingCardProps) {
       </button>
 
       <div
-        className={`relative w-full bg-[url('/groupimage.png')] bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
+        className={`relative w-full bg-gray-700 bg-cover bg-center overflow-hidden transition-all px-[30px] ${
           isOpened ? "py-[30px]" : "h-[6px]"
         }`}
+        style={{ backgroundImage: `url('${backgroundImage}')` }}
       >
         <div className="absolute inset-0 bg-black/70 pointer-events-none"></div>
 
@@ -218,13 +308,15 @@ function PricingCard({ price, groupId }: PricingCardProps) {
               <Image src="/share.svg" alt="share" width={22} height={22} />
             </button>
             <button
-              onClick={isJoined ? undefined : handleJoinGroup}
-              disabled={isJoining}
+              onClick={isMember ? handleJoinLesson : handleJoinGroup}
+              disabled={isJoining || isStartingLesson}
               className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
             >
               {isJoining
                 ? "Joining..."
-                : isJoined
+                : isStartingLesson
+                ? "Starting..."
+                : isMember
                 ? "Join Lesson"
                 : "Enroll Now"}
             </button>

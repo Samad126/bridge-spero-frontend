@@ -39,12 +39,14 @@ function GroupInfo({ group, groupId, isAuthenticated }: GroupInfoProps) {
           <Tabs
             groupId={groupId}
             isAuthenticated={isAuthenticated}
+            teacherId={group.teacher.id}
           />
         </div>
         <PricingCard
           price={group.price}
           groupId={groupId}
           teacherId={group.teacher.id}
+          imageUrl={group.imageUrl}
         />
       </div>
     </section>

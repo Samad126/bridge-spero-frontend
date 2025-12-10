@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   UserRole,
   publicNavItems,
@@ -12,6 +11,9 @@ import {
   getNavHref,
 } from "../config/navigation";
 import { NavLink } from "./NavLink";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { logout } from "@/features/auth/slices/authSlice";
+import { useRouter } from "next/navigation";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -24,15 +26,20 @@ export function MobileMenu({
   isAuthenticated,
   userRole,
 }: MobileMenuProps) {
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
   if (!isOpen) return null;
 
   const handleLogout = async () => {
     try {
+      // Dispatch logout action to clear RTK Query cache
+      dispatch(logout());
+
       await fetch("/api/logout", {
         method: "POST",
       });
+
       router.push("/login");
     } catch (error) {
       console.error("Logout failed:", error);

@@ -24,7 +24,7 @@ function TrendingTeachers() {
         </ErrorBoundary>
 
         <Link
-          href={"/"}
+          href={"/explore-teachers"}
           className="border py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"
         >
           More

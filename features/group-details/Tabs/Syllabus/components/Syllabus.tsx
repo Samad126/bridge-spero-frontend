@@ -5,13 +5,11 @@ import { useGetGroupSyllabusQuery } from "@/features/group-details/api/groupDeta
 
 interface SyllabusProps {
   groupId: string;
-  userRole?: "TEACHER" | "USER";
+  isGroupOwner: boolean;
 }
 
-function Syllabus({ groupId, userRole }: SyllabusProps) {
+function Syllabus({ groupId, isGroupOwner }: SyllabusProps) {
   const { data: syllabusData, isLoading, error } = useGetGroupSyllabusQuery(Number(groupId));
-
-  const isTeacher = userRole === "TEACHER";
 
   if (isLoading) {
     return (
@@ -40,14 +38,14 @@ function Syllabus({ groupId, userRole }: SyllabusProps) {
           cardStatus="view"
           syllabusPath={syllabusData}
           groupId={Number(groupId)}
-          isTeacher={isTeacher}
+          isTeacher={isGroupOwner}
         />
       ) : (
-        isTeacher && (
+        isGroupOwner && (
           <SyllabusCard
             cardStatus="add"
             groupId={Number(groupId)}
-            isTeacher={isTeacher}
+            isTeacher={isGroupOwner}
           />
         )
       )}

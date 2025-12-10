@@ -5,13 +5,11 @@ import { useGetGroupResourcesQuery } from "@/features/group-details/api/groupDet
 
 interface ResourcesProps {
   groupId: string;
-  userRole?: "TEACHER" | "USER";
+  isGroupOwner: boolean;
 }
 
-function Resources({ groupId, userRole }: ResourcesProps) {
+function Resources({ groupId, isGroupOwner }: ResourcesProps) {
   const { data: resources, isLoading, error } = useGetGroupResourcesQuery(Number(groupId));
-
-  const isTeacher = userRole === "TEACHER";
 
   if (isLoading) {
     return (
@@ -32,15 +30,15 @@ function Resources({ groupId, userRole }: ResourcesProps) {
             cardStatus="view"
             resource={resource}
             groupId={Number(groupId)}
-            isTeacher={isTeacher}
+            isTeacher={isGroupOwner}
           />
         ))
       )}
-      {isTeacher && (
+      {isGroupOwner && (
         <ResourcesCard
           cardStatus="add"
           groupId={Number(groupId)}
-          isTeacher={isTeacher}
+          isTeacher={isGroupOwner}
         />
       )}
     </div>

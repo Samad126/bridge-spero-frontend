@@ -1,6 +1,6 @@
 import { baseApi } from "@/lib/redux/baseApi";
 import {
-  IsJoinedResponse,
+  IsMemberResponse,
   ScheduleResponse,
   CreateScheduleRequest,
   UpdateScheduleRequest,
@@ -12,9 +12,9 @@ import {
 
 export const groupDetailsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    checkIsJoined: builder.query<IsJoinedResponse, number>({
+    checkIsMember: builder.query<IsMemberResponse, number>({
       query: (groupId) => ({
-        url: `/groups/${groupId}/isJoined`,
+        url: `/groups/${groupId}/is-member`,
         meta: { authMode: "strict" },
       }),
       providesTags: ["Groups"],
@@ -207,11 +207,32 @@ export const groupDetailsApi = baseApi.injectEndpoints({
         "Groups",
       ],
     }),
+
+    getResourceStream: builder.query<string, number>({
+      query: (resourceId) => ({
+        url: `/resources/${resourceId}?download=false`,
+        meta: { authMode: "strict" },
+        responseHandler: async (response) => {
+          // Return the URL for streaming
+          return response.url;
+        },
+      }),
+    }),
+
+    getResourceDownload: builder.query<Blob, number>({
+      query: (resourceId) => ({
+        url: `/resources/${resourceId}?download=true`,
+        meta: { authMode: "strict" },
+        responseHandler: async (response) => {
+          return response.blob();
+        },
+      }),
+    }),
   }),
 });
 
 export const {
-  useCheckIsJoinedQuery,
+  useCheckIsMemberQuery,
   useGetGroupScheduleQuery,
   useCreateScheduleMutation,
   useUpdateScheduleMutation,
@@ -227,5 +248,8 @@ export const {
   useGetGroupMembersQuery,
   useDeleteMemberMutation,
   useJoinGroupMutation,
+  useGetResourceStreamQuery,
+  useGetResourceDownloadQuery,
+  useLazyGetResourceDownloadQuery,
 } = groupDetailsApi;
 

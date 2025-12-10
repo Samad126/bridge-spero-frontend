@@ -7,10 +7,10 @@ import { useState, useEffect } from "react";
 
 interface MembersProps {
   groupId: string;
-  userRole?: "TEACHER" | "USER";
+  isGroupOwner: boolean;
 }
 
-function Members({ groupId, userRole }: MembersProps) {
+function Members({ groupId, isGroupOwner }: MembersProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
@@ -30,8 +30,6 @@ function Members({ groupId, userRole }: MembersProps) {
     fullName: debouncedSearchTerm || undefined,
   });
 
-  const isTeacher = userRole === "TEACHER";
-
   return (
     <div className="border border-gray-light p-[24px]">
       <div className="flex items-center gap-[12px]">
@@ -50,7 +48,7 @@ function Members({ groupId, userRole }: MembersProps) {
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         groupId={Number(groupId)}
-        isTeacher={isTeacher}
+        isTeacher={isGroupOwner}
       />
     </div>
   );

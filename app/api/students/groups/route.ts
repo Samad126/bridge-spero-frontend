@@ -15,7 +15,6 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const params = new URLSearchParams();
 
-  // Add all query parameters
   if (searchParams.has("status")) {
     params.append("status", searchParams.get("status")!);
   } else {
@@ -36,12 +35,14 @@ export async function GET(request: NextRequest) {
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/students/groups?${params.toString()}`,
+      `${API_BASE_URL}/users/groups?${params.toString()}`,
       {
         headers,
         cache: "no-store",
       }
     );
+
+    console.log("STUDENT GROUPS DATA", response);
 
     const data = await response.json();
 
