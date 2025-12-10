@@ -116,7 +116,7 @@ function RecordingCard({
               value={recordingName}
               onChange={(e) => setRecordingName(e.target.value)}
               placeholder="Recording name (optional)"
-              className="flex-1 border-b border-secondary outline-0 text-[16px] p-[8px]"
+              className="w-full flex-1 border-b border-secondary outline-0 text-[16px] p-[8px]"
               disabled={isLoading}
             />
             <button
