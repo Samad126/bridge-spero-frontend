@@ -57,7 +57,7 @@ export function getFileTypeInfo(contentType: string): FileTypeInfo {
     };
   }
 
-  // Documents - download only
+  // Documents - can preview with docx-preview
   if (
     lowerType.includes('word') ||
     lowerType.includes('document') ||
@@ -66,8 +66,8 @@ export function getFileTypeInfo(contentType: string): FileTypeInfo {
   ) {
     return {
       category: 'document',
-      canStream: false,
-      canPreview: false,
+      canStream: true,
+      canPreview: true,
       icon: '/file-text.svg',
       displayName: 'Document',
     };
