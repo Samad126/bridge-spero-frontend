@@ -1,6 +1,6 @@
 {
   "name": "bridge-spero-frontend",
-  "version": "0.6.4",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -11,7 +11,6 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@reduxjs/toolkit": "^2.11.0",
-    "@tailwindcss/vite": "^4.1.17",
     "async-mutex": "^0.5.0",
     "docx-preview": "^0.3.7",
     "next": "16.0.7",
