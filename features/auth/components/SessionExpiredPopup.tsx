@@ -1,6 +1,6 @@
 "use client";
 
-import { setSessionExpiredPopup } from "@/features/auth/slices/authSlice";
+import { setSessionExpiredPopup, logout } from "@/features/auth/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { useRouter } from "next/navigation";
 
@@ -19,11 +19,14 @@ export default function SessionExpiredPopup() {
   const handleStayLoggedOff = () => {
     dispatch(setSessionExpiredPopup(false));
 
+    // Dispatch logout action to clear RTK Query cache
+    dispatch(logout());
+
     fetch("/api/logout", {
       method: "POST",
-    }).then(() => {});
-
-    router.refresh();
+    }).then(() => {
+      router.refresh();
+    });
   };
 
   return (

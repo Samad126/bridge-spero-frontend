@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { UserRole } from "../config/navigation";
 import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { logout } from "@/features/auth/slices/authSlice";
+import { useRouter } from "next/navigation";
 
 interface ProfilePopupProps {
   isOpen: boolean;
@@ -19,8 +21,12 @@ export function ProfilePopup({
   userName,
   userRole,
 }: ProfilePopupProps) {
+  const dispatch = useAppDispatch();
+  const { data: userData } = useGetUserProfileOptionalQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+
   const router = useRouter();
-  const { data: userData } = useGetUserProfileOptionalQuery();
 
   if (!isOpen) return null;
 
@@ -31,6 +37,9 @@ export function ProfilePopup({
 
   const handleLogout = async () => {
     try {
+      // Dispatch logout action to clear RTK Query cache
+      dispatch(logout());
+
       await fetch("/api/logout", {
         method: "POST",
       });
