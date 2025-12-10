@@ -129,6 +129,7 @@ type RatingStarProps = {
   }
 
 const TeacherProfile = () => {
+  const [isTeacherProfilePic, setIsTeacherProfilePic] = useState("profile");
   const [isZoomConnected, setIsZoomConnected] = useState(false);
   const [isBecomeStudent, setIsBecomeStudent] = useState(true);
   const [isSelected, setIsSelected] = useState("demo");
@@ -165,7 +166,12 @@ const TeacherProfile = () => {
     document.body.style.overflow = "unset";
   };
 
- 
+ const handleOpenDeviceFiles = () => {
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/*";
+  fileInput.click();
+ }
 
 
 
@@ -173,6 +179,7 @@ const TeacherProfile = () => {
     <section className="container flex flex-col gap-[24px] xxl:flex-row">
       <div className="border border-1 border-gray-light flex flex-col xxl:flex-1">
         <div
+          onClick={() => handleOpenDeviceFiles()}
           onMouseEnter={() => setisHeroHovered(true)}
           onMouseLeave={() => setisHeroHovered(false)}
           className="cursor-pointer w-full relative overflow-hidden h-[146px] xxl:h-[262px]"
@@ -204,16 +211,19 @@ const TeacherProfile = () => {
         <div className="flex xxl:flex-row flex-col p-[12px] xxl:p-[30px] xxl:gap-[30px] xxl:justify-start xxl:items-start">
           <div className="relative w-fit xxl:w-[314px] mx-auto xxl:mx-0 flex flex-col justify-center items-center xxl:items-start xxl:pl-0 pl-[24px] gap-[24px]">
             <div
+              onClick={() => handleOpenDeviceFiles()}
               onMouseEnter={() => setIsPpHovered(true)}
               onMouseLeave={() => setIsPpHovered(false)}
               className="relative cursor-pointer xxl:size-[178px] w-[100px] h-[100px] mt-[-50px] xxl:mt-[-96px] object-cover z-20 mx-auto xxl:mx-0"
             >
               <Image
-                src={"/kamila-sultanli.jpg"}
+                src={isTeacherProfilePic ? "/kamila-sultanli.jpg" : "/user.svg"} // Teacher profile varsa bura oturulmelidir.
                 alt="teacher"
                 width={178}
                 height={178}
-                className="xxl:size-[178px] w-[100px] h-[100px] rounded-full "
+                className={`relative z-20 w-[100px] h-[100px] xxl:w-[178px] xxl:h-[178px] rounded-full bg-gray-light ${
+                  isTeacherProfilePic ? "p-0" : "xxl:p-[38px] p-[21px]"
+                }`}
               />
               <div
                 className={`xxl:${

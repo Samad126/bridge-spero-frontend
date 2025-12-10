@@ -60,7 +60,7 @@ const StudentProfile = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isHeroHovered, setisHeroHovered] = useState(false);
   const [isPpHovered, setIsPpHovered] = useState(false);
-  const isStudent = true;
+  const isStudent = false;
 
   const handleSelectedCategory = (category: string) => {
     setIsSelected(category);
@@ -77,36 +77,50 @@ const StudentProfile = () => {
     currentPage * itemsPerPage
   );
 
+  const handleOpenDeviceFiles = () => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
+    fileInput.click();
+  };
+
   return (
     <section className="container">
       <div className="border border-1 border-gray-light">
         <div
           onMouseEnter={() => setisHeroHovered(true)}
           onMouseLeave={() => setisHeroHovered(false)}
-         className="cursor-pointer w-full relative overflow-hidden h-[146px] xxl:h-[262px]"
+          onClick={() => handleOpenDeviceFiles()}
+          className="cursor-pointer w-full relative overflow-hidden h-[146px] xxl:h-[262px]"
         >
           <Image
-                      src={"/teacher-profile-hero.jpg"}
-                      alt="teacher-profile-hero"
-                      // width={471}
-                      // height={146}
-                      fill
-                      className="object-cover"
-                    />
-        <div
-            className={`xxl:${isHeroHovered ? "block" : "hidden"} absolute inset-0 bg-[#00000099] z-10 block`}
+            src={"/teacher-profile-hero.jpg"}
+            alt="teacher-profile-hero"
+            // width={471}
+            // height={146}
+            fill
+            className="object-cover"
+          />
+          <div
+            className={`xxl:${
+              isHeroHovered ? "block" : "hidden"
+            } absolute inset-0 bg-[#00000099] z-10 block`}
           ></div>
           <Image
             src={"/camera_white.svg"}
             width={22}
             height={22}
             alt=""
-            className={`xxl:${isHeroHovered ? "block" : "hidden"} absolute block inset-0 m-auto cursor-pointer z-20`}
+            className={`xxl:${
+              isHeroHovered ? "block" : "hidden"
+            } absolute block inset-0 m-auto cursor-pointer z-20`}
           />
         </div>
         <div className="xxl:flex xxl:p-[30px]">
           <div className="mb-[24px] xxl:w-[314px] mt-[-34px] xxl:mt-[-99px] flex flex-col justify-center items-center xxl:justify-start xxl:items-start gap-[24px] mx-[18px] xxl:mx-0">
-            <div onMouseEnter={() => setIsPpHovered(true)}
+            <div
+              onClick={() => handleOpenDeviceFiles()}
+              onMouseEnter={() => setIsPpHovered(true)}
               onMouseLeave={() => setIsPpHovered(false)}
               className="relative cursor-pointer xxl:size-[178px] w-[100px] h-[100px] object-cover z-20 mx-auto xxl:mx-0"
             >
@@ -120,14 +134,18 @@ const StudentProfile = () => {
                 }`}
               />
               <div
-                className={`xxl:${isPpHovered ? "block" : "hidden"} block absolute inset-0 bg-[#00000099] rounded-full z-30`}
+                className={`xxl:${
+                  isPpHovered ? "block" : "hidden"
+                } block absolute inset-0 bg-[#00000099] rounded-full z-30`}
               ></div>
               <Image
                 src={"/camera_white.svg"}
                 width={22}
                 height={22}
                 alt=""
-                className={`xxl:${isPpHovered ? "block" : "hidden"} block absolute inset-0 m-auto cursor-pointer z-40`}
+                className={`xxl:${
+                  isPpHovered ? "block" : "hidden"
+                } block absolute inset-0 m-auto cursor-pointer z-40`}
               />
             </div>
             <div>
@@ -151,14 +169,16 @@ const StudentProfile = () => {
 
           <div className="xxl:flex-1 flex flex-col gap-[24px] items-center px-[12px] pb-[12px] xxl:p-0">
             <div className="flex items-center w-full select-none">
-              <div
-                onClick={() => handleSelectedCategory("groups")}
-                className={`${
-                  isSelected !== "groups" ? "text-secondary" : "text-primary"
-                } text-center border-b-1 py-[12px] flex-1 cursor-pointer`}
-              >
-                Groups 10
-              </div>
+              {!isStudent && (
+                <div
+                  onClick={() => handleSelectedCategory("groups")}
+                  className={`${
+                    isSelected !== "groups" ? "text-secondary" : "text-primary"
+                  } text-center border-b-1 py-[12px] flex-1 cursor-pointer`}
+                >
+                  Groups 10
+                </div>
+              )}
               <div
                 onClick={() => handleSelectedCategory("teachers")}
                 className={`${
@@ -169,56 +189,58 @@ const StudentProfile = () => {
               </div>
             </div>
 
-            <div className="grid w-full grid-cols-2 xxl:grid-cols-3 gap-[12px]">
-              {paginatedTeachers.map((teacher) => (
-                <div
-                  key={teacher.id}
-                  className="border border-1 border-gray-light p-[24px]"
-                >
-                  <div className="xxl:mb-[24px] mb-[12px] xxl:flex-row flex flex-col gap-[12px] items-center">
-                    <div>
-                      <Image
-                        width={80}
-                        height={80}
-                        className="rounded-full"
-                        src={teacher.profileUrl}
-                        alt="The photo of the teacher"
-                      />
-                    </div>
-                    <div>
-                      <div className="xxl:text-[24px] text-[18px] text-secondary leading-[130%] font-medium break-all">
-                        {teacher.name}
+            {isSelected === "teachers" ? (
+              <div>
+                <div className="grid w-full grid-cols-2 xxl:grid-cols-3 mb-[24px] gap-[12px]">
+                  {paginatedTeachers.map((teacher) => (
+                    <div
+                      key={teacher.id}
+                      className="border border-1 border-gray-light p-[24px]"
+                    >
+                      <div className="xxl:mb-[24px] mb-[12px] xxl:flex-row flex flex-col gap-[12px] items-center">
+                        <div>
+                          <Image
+                            width={80}
+                            height={80}
+                            className="rounded-full"
+                            src={teacher.profileUrl}
+                            alt="The photo of the teacher"
+                          />
+                        </div>
+                        <div>
+                          <div className="xxl:text-[24px] text-[18px] text-secondary leading-[130%] font-medium break-all">
+                            {teacher.name}
+                          </div>
+                          <div className="flex gap-[6px] items-center">
+                            <Image
+                              src={"/star.svg"}
+                              width={16}
+                              height={16}
+                              alt={`star`}
+                              className="w-[16px] h-[16px]"
+                            />
+                            <span className="text-custom-yellow font-medium">
+                              4.9
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex gap-[6px] items-center">
-                        <Image
-                          src={"/star.svg"}
-                          width={16}
-                          height={16}
-                          alt={`star`}
-                          className="w-[16px] h-[16px]"
-                        />
-                        <span className="text-custom-yellow font-medium">
-                          4.9
-                        </span>
-                      </div>
+                      <button className="cursor-pointer bg-secondary text-white py-[12px] w-full">
+                        View Profile
+                      </button>
                     </div>
-                  </div>
-                  <button className="cursor-pointer bg-secondary text-white py-[12px] w-full">
-                    View Profile
-                  </button>
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            <div className="flex justify-center items-center">
-              {Array.from({ length: totalPages }).map((_, index) => {
-                const page = index + 1;
+                <div className="flex justify-center items-center">
+                  {Array.from({ length: totalPages }).map((_, index) => {
+                    const page = index + 1;
 
-                return (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`
                       w-[40px] h-[40px] font-medium border-gray-light text flex items-center justify-center cursor-pointer
                       ${
                         currentPage === page
@@ -226,27 +248,31 @@ const StudentProfile = () => {
                           : "text-secondary"
                       }
                     `}
-                  >
-                    {page}
-                  </button>
-                );
-              })}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
 
-              <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(p + 1, totalPages))
-                }
-                disabled={currentPage === totalPages}
-                className="w-[40px] h-[40px] border border-gray-light flex items-center justify-center cursor-pointer disabled:opacity-40"
-              >
-                <Image
-                  src="/arrow-right.svg"
-                  width={22}
-                  height={22}
-                  alt="right-arrow"
-                />
-              </button>
-            </div>
+                  <button
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(p + 1, totalPages))
+                    }
+                    disabled={currentPage === totalPages}
+                    className="w-[40px] h-[40px] border border-gray-light flex items-center justify-center cursor-pointer disabled:opacity-40"
+                  >
+                    <Image
+                      src="/arrow-right.svg"
+                      width={22}
+                      height={22}
+                      alt="right-arrow"
+                    />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div>Groups here</div>
+            )}
           </div>
         </div>
       </div>
