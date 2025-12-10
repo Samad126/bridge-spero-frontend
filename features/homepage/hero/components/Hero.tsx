@@ -20,7 +20,7 @@ function Hero() {
           >
             Explore
           </Link>
-          <Link className="md:flex-1 border bg-white py-[12px]" href={"/login"}>
+          <Link className="md:flex-1 border bg-white py-[12px]" href={"/signup"}>
             Become a Teacher
           </Link>
         </div>

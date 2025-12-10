@@ -11,9 +11,9 @@ export interface NavItem {
 }
 
 export const publicNavItems: NavItem[] = [
-  { label: "About", href: "/" },
-  { label: "Explore", href: "/" },
-  { label: "Contact", href: "/" },
+  { label: "About", href: "/#why-bridge-spero" },
+  { label: "Explore", href: "/explore-groups" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export const authNavItems: NavItem[] = [

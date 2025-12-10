@@ -26,7 +26,7 @@ const TrendingGroups = () => {
         </ErrorBoundary>
 
         <Link
-          href={"/"}
+          href={"/explore-groups"}
           className="border mt-[15px] py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"
         >
           More

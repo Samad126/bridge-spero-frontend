@@ -371,7 +371,7 @@ const TeacherRegistration = () => {
                 id="bio"
                 placeholder="Bio"
                 {...register("bio")}
-                className="w-full p-[12px] border border-gray-light placeholder-gray-light outline-0 h-[100px] text-gray-light"
+                className="w-full p-[12px] border border-gray-light placeholder-gray-light outline-0 h-[100px] text-secondary"
               ></textarea>
             </div>
 

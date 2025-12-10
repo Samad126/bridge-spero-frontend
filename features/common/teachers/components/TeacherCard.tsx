@@ -4,9 +4,10 @@ import { TeacherCardItem } from "../types/teacherListTypes";
 
 interface TeacherCardProps extends TeacherCardItem {
   col?: 1 | 2;
+  id?: number;
 }
 
-function TeacherCard({ experience, profileUrl, star, name, col = 1 }: TeacherCardProps) {
+function TeacherCard({ experience, profileUrl, star, name, col = 1, id }: TeacherCardProps) {
   // For 2-column mobile view: vertical layout (image on top)
   // For 1-column mobile view and tablet/desktop: horizontal layout (image on left)
   const containerLayout = col === 2
@@ -60,7 +61,7 @@ function TeacherCard({ experience, profileUrl, star, name, col = 1 }: TeacherCar
       </div>
       <Link
         className="block text-center text-[18px] py-[12px] bg-secondary text-custom-white"
-        href={"/"}
+        href={id ? `/teacher-profile/${id}` : "#"}
       >
         View Profile
       </Link>

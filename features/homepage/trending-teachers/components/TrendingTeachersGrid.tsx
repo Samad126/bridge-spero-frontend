@@ -23,6 +23,7 @@ export default async function TrendingTeachersGrid({
       {teachers.map((teacher) => (
         <TeacherCard
           key={teacher.id}
+          id={teacher.id}
           experience={`${teacher.activeStudents} students`}
           name={`${teacher.name} ${teacher.surname}`}
           profileUrl={teacher.profilePictureName}
