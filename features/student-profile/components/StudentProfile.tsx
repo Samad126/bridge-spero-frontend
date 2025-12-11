@@ -254,15 +254,15 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
                 </div>
               ) : (
                 <>
-                  <div className="grid w-full grid-cols-2 xxl:grid-cols-3 mb-[24px] gap-[12px]">
+                  <div className="grid w-full grid-cols-2 xxl:grid-cols-4 mb-[24px] gap-[12px]">
                     {paginatedGroups.map((group) => (
                       <GroupCard
                         key={group.id}
                         id={group.id}
                         imageUrl={group.imageUrl || ""}
-                        degree={group.degree}
+                        degree={group.category}
                         language={group.language}
-                        subjectName={group.subjectName}
+                        subjectName={group.name}
                         teacherName={group.teacherName}
                         price={group.price}
                         col={2}

@@ -94,7 +94,7 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
   const [updateBackgroundImage, { isLoading: isUpdatingBg }] = useUpdateBackgroundImageMutation();
   const [uploadDemoVideo, { isLoading: isUploadingVideo }] = useUploadDemoVideoMutation();
 
-  const [isZoomConnected, setIsZoomConnected] = useState(false);
+  const [isZoomConnected, setIsZoomConnected] = useState(true);
   const [isBecomeStudent, setIsBecomeStudent] = useState(true);
   const [isSelected, setIsSelected] = useState("demo");
   const [currentPage, setCurrentPage] = useState(1);
@@ -368,21 +368,21 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
               </div>
             )}
           </div>
-          <div className="mt-[24px] xxl:mt-0 w-full">
-            <div className="flex items-center w-full select-none mb-[24px]">
+          <div className="mt-[24px] xxl:mt-0 w-full xxl:min-w-[570px]">
+            <div className="flex items-center w-full select-none mb-[24px] border-b border-gray-light">
               <div
                 onClick={() => handleSelectedCategory("demo")}
                 className={`${
-                  isSelected !== "demo" ? "text-secondary" : "text-primary"
-                } text-center border-b-1 py-[12px] flex-1 cursor-pointer`}
+                  isSelected === "demo" ? "text-primary border-b-2 border-primary" : "text-secondary"
+                } text-center py-[12px] flex-1 cursor-pointer transition-colors`}
               >
                 Demo Lesson
               </div>
               <div
                 onClick={() => handleSelectedCategory("groups")}
                 className={`${
-                  isSelected !== "groups" ? "text-secondary" : "text-primary"
-                } text-center border-b-1 py-[12px] flex-1 cursor-pointer`}
+                  isSelected === "groups" ? "text-primary border-b-2 border-primary" : "text-secondary"
+                } text-center py-[12px] flex-1 cursor-pointer transition-colors`}
               >
                 Groups {teacherGroups.length}
               </div>
@@ -436,11 +436,11 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
             ) : (
               <div>
                 {isLoadingGroups ? (
-                  <div className="grid xxl:grid-cols-4 grid-cols-2 gap-[12px] mb-[24px]">
+                  <div className="grid grid-cols-2 md:grid-cols-3 xxl:grid-cols-4 gap-[12px] mb-[24px]">
                     {Array.from({ length: 4 }).map((_, index) => (
                       <div key={index} className="border border-gray-light animate-pulse">
-                        <div className="w-full h-[120px] xxl:h-[170px] bg-gray-200"></div>
-                        <div className="p-[12px] xxl:p-[24px] space-y-[12px]">
+                        <div className="w-full h-[120px] md:h-[240px] bg-gray-200"></div>
+                        <div className="p-[12px] md:p-[20px] space-y-[12px]">
                           <div className="h-[14px] bg-gray-200 w-3/4"></div>
                           <div className="h-[24px] bg-gray-200 w-full"></div>
                           <div className="h-[40px] bg-gray-200 w-full"></div>
@@ -453,16 +453,16 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
                     No groups available
                   </div>
                 ) : (
-                  <div className="grid xxl:grid-cols-4 grid-cols-2 gap-[12px] mb-[24px]">
+                  <div className={`grid grid-cols-2 ${isZoomConnected && isBecomeStudent ? "xxl:grid-cols-4" : "xxl:grid-cols-2"} gap-[12px] mb-[24px]`}>
                     {paginatedGroups.map((group) => (
                       <GroupCard
                         key={group.id}
                         id={group.id}
                         imageUrl={group.imageUrl || ""}
-                        degree={group.degree}
+                        degree={group.category}
                         language={group.language}
-                        subjectName={group.subjectName}
-                        teacherName={group.teacherName}
+                        subjectName={group.name}
+                        teacherName={`${group.teacherName} ${group.teacherSurname}`}
                         price={group.price}
                         col={2}
                       />

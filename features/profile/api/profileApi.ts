@@ -21,15 +21,33 @@ export interface UserPublicProfile {
   backgroundImageUrl: string | null;
 }
 
-export interface ProfileGroup {
+export interface TeacherGroup {
   id: number;
-  imageUrl: string | null;
-  degree: string;
+  teacherId: number;
+  imageUrl: string;
+  category: string;
   language: string;
-  subjectName: string;
+  name: string;
   teacherName: string;
+  teacherSurname: string;
   price: number;
+  status: "ACTIVE" | "INACTIVE" | string; // adjust if needed
 }
+
+export interface UserGroup {
+  id: number;
+  teacherId: number;
+  imageUrl: string;
+  category: string;
+  language: string;
+  name: string;
+  teacherName: string;
+  teacherSurname: string;
+  price: number;
+  status: "ACTIVE" | "INACTIVE" | string; // adjust if needed
+}
+
+export type ProfileGroup = TeacherGroup | UserGroup;
 
 export const profileApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
