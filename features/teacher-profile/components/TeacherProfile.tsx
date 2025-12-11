@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useGetTeacherPublicProfileQuery, useUploadProfilePictureMutation, useUpdateProfilePictureMutation, useUploadBackgroundImageMutation, useUpdateBackgroundImageMutation, useUploadDemoVideoMutation } from "@/features/profile/api/profileApi";
+import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
 
 const Groups = [
   {
@@ -128,8 +130,38 @@ type RatingStarProps = {
     );
   }
 
-const TeacherProfile = () => {
-  const [isTeacherProfilePic, setIsTeacherProfilePic] = useState("profile");
+interface TeacherProfileProps {
+  teacherId?: number;
+}
+
+const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
+  // Fetch current logged-in user data
+  const { data: currentUser } = useGetUserProfileOptionalQuery();
+
+  // If no teacherId provided, assume viewing own profile (for logged-in teacher)
+  const profileTeacherId = teacherId || currentUser?.id;
+
+  // Fetch teacher profile data
+  const { data: teacherProfile, isLoading } = useGetTeacherPublicProfileQuery(
+    profileTeacherId!,
+    { skip: !profileTeacherId }
+  );
+
+  // Check if current user is viewing their own profile
+  const isOwnProfile = currentUser?.id === profileTeacherId && currentUser?.role === "TEACHER";
+  const isTeacherLoggedIn = isOwnProfile;
+
+  // Upload mutations
+  const profilePicInputRef = useRef<HTMLInputElement>(null);
+  const backgroundImageInputRef = useRef<HTMLInputElement>(null);
+  const demoVideoInputRef = useRef<HTMLInputElement>(null);
+
+  const [uploadProfilePicture, { isLoading: isUploadingProfilePic }] = useUploadProfilePictureMutation();
+  const [updateProfilePicture, { isLoading: isUpdatingProfilePic }] = useUpdateProfilePictureMutation();
+  const [uploadBackgroundImage, { isLoading: isUploadingBg }] = useUploadBackgroundImageMutation();
+  const [updateBackgroundImage, { isLoading: isUpdatingBg }] = useUpdateBackgroundImageMutation();
+  const [uploadDemoVideo, { isLoading: isUploadingVideo }] = useUploadDemoVideoMutation();
+
   const [isZoomConnected, setIsZoomConnected] = useState(false);
   const [isBecomeStudent, setIsBecomeStudent] = useState(true);
   const [isSelected, setIsSelected] = useState("demo");
@@ -138,7 +170,6 @@ const TeacherProfile = () => {
   const [isPpHovered, setIsPpHovered] = useState(false);
   const [showRateModal, setShowRateModal] = useState(false);
   const [rate, setRate] = useState(2.5);
-  const isTeacherLoggedIn = false;
  
   
   const percentage = rate / 5 * 100;
@@ -166,29 +197,132 @@ const TeacherProfile = () => {
     document.body.style.overflow = "unset";
   };
 
- const handleOpenDeviceFiles = () => {
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = "image/*";
-  fileInput.click();
- }
+  // Handle profile picture upload
+  const handleProfilePictureChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      if (teacherProfile?.imageUrl) {
+        await updateProfilePicture(file).unwrap();
+      } else {
+        await uploadProfilePicture(file).unwrap();
+      }
+    } catch (error) {
+      console.error("Failed to upload profile picture:", error);
+      alert("Failed to upload profile picture. Please try again.");
+    }
+  };
+
+  // Handle background image upload
+  const handleBackgroundImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      if (teacherProfile?.backgroundImageUrl) {
+        await updateBackgroundImage(file).unwrap();
+      } else {
+        await uploadBackgroundImage(file).unwrap();
+      }
+    } catch (error) {
+      console.error("Failed to upload background image:", error);
+      alert("Failed to upload background image. Please try again.");
+    }
+  };
+
+  // Handle demo video upload
+  const handleDemoVideoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      await uploadDemoVideo(file).unwrap();
+    } catch (error) {
+      console.error("Failed to upload demo video:", error);
+      alert("Failed to upload demo video. Please try again.");
+    }
+  };
+
+  const handleOpenProfilePicture = () => {
+    if (isTeacherLoggedIn) {
+      profilePicInputRef.current?.click();
+    }
+  };
+
+  const handleOpenBackgroundImage = () => {
+    if (isTeacherLoggedIn) {
+      backgroundImageInputRef.current?.click();
+    }
+  };
+
+  const handleOpenDemoVideo = () => {
+    if (isTeacherLoggedIn) {
+      demoVideoInputRef.current?.click();
+    }
+  };
 
 
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <section className="container flex flex-col gap-[24px] xxl:flex-row">
+        <div className="border border-1 border-gray-light flex flex-col xxl:flex-1">
+          <div className="w-full h-[146px] xxl:h-[262px] bg-gray-200 animate-pulse"></div>
+          <div className="p-[30px] flex flex-col gap-[24px]">
+            <div className="w-[178px] h-[178px] rounded-full bg-gray-200 animate-pulse"></div>
+            <div className="h-[40px] bg-gray-200 animate-pulse w-[200px]"></div>
+            <div className="h-[100px] bg-gray-200 animate-pulse"></div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // Helper function to get full image URL
+  const getImageUrl = (path: string | undefined | null) => {
+    if (!path) return null;
+    return `${process.env.NEXT_PUBLIC_PAGE_URL}${path}`;
+  };
+
+  const profileImageUrl = getImageUrl(teacherProfile?.imageUrl);
+  const backgroundImageUrl = getImageUrl(teacherProfile?.backgroundImageUrl) || "/teacher-profile-hero.jpg";
 
   return (
     <section className="container flex flex-col gap-[24px] xxl:flex-row">
-      <div className="border border-1 border-gray-light flex flex-col xxl:flex-1">
+      {/* Hidden file inputs */}
+      <input
+        ref={profilePicInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleProfilePictureChange}
+        className="hidden"
+      />
+      <input
+        ref={backgroundImageInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleBackgroundImageChange}
+        className="hidden"
+      />
+      <input
+        ref={demoVideoInputRef}
+        type="file"
+        accept="video/*"
+        onChange={handleDemoVideoChange}
+        className="hidden"
+      />
+      <div className="border border-gray-light flex flex-col xxl:flex-1">
         <div
-          onClick={() => handleOpenDeviceFiles()}
+          onClick={handleOpenBackgroundImage}
           onMouseEnter={() => setisHeroHovered(true)}
           onMouseLeave={() => setisHeroHovered(false)}
-          className="cursor-pointer w-full relative overflow-hidden h-[146px] xxl:h-[262px]"
+          className={`${isTeacherLoggedIn ? 'cursor-pointer' : ''} w-full relative overflow-hidden h-[146px] xxl:h-[262px]`}
         >
           <Image
-            src={"/teacher-profile-hero.jpg"}
+            src={backgroundImageUrl}
             alt="teacher-profile-hero"
-            // width={471}
-            // height={146}
             fill
             className="object-cover"
           />
@@ -211,18 +345,18 @@ const TeacherProfile = () => {
         <div className="flex xxl:flex-row flex-col p-[12px] xxl:p-[30px] xxl:gap-[30px] xxl:justify-start xxl:items-start">
           <div className="relative w-fit xxl:w-[314px] mx-auto xxl:mx-0 flex flex-col justify-center items-center xxl:items-start xxl:pl-0 pl-[24px] gap-[24px]">
             <div
-              onClick={() => handleOpenDeviceFiles()}
+              onClick={handleOpenProfilePicture}
               onMouseEnter={() => setIsPpHovered(true)}
               onMouseLeave={() => setIsPpHovered(false)}
-              className="relative cursor-pointer xxl:size-[178px] w-[100px] h-[100px] mt-[-50px] xxl:mt-[-96px] object-cover z-20 mx-auto xxl:mx-0"
+              className={`relative ${isTeacherLoggedIn ? 'cursor-pointer' : ''} xxl:size-[178px] w-[100px] h-[100px] mt-[-50px] xxl:mt-[-96px] object-cover z-20 mx-auto xxl:mx-0`}
             >
               <Image
-                src={isTeacherProfilePic ? "/kamila-sultanli.jpg" : "/user.svg"} // Teacher profile varsa bura oturulmelidir.
+                src={profileImageUrl || "/user.svg"}
                 alt="teacher"
                 width={178}
                 height={178}
                 className={`relative z-20 w-[100px] h-[100px] xxl:w-[178px] xxl:h-[178px] rounded-full bg-gray-light ${
-                  isTeacherProfilePic ? "p-0" : "xxl:p-[38px] p-[21px]"
+                  profileImageUrl ? "p-0" : "xxl:p-[38px] p-[21px]"
                 }`}
               />
               <div
@@ -243,7 +377,7 @@ const TeacherProfile = () => {
 
             <div>
               <h3 className="text-[32px] text-secondary text-center leading-[130%] font-medium xxl:text-left mb-[12px]">
-                Kamila Sultanli
+                {teacherProfile?.name || ''} {teacherProfile?.surname || ''}
               </h3>
               <div className="xxl:w-[200px] w-[185px] xxl:w-max flex items-center mx-auto xxl:mx-0">
                 <Image
@@ -253,24 +387,21 @@ const TeacherProfile = () => {
                   alt={`star`}
                   className="mr-[6px] w-[16px] h-[16px]"
                 />
-                <span className="text-custom-yellow">4.9</span>
+                <span className="text-custom-yellow">{teacherProfile?.rating?.toFixed(1) || '0.0'}</span>
                 <div className="w-px h-[10px] bg-tertiary mx-[12px]"></div>
                 <Image
                   src={"/users-1.svg"}
                   width={16}
                   height={16}
-                  alt={`star`}
-                  className="mr-[8px] [18px] h-[18px]"
+                  alt={`students`}
+                  className="mr-[8px] w-[18px] h-[18px]"
                 />
-                <span className="text-tertiary">300 students</span>
+                <span className="text-tertiary">{teacherProfile?.students || 0} students</span>
               </div>
             </div>
 
             <p className="text-center xxl:text-left w-full">
-              Lorem ipsum dolor sit amet consectetur. Est enim morbi vivamus
-              viverra maecenas etiam. Nisl fringilla ut sed lacus amet habitant
-              urna ipsum nunc. Sit gravida tempus quis laoreet aenean nunc enim
-              facilisi bibendum. Maecenas et risus{" "}
+              {teacherProfile?.bio || ''}
             </p>
             {isTeacherLoggedIn ? (
               <div className="flex flex-col gap-[12px] w-[200px]">
@@ -319,33 +450,50 @@ const TeacherProfile = () => {
               )}
             </div>
             {isSelected === "demo" ? (
-              <div className="relative w-full h-[159px] relative xxl:w-[570px] xxl:h-[278px]">
-                <Image
-                  src={"/demo-lesson.jpg"}
-                  alt="demo-lesson"
-                  // width={326}
-                  // height={159}
-                  fill
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-[#00000099]"></div>
-                <div className="absolute inset-0 flex items-center justify-center gap-[12px]">
-                  <Image 
-                    src={"/play.svg"}
-                    alt="play icon"
-                    width={46}
-                    height={46}
-                    className="border cursor-pointer border-[#EBEBEB] p-[12px]"
+              <div className="relative w-full h-[159px] xxl:w-[570px] xxl:h-[278px]">
+                {teacherProfile?.demoVideoUrl ? (
+                  <video
+                    src={getImageUrl(teacherProfile.demoVideoUrl) || undefined}
+                    controls
+                    className="w-full h-full object-cover"
                   />
-                  <Image 
-                    src={"/upload-white.svg"}
-                    alt="upload icon"
-                    width={46}
-                    height={46}
-                    color="#EBEBEB"
-                    className="border cursor-pointer border-[#EBEBEB] p-[12px]"
-                  />
-                </div>
+                ) : (
+                  <>
+                    <Image
+                      src={"/demo-lesson.jpg"}
+                      alt="demo-lesson"
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-[#00000099]"></div>
+                  </>
+                )}
+                {isTeacherLoggedIn && (
+                  <div className="absolute inset-0 flex items-center justify-center gap-[12px]">
+                    {teacherProfile?.demoVideoUrl && (
+                      <button className="border border-[#EBEBEB] p-[12px] bg-black/50 hover:bg-black/70">
+                        <Image
+                          src={"/play.svg"}
+                          alt="play icon"
+                          width={46}
+                          height={46}
+                        />
+                      </button>
+                    )}
+                    <button
+                      onClick={handleOpenDemoVideo}
+                      disabled={isUploadingVideo}
+                      className="border border-[#EBEBEB] p-[12px] bg-black/50 hover:bg-black/70 disabled:opacity-50"
+                    >
+                      <Image
+                        src={"/upload-white.svg"}
+                        alt="upload icon"
+                        width={46}
+                        height={46}
+                      />
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div>
