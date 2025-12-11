@@ -10,7 +10,7 @@ export default async function TrendingTeachersGrid({
   col = 1, 
   hideLastCard = true 
 }: TrendingTeachersGridProps) {
-  const response = await fetchTrendingTeachers(0, 10);
+  const response = await fetchTrendingTeachers(0, 4);
   const teachers = response.data;
 
   const gridColsClass = col === 1 ? "grid-cols-1" : "grid-cols-2";

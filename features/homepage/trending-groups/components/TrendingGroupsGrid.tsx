@@ -10,7 +10,7 @@ export default async function TrendingGroupsGrid({
   col = 1, 
   hideLastCard = true 
 }: TrendingGroupsGridProps) {
-  const response = await fetchTrendingGroups(0, 10);
+  const response = await fetchTrendingGroups(0, 4);
   const groups = response.data;
 
   const gridColsClass = col === 1 ? "grid-cols-1" : "grid-cols-2";
