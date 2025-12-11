@@ -12,6 +12,8 @@ export async function GET(
 
     const cookieStore = await cookies();
     const access_token = cookieStore.get("access_token");
+    
+    console.log("ACCESS TOKEN IS", access_token);
 
     if (!access_token) {
       return new Response(
@@ -25,6 +27,9 @@ export async function GET(
         }
       );
     }
+
+    console.log("API BASE URL IS", API_BASE_URL);
+    console.log("GROUP ID IS", id);
 
     const response = await fetch(`${API_BASE_URL}/groups/${id}/recordings`, {
       headers: {
