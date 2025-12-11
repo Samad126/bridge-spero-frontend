@@ -75,8 +75,8 @@ export const teacherRegistrationSchema = yup.object({
   subjects: yup
     .array()
     .of(yup.number().required())
-    .min(1, "Please select at least one subject")
-    .required("Subjects are required"),
+    .min(1, "Please select at least one category")
+    .required("Categories are required"),
   bio: yup.string().optional(),
   agreedToTerms: yup
     .boolean()

@@ -49,7 +49,7 @@ const TeacherRegistration = () => {
     mode: "onChange",
     defaultValues: {
       phoneCode: "+994",
-      categories: [] as number[],
+      subjects: [] as number[],
       agreedToTerms: false,
     },
   });
@@ -60,7 +60,7 @@ const TeacherRegistration = () => {
       : [...selectedCategories, categoryId];
 
     setSelectedCategories(newSelectedCategories);
-    setValue("categories", newSelectedCategories);
+    setValue("subjects", newSelectedCategories);
   };
 
   useEffect(() => {
@@ -98,9 +98,9 @@ const TeacherRegistration = () => {
       formData.append("password", data.password);
       formData.append("confirmPassword", data.confirmPassword);
 
-      // Append each category ID individually
-      data.categories.forEach((categoryId) => {
-        formData.append("categories", categoryId.toString());
+      // Append each subject ID individually
+      data.subjects.forEach((subjectId) => {
+        formData.append("subjects", subjectId.toString());
       });
 
       if (data.bio) {
@@ -320,9 +320,9 @@ const TeacherRegistration = () => {
                   </label>
                 ))}
               </div>
-              {(errors.categories || fieldErrors.categories) && (
+              {(errors.subjects || fieldErrors.subjects) && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.categories?.message || fieldErrors.categories}
+                  {errors.subjects?.message || fieldErrors.subjects}
                 </p>
               )}
             </div>
