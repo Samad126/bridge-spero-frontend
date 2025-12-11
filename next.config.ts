@@ -37,6 +37,10 @@ const nextConfig: NextConfig = {
   output: "standalone",
   devIndicators: false,
   reactStrictMode: false,
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NEXT_PUBLIC_PAGE_URL: process.env.NEXT_PUBLIC_PAGE_URL,
+  },
 };
 
 export default nextConfig;
