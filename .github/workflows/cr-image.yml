@@ -41,12 +41,23 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Set environment variables based on branch
+      id: set-env-vars
+      run: |
+        if [[ ${{ github.ref }} == 'refs/heads/master' ]]; then
+          echo "NEXT_PUBLIC_API_URL=${{ secrets.PROD_NEXT_PUBLIC_API_URL }}" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_PAGE_URL=${{ secrets.PROD_NEXT_PUBLIC_PAGE_URL }}" >> "$GITHUB_ENV"
+        else
+          echo "NEXT_PUBLIC_API_URL=${{ secrets.DEV_NEXT_PUBLIC_API_URL }}" >> "$GITHUB_ENV"
+          echo "NEXT_PUBLIC_PAGE_URL=${{ secrets.DEV_NEXT_PUBLIC_PAGE_URL }}" >> "$GITHUB_ENV"
+        fi
+
     - name: Build the image
       if: ${{ steps.image-exists.outputs.IMAGE_EXISTS == 'false' }}
       run: |
         docker build . -t "$CR_REPO:$IMAGE_TAG" \
-          --build-arg NEXT_PUBLIC_API_URL="${{ vars.NEXT_PUBLIC_API_URL }}" \
-          --build-arg NEXT_PUBLIC_PAGE_URL="${{ vars.NEXT_PUBLIC_PAGE_URL }}"
+          --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
+          --build-arg NEXT_PUBLIC_PAGE_URL="$NEXT_PUBLIC_PAGE_URL"
 
     - name: Tag as latest image
       if: ${{ steps.image-exists.outputs.IMAGE_EXISTS == 'false'  }}
