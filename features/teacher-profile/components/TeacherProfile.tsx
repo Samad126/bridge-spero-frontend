@@ -4,57 +4,9 @@ import React, { useEffect, useState, useRef } from "react";
 import { useGetTeacherPublicProfileQuery, useUploadProfilePictureMutation, useUpdateProfilePictureMutation, useUploadBackgroundImageMutation, useUpdateBackgroundImageMutation, useUploadDemoVideoMutation, useGetTeacherGroupsQuery } from "@/features/profile/api/profileApi";
 import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
 import GroupCard from "@/features/common/groups/components/GroupCard";
-
-type RatingStarProps = {
-  rate: number;
-}
-
- function RatingStar({ rate }: RatingStarProps) {
-    return (
-      <div className="flex items-center gap-[24px]">
-        {Array.from({length: 5}, (_, i) => {
-          const starNumber = i + 1;
-
-          if(rate >= starNumber) {
-            return (
-              <Image
-                  src={"/star.svg"}
-                  width={32}
-                  height={32}
-                  alt={`star`}
-                  key={i}
-                  className="w-[32px] h-[32px]"
-                />
-            );
-          }
-
-          if (rate >= starNumber - 0.5) {
-            return (
-              <Image
-                  src={"/half-star.svg"}
-                  width={32}
-                  height={32}
-                  key={i}
-                  alt={`star`}
-                  className="w-[32px] h-[32px] block translate-y-[1px]"
-                />
-            );
-          }
-
-          return (
-            <Image
-                  src={"/white-star.svg"}
-                  key={i}
-                  width={32}
-                  height={32}
-                  alt={`star`}
-                  className="w-[32px] h-[32px]"
-                />
-          );
-        })}
-      </div>
-    );
-  }
+import RateModal from "./RateModal";
+import ProfileActions from "./ProfileActions";
+import SidebarPrompts from "./SidebarPrompts";
 
 interface TeacherProfileProps {
   teacherId?: number;
@@ -101,10 +53,6 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
   const [isHeroHovered, setisHeroHovered] = useState(false);
   const [isPpHovered, setIsPpHovered] = useState(false);
   const [showRateModal, setShowRateModal] = useState(false);
-  const [rate, setRate] = useState(2.5);
- 
-  
-  const percentage = rate / 5 * 100;
 
 
   const itemsPerPage = 8;
@@ -343,30 +291,11 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
             <p className="text-center xxl:text-left w-full">
               {teacherProfile?.bio || ''}
             </p>
-            {isTeacherLoggedIn ? (
-              <div className="flex flex-col gap-[12px] w-[200px]">
-                <button className="bg-secondary text-white py-[12px] cursor-pointer">
-                  Edit Profile Info
-                </button>
-                {isBecomeStudent && (
-                  <button className="text-secondary border border-secondary py-[12px] cursor-pointer">
-                    Switch To Student
-                  </button>
-                )}
-              </div>
-            ) : (
-              <div className="flex flex-col gap-[12px] w-[200px]">
-                <button className="bg-secondary text-white py-[12px] cursor-pointer">
-                  Follow
-                </button>
-                <button
-                  onClick={() => openRateModule()}
-                  className="text-secondary border border-secondary py-[12px] cursor-pointer"
-                >
-                  Rate
-                </button>
-              </div>
-            )}
+            <ProfileActions
+              isOwnProfile={isTeacherLoggedIn}
+              isBecomeStudent={isBecomeStudent}
+              onRateClick={openRateModule}
+            />
           </div>
           <div className="mt-[24px] xxl:mt-0 w-full xxl:min-w-[570px]">
             <div className="flex items-center w-full select-none mb-[24px] border-b border-gray-light">
@@ -515,76 +444,12 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
         </div>
       </div>
       {isTeacherLoggedIn && (
-        <div className="flex flex-col gap-[24px]">
-          {!isZoomConnected && (
-            <div className="border border-1 border-gray-light p-[12px]">
-              <div className="flex flex-col items-center py-[24px] px-[12px] xxl:p-[30px]">
-                <h3 className="text-primary mb-[12px] xxl:mb-[16px] text-center xxl:text-[32px] text-[24px]">
-                  Link Zoom to start your live lessons
-                </h3>
-                <p className="text-center text-secondary mb-[24px] xxl:mb-[42px]">
-                  Link your account and start teaching live in just a few clicks
-                </p>
-                <button className="bg-secondary text-white py-[12px] w-[200px] cursor-pointer text-[18px]">
-                  Connect to Zoom
-                </button>
-              </div>
-            </div>
-          )}
-
-          {!isBecomeStudent && (
-            <div className="border border-1 border-gray-light p-[12px]">
-              <div className="flex flex-col items-center py-[24px] px-[12px] xxl:p-[30px]">
-                <h3 className="text-primary mb-[12px] xxl:mb-[16px] text-center xxl:text-[32px] text-[24px]">
-                  Learning isn’t just for students — join the fun
-                </h3>
-                <p className="text-center text-secondary mb-[24px] xxl:mb-[42px]">
-                  Keep growing, stay curious, and bring that energy back to your
-                  teaching
-                </p>
-                <button className="bg-secondary text-white py-[12px] w-[200px] cursor-pointer text-[18px]">
-                  Become a Student
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+        <SidebarPrompts
+          isZoomConnected={isZoomConnected}
+          isBecomeStudent={isBecomeStudent}
+        />
       )}
-      {showRateModal && (
-        <div>
-          <div onClick={(e) => e.stopPropagation()} className="fixed inset-0 w-[304px] p-[24px] flex flex-col gap-[32px] m-auto z-90 h-max bg-white text-secondary">
-            <div className="w-full flex flex-col items-center">
-              <span className="text-custom-yellow text-center font-medium text-[32px] mb-[12px]">
-                {rate}
-              </span>
-              <RatingStar rate = { rate } />
-            </div>
-            <div>
-              <input
-                id="volume"
-                type="range"
-                min={0}
-                max={5}
-                step={0.5}
-                value={rate}
-                onChange={(e) => setRate(Number(e.target.value))}
-                className="w-full bg-primary appearance-none h-[2px] cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 "
-                style={{
-                  background: `linear-gradient(
-            to right,
-            #C96129 ${percentage}%,
-            #C8C8C8 ${percentage}%
-          )`,
-                }}
-              />
-            </div>
-            <button onClick={() => closeRateModule()} className="bg-secondary mx-[28px] text-white py-[12px] text-[18px] cursor-pointer">
-              Submit
-            </button>
-          </div>
-          <div onClick={() => closeRateModule()} className="w-full h-full fixed inset-0 bg-[#00000099] z-80"></div>
-        </div>
-      )}
+      <RateModal isOpen={showRateModal} onClose={closeRateModule} />
     </section>
   );
 };
