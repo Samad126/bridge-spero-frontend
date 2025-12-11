@@ -44,7 +44,9 @@ jobs:
     - name: Build the image
       if: ${{ steps.image-exists.outputs.IMAGE_EXISTS == 'false' }}
       run: |
-        docker build . -t "$CR_REPO:$IMAGE_TAG"
+        docker build . -t "$CR_REPO:$IMAGE_TAG" \
+          --build-arg NEXT_PUBLIC_API_URL="${{ vars.NEXT_PUBLIC_API_URL }}" \
+          --build-arg NEXT_PUBLIC_PAGE_URL="${{ vars.NEXT_PUBLIC_PAGE_URL }}"
 
     - name: Tag as latest image
       if: ${{ steps.image-exists.outputs.IMAGE_EXISTS == 'false'  }}
