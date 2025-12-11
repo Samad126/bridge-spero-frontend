@@ -34,6 +34,19 @@ export async function GET(
       cache: "no-store",
     });
 
+    console.log("GROUP RECORDINGS RESPONSE", response);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      return new Response(
+        JSON.stringify(errorData),
+        {
+          status: response.status,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
     const data = await response.json();
 
     return new Response(JSON.stringify(data), {
