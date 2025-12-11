@@ -33,9 +33,9 @@ export async function POST(request: Request) {
       cache: "no-store",
     });
 
-    if (response.status === 204) {
+    if (response.status === 200) {
       return new Response(null, {
-        status: 204,
+        status: 200,
       });
     }
 
@@ -92,9 +92,9 @@ export async function PATCH(request: Request) {
       cache: "no-store",
     });
 
-    if (response.status === 204) {
+    if (response.status === 200) {
       return new Response(null, {
-        status: 204,
+        status: 200,
       });
     }
 
@@ -149,9 +149,9 @@ export async function DELETE() {
       cache: "no-store",
     });
 
-    if (response.status === 204) {
+    if (response.status === 200) {
       return new Response(null, {
-        status: 204,
+        status: 200,
       });
     }
 

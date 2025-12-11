@@ -315,9 +315,9 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
       />
       <div className="border border-gray-light flex flex-col xxl:flex-1">
         <div
-          onClick={handleOpenBackgroundImage}
-          onMouseEnter={() => setisHeroHovered(true)}
-          onMouseLeave={() => setisHeroHovered(false)}
+          onClick={isTeacherLoggedIn ? handleOpenBackgroundImage : undefined}
+          onMouseEnter={isTeacherLoggedIn ? () => setisHeroHovered(true) : undefined}
+          onMouseLeave={isTeacherLoggedIn ? () => setisHeroHovered(false) : undefined}
           className={`${isTeacherLoggedIn ? 'cursor-pointer' : ''} w-full relative overflow-hidden h-[146px] xxl:h-[262px]`}
         >
           <Image
@@ -326,28 +326,32 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
             fill
             className="object-cover"
           />
-          <div
-            className={`xxl:${
-              isHeroHovered ? "block" : "hidden"
-            } absolute inset-0 bg-[#00000099] z-10 block`}
-          ></div>
-          <Image
-            src={"/camera_white.svg"}
-            width={22}
-            height={22}
-            alt=""
-            className={`xxl:${
-              isHeroHovered ? "block" : "hidden"
-            } absolute block inset-0 m-auto cursor-pointer z-20`}
-          />
+          {isTeacherLoggedIn && (
+            <>
+              <div
+                className={`xxl:${
+                  isHeroHovered ? "block" : "hidden"
+                } absolute inset-0 bg-[#00000099] z-10 block`}
+              ></div>
+              <Image
+                src={"/camera_white.svg"}
+                width={22}
+                height={22}
+                alt=""
+                className={`xxl:${
+                  isHeroHovered ? "block" : "hidden"
+                } absolute block inset-0 m-auto cursor-pointer z-20`}
+              />
+            </>
+          )}
         </div>
 
         <div className="flex xxl:flex-row flex-col p-[12px] xxl:p-[30px] xxl:gap-[30px] xxl:justify-start xxl:items-start">
           <div className="relative w-fit xxl:w-[314px] mx-auto xxl:mx-0 flex flex-col justify-center items-center xxl:items-start xxl:pl-0 pl-[24px] gap-[24px]">
             <div
-              onClick={handleOpenProfilePicture}
-              onMouseEnter={() => setIsPpHovered(true)}
-              onMouseLeave={() => setIsPpHovered(false)}
+              onClick={isTeacherLoggedIn ? handleOpenProfilePicture : undefined}
+              onMouseEnter={isTeacherLoggedIn ? () => setIsPpHovered(true) : undefined}
+              onMouseLeave={isTeacherLoggedIn ? () => setIsPpHovered(false) : undefined}
               className={`relative ${isTeacherLoggedIn ? 'cursor-pointer' : ''} xxl:size-[178px] w-[100px] h-[100px] mt-[-50px] xxl:mt-[-96px] object-cover z-20 mx-auto xxl:mx-0`}
             >
               <Image
@@ -359,20 +363,24 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
                   profileImageUrl ? "p-0" : "xxl:p-[38px] p-[21px]"
                 }`}
               />
-              <div
-                className={`xxl:${
-                  isPpHovered ? "block" : "hidden"
-                } block absolute inset-0 bg-[#00000099] rounded-full z-30`}
-              ></div>
-              <Image
-                src={"/camera_white.svg"}
-                width={22}
-                height={22}
-                alt=""
-                className={`xxl:${
-                  isPpHovered ? "block" : "hidden"
-                } block absolute inset-0 m-auto cursor-pointer z-40`}
-              />
+              {isTeacherLoggedIn && (
+                <>
+                  <div
+                    className={`xxl:${
+                      isPpHovered ? "block" : "hidden"
+                    } block absolute inset-0 bg-[#00000099] rounded-full z-30`}
+                  ></div>
+                  <Image
+                    src={"/camera_white.svg"}
+                    width={22}
+                    height={22}
+                    alt=""
+                    className={`xxl:${
+                      isPpHovered ? "block" : "hidden"
+                    } block absolute inset-0 m-auto cursor-pointer z-40`}
+                  />
+                </>
+              )}
             </div>
 
             <div>
