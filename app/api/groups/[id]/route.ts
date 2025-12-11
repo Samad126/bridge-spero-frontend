@@ -46,7 +46,7 @@ export async function GET(
   }
 }
 
-export async function PUT(
+export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -74,7 +74,7 @@ export async function PUT(
     headers.append("Authorization", `Bearer ${access_token.value}`);
 
     const response = await fetch(`${API_BASE_URL}/groups/${id}`, {
-      method: "PUT",
+      method: "PATCH",
       headers,
       body: formData,
     });
@@ -96,11 +96,8 @@ export async function PUT(
       });
     }
 
-    const data = await response.json();
-
-    return new Response(JSON.stringify(data), {
+    return new Response(null, {
       status: response.status,
-      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error("Update group API error:", error);

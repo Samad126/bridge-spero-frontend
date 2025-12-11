@@ -93,7 +93,7 @@ export const groupFormApi = baseApi.injectEndpoints({
 
         return {
           url: `/groups/${groupId}`,
-          method: "PUT",
+          method: "PATCH",
           body: formData,
           meta: { authMode: "strict" },
         };
