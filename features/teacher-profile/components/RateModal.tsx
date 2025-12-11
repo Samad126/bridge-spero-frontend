@@ -1,14 +1,35 @@
 import { useState } from "react";
-import RatingStar from "./RatingStar";
+import Image from "next/image";
+import { useRateTeacherMutation } from "@/features/profile/api/profileApi";
 
 type RateModalProps = {
   isOpen: boolean;
   onClose: () => void;
-}
+  teacherId: number;
+};
 
-export default function RateModal({ isOpen, onClose }: RateModalProps) {
-  const [rate, setRate] = useState(2.5);
-  const percentage = rate / 5 * 100;
+export default function RateModal({ isOpen, onClose, teacherId }: RateModalProps) {
+  const [rate, setRate] = useState(0);
+  const [rateTeacher, { isLoading }] = useRateTeacherMutation();
+
+  const handleSubmit = async () => {
+    if (rate === 0) {
+      alert("Please select a rating before submitting.");
+      return;
+    }
+
+    try {
+      await rateTeacher({ teacherId, rating: rate }).unwrap();
+      onClose();
+    } catch (error) {
+      console.error("Failed to rate teacher:", error);
+      alert("Failed to submit rating. Please try again.");
+    }
+  };
+
+  const handleStarClick = (starNumber: number) => {
+    setRate(starNumber);
+  };
 
   if (!isOpen) return null;
 
@@ -16,32 +37,39 @@ export default function RateModal({ isOpen, onClose }: RateModalProps) {
     <div>
       <div onClick={(e) => e.stopPropagation()} className="fixed inset-0 w-[304px] p-[24px] flex flex-col gap-[32px] m-auto z-90 h-max bg-white text-secondary">
         <div className="w-full flex flex-col items-center">
-          <span className="text-custom-yellow text-center font-medium text-[32px] mb-[12px]">
-            {rate}
-          </span>
-          <RatingStar rate={rate} />
+          <h2 className="text-secondary text-center font-medium text-[24px] mb-[24px]">
+            Tap to rate
+          </h2>
+          <div className="flex items-center gap-[24px]">
+            {Array.from({ length: 5 }, (_, i) => {
+              const starNumber = i + 1;
+              const isFilled = rate >= starNumber;
+
+              return (
+                <button
+                  key={i}
+                  onClick={() => handleStarClick(starNumber)}
+                  className="cursor-pointer transition-transform hover:scale-110 active:scale-95"
+                  aria-label={`Rate ${starNumber} star${starNumber > 1 ? 's' : ''}`}
+                >
+                  <Image
+                    src={isFilled ? "/star.svg" : "/white-star.svg"}
+                    width={32}
+                    height={32}
+                    alt={`${starNumber} star`}
+                    className="w-[32px] h-[32px]"
+                  />
+                </button>
+              );
+            })}
+          </div>
         </div>
-        <div>
-          <input
-            id="volume"
-            type="range"
-            min={0}
-            max={5}
-            step={0.5}
-            value={rate}
-            onChange={(e) => setRate(Number(e.target.value))}
-            className="w-full bg-primary appearance-none h-[2px] cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 "
-            style={{
-              background: `linear-gradient(
-            to right,
-            #C96129 ${percentage}%,
-            #C8C8C8 ${percentage}%
-          )`,
-            }}
-          />
-        </div>
-        <button onClick={onClose} className="bg-secondary mx-[28px] text-white py-[12px] text-[18px] cursor-pointer">
-          Submit
+        <button
+          onClick={handleSubmit}
+          disabled={isLoading}
+          className="bg-secondary mx-[28px] text-white py-[12px] text-[18px] cursor-pointer disabled:opacity-50"
+        >
+          {isLoading ? "Submitting..." : "Submit"}
         </button>
       </div>
       <div onClick={onClose} className="w-full h-full fixed inset-0 bg-[#00000099] z-80"></div>

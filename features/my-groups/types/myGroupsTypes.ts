@@ -24,4 +24,4 @@ export interface Category {
   name: string;
 }
 
-export type CategoriesResponse = Category[] | { data: Category[] };
+export type CategoriesResponse = Category[];

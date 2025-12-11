@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useGetUserPublicProfileQuery, useUploadProfilePictureMutation, useUpdateProfilePictureMutation, useUploadBackgroundImageMutation, useUpdateBackgroundImageMutation, useGetUserGroupsQuery } from "@/features/profile/api/profileApi";
 import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
 import GroupCard from "@/features/common/groups/components/GroupCard";
+import EditProfileModal from "@/features/profile/components/EditProfileModal";
 
 interface StudentProfileProps {
   userId?: number;
@@ -45,6 +46,7 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isHeroHovered, setisHeroHovered] = useState(false);
   const [isPpHovered, setIsPpHovered] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const itemsPerPage = 6;
   const totalPages = Math.ceil(userGroups.length / itemsPerPage);
@@ -221,7 +223,10 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
               {userProfile?.bio || ''}
             </p>
             {isStudentLoggedIn ? (
-              <button className="bg-secondary text-white py-[12px] px-[42px] cursor-pointer">
+              <button
+                onClick={() => setShowEditModal(true)}
+                className="bg-secondary text-white py-[12px] px-[42px] cursor-pointer"
+              >
                 Edit Profile Info
               </button>
             ) : null}
@@ -315,6 +320,19 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
           </div>
         </div>
       </div>
+
+      <EditProfileModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        profileType="student"
+        currentData={{
+          name: userProfile?.name || "",
+          surname: userProfile?.surname || "",
+          email: userProfile?.email || "",
+          phone: userProfile?.phone || "",
+          bio: userProfile?.bio || "",
+        }}
+      />
     </section>
   );
 };

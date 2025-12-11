@@ -25,7 +25,7 @@ interface BackendErrorResponse {
   timestamp?: string;
 }
 
-interface Subject {
+interface Category {
   id: number;
   name: string;
 }
@@ -35,8 +35,8 @@ const TeacherRegistration = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [selectedSubjects, setSelectedSubjects] = useState<number[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [demoVideoFile, setDemoVideoFile] = useState<File | null>(null);
 
   const {
@@ -49,31 +49,31 @@ const TeacherRegistration = () => {
     mode: "onChange",
     defaultValues: {
       phoneCode: "+994",
-      subjects: [] as number[],
+      categories: [] as number[],
       agreedToTerms: false,
     },
   });
 
-  const handleSubjectChange = (subjectId: number) => {
-    const newSelectedSubjects = selectedSubjects.includes(subjectId)
-      ? selectedSubjects.filter((id) => id !== subjectId)
-      : [...selectedSubjects, subjectId];
+  const handleCategoryChange = (categoryId: number) => {
+    const newSelectedCategories = selectedCategories.includes(categoryId)
+      ? selectedCategories.filter((id) => id !== categoryId)
+      : [...selectedCategories, categoryId];
 
-    setSelectedSubjects(newSelectedSubjects);
-    setValue("subjects", newSelectedSubjects);
+    setSelectedCategories(newSelectedCategories);
+    setValue("categories", newSelectedCategories);
   };
 
   useEffect(() => {
-    const fetchSubjects = async () => {
+    const fetchCategories = async () => {
       try {
         const response = await fetch("/api/categories");
         const data = await response.json();
-        setSubjects(Array.isArray(data) ? data : data.data || []);
+        setCategories(Array.isArray(data) ? data : data.data || []);
       } catch (error) {
-        console.error("Failed to fetch subjects:", error);
+        console.error("Failed to fetch categories:", error);
       }
     };
-    fetchSubjects();
+    fetchCategories();
   }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,9 +98,9 @@ const TeacherRegistration = () => {
       formData.append("password", data.password);
       formData.append("confirmPassword", data.confirmPassword);
 
-      // Append each subject ID individually
-      data.subjects.forEach((subjectId) => {
-        formData.append("subjects", subjectId.toString());
+      // Append each category ID individually
+      data.categories.forEach((categoryId) => {
+        formData.append("categories", categoryId.toString());
       });
 
       if (data.bio) {
@@ -305,24 +305,24 @@ const TeacherRegistration = () => {
 
             <div className="w-full lg:col-span-2">
               <label className="leading-[100%] block w-full mb-[8px]">
-                Choose Subjects *
+                Choose Categories *
               </label>
               <div className="grid grid-cols-2 gap-2 p-[12px] border border-gray-light">
-                {subjects.map((subject) => (
-                  <label key={subject.id} className="flex items-center gap-2 cursor-pointer">
+                {categories.map((category) => (
+                  <label key={category.id} className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
-                      checked={selectedSubjects.includes(subject.id)}
-                      onChange={() => handleSubjectChange(subject.id)}
+                      checked={selectedCategories.includes(category.id)}
+                      onChange={() => handleCategoryChange(category.id)}
                       className="w-[18px] h-[18px] border border-gray-light"
                     />
-                    <span className="text-sm">{subject.name}</span>
+                    <span className="text-sm">{category.name}</span>
                   </label>
                 ))}
               </div>
-              {(errors.subjects || fieldErrors.subjects) && (
+              {(errors.categories || fieldErrors.categories) && (
                 <p className="text-red-500 text-sm mt-1">
-                  {errors.subjects?.message || fieldErrors.subjects}
+                  {errors.categories?.message || fieldErrors.categories}
                 </p>
               )}
             </div>

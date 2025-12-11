@@ -7,6 +7,7 @@ import GroupCard from "@/features/common/groups/components/GroupCard";
 import RateModal from "./RateModal";
 import ProfileActions from "./ProfileActions";
 import SidebarPrompts from "./SidebarPrompts";
+import EditProfileModal from "@/features/profile/components/EditProfileModal";
 
 interface TeacherProfileProps {
   teacherId?: number;
@@ -53,6 +54,7 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
   const [isHeroHovered, setisHeroHovered] = useState(false);
   const [isPpHovered, setIsPpHovered] = useState(false);
   const [showRateModal, setShowRateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
 
   const itemsPerPage = 8;
@@ -294,7 +296,9 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
             <ProfileActions
               isOwnProfile={isTeacherLoggedIn}
               isBecomeStudent={isBecomeStudent}
+              isLoggedIn={!!currentUser}
               onRateClick={openRateModule}
+              onEditClick={() => setShowEditModal(true)}
             />
           </div>
           <div className="mt-[24px] xxl:mt-0 w-full xxl:min-w-[570px]">
@@ -449,7 +453,25 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
           isBecomeStudent={isBecomeStudent}
         />
       )}
-      <RateModal isOpen={showRateModal} onClose={closeRateModule} />
+      {profileTeacherId && (
+        <RateModal
+          isOpen={showRateModal}
+          onClose={closeRateModule}
+          teacherId={profileTeacherId}
+        />
+      )}
+      <EditProfileModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        profileType="teacher"
+        currentData={{
+          name: teacherProfile?.name || "",
+          surname: teacherProfile?.surname || "",
+          email: teacherProfile?.email || "",
+          phone: teacherProfile?.phone || "",
+          bio: teacherProfile?.bio || "",
+        }}
+      />
     </section>
   );
 };

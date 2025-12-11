@@ -276,7 +276,7 @@ const StudentRegistration = () => {
 
             <div className="w-full lg:col-span-2">
               <label className="leading-[100%] block w-full mb-[8px]">
-                Which Subjects Interest You? *
+                Which Categories Interests You
               </label>
               <div className="grid grid-cols-2 gap-2 p-[12px] border border-gray-light">
                 {subjects.map((subject) => (

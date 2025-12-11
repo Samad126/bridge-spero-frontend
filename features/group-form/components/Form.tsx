@@ -12,7 +12,7 @@ import {
   useGetGroupQuery,
 } from "../api/groupFormApi";
 import { useGetCategoriesQuery } from "@/features/my-groups/api/myGroupsApi";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 
 interface FormData {
   name: string;
@@ -39,7 +39,7 @@ function Form() {
       skip: !groupId,
     }
   );
-  const { data: categoriesData } = useGetCategoriesQuery();
+  const { data: categories = [] } = useGetCategoriesQuery();
 
   const [apiError, setApiError] = useState<string>("");
   const [groupImageFile, setGroupImageFile] = useState<File | null>(null);
@@ -48,11 +48,6 @@ function Form() {
 
   // Derive the image preview from existing group or uploaded file
   const displayImagePreview = imagePreview || (isEditMode && existingGroup?.imageUrl) || null;
-
-  // Parse categories data (handles both array and {data: array} formats)
-  const categories = useMemo(() => {
-    return Array.isArray(categoriesData) ? categoriesData : categoriesData?.data || [];
-  }, [categoriesData]);
 
   const {
     register,

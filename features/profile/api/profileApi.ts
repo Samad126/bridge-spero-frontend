@@ -5,6 +5,9 @@ export interface TeacherPublicProfile {
   name: string | null;
   surname: string | null;
   rating: number | null;
+  phone: string | null;
+  email: string | null;
+  interests: string[];
   students: number | null;
   bio: string | null;
   imageUrl: string | null;
@@ -16,6 +19,9 @@ export interface UserPublicProfile {
   id: number;
   name: string | null;
   surname: string | null;
+  phone: string | null;
+  email: string | null;
+  interests: string[];
   bio: string | null;
   imageUrl: string | null;
   backgroundImageUrl: string | null;
@@ -48,6 +54,15 @@ export interface UserGroup {
 }
 
 export type ProfileGroup = TeacherGroup | UserGroup;
+
+export interface UpdateProfileRequest {
+  name?: string;
+  surname?: string;
+  email?: string;
+  phone?: string;
+  bio?: string;
+  categories?: number[];
+}
 
 export const profileApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -189,6 +204,47 @@ export const profileApi = baseApi.injectEndpoints({
         { type: "Groups", id: `user-${userId}` },
       ],
     }),
+
+    // Update user profile
+    updateUserProfile: builder.mutation<
+      UserPublicProfile,
+      UpdateProfileRequest
+    >({
+      query: (data) => ({
+        url: "/users/profile",
+        method: "PATCH",
+        body: data,
+        meta: { authMode: "strict" },
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    // Update teacher profile
+    updateTeacherProfile: builder.mutation<
+      TeacherPublicProfile,
+      UpdateProfileRequest
+    >({
+      query: (data) => ({
+        url: "/teachers/profile",
+        method: "PATCH",
+        body: data,
+        meta: { authMode: "strict" },
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    // Rate a teacher
+    rateTeacher: builder.mutation<void, { teacherId: number; rating: number }>({
+      query: ({ teacherId, rating }) => ({
+        url: `/teachers/${teacherId}/rate`,
+        method: "POST",
+        body: { rating },
+        meta: { authMode: "strict" },
+      }),
+      invalidatesTags: (_result, _error, { teacherId }) => [
+        { type: "User", id: `teacher-${teacherId}` },
+      ],
+    }),
   }),
 });
 
@@ -204,4 +260,7 @@ export const {
   useDeleteBackgroundImageMutation,
   useGetTeacherGroupsQuery,
   useGetUserGroupsQuery,
+  useUpdateUserProfileMutation,
+  useUpdateTeacherProfileMutation,
+  useRateTeacherMutation,
 } = profileApi;

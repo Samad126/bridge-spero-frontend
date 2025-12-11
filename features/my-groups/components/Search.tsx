@@ -3,16 +3,10 @@
 import { useQueryStates, parseAsString } from "nuqs";
 import { FormEvent, useTransition } from "react";
 import { useGetCategoriesQuery } from "../api/myGroupsApi";
-import { Category } from "../types/myGroupsTypes";
 
 function Search() {
   const [isPending, startTransition] = useTransition();
-  const { data: categoriesData } = useGetCategoriesQuery();
-
-  // Handle both array and object responses
-  const categories: Category[] = Array.isArray(categoriesData)
-    ? categoriesData
-    : categoriesData?.data || [];
+  const { data: categories = [] } = useGetCategoriesQuery();
 
   const [filters, setFilters] = useQueryStates(
     {
