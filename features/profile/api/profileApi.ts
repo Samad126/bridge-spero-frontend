@@ -21,6 +21,16 @@ export interface UserPublicProfile {
   backgroundImageUrl: string | null;
 }
 
+export interface ProfileGroup {
+  id: number;
+  imageUrl: string | null;
+  degree: string;
+  language: string;
+  subjectName: string;
+  teacherName: string;
+  price: number;
+}
+
 export const profileApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Get teacher public profile
@@ -139,6 +149,28 @@ export const profileApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+
+    // Get teacher groups (public)
+    getTeacherGroups: builder.query<ProfileGroup[], number>({
+      query: (teacherId) => ({
+        url: `/teachers/${teacherId}/groups`,
+        meta: { authMode: "optional" },
+      }),
+      providesTags: (result, error, teacherId) => [
+        { type: "Groups", id: `teacher-${teacherId}` },
+      ],
+    }),
+
+    // Get user groups (public)
+    getUserGroups: builder.query<ProfileGroup[], number>({
+      query: (userId) => ({
+        url: `/users/${userId}/groups`,
+        meta: { authMode: "optional" },
+      }),
+      providesTags: (result, error, userId) => [
+        { type: "Groups", id: `user-${userId}` },
+      ],
+    }),
   }),
 });
 
@@ -152,4 +184,6 @@ export const {
   useUploadBackgroundImageMutation,
   useUpdateBackgroundImageMutation,
   useDeleteBackgroundImageMutation,
+  useGetTeacherGroupsQuery,
+  useGetUserGroupsQuery,
 } = profileApi;

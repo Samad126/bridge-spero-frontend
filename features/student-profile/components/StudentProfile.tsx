@@ -1,59 +1,9 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState, useRef } from "react";
-import { useGetUserPublicProfileQuery, useUploadProfilePictureMutation, useUpdateProfilePictureMutation, useUploadBackgroundImageMutation, useUpdateBackgroundImageMutation } from "@/features/profile/api/profileApi";
+import { useGetUserPublicProfileQuery, useUploadProfilePictureMutation, useUpdateProfilePictureMutation, useUploadBackgroundImageMutation, useUpdateBackgroundImageMutation, useGetUserGroupsQuery } from "@/features/profile/api/profileApi";
 import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
-
-const Teachers = [
-  {
-    id: 1,
-    name: "Kamila Sultanli",
-    profileUrl: "/kamila-sultanli.jpg",
-    star: 4.9,
-  },
-  {
-    id: 2,
-    name: "Kamila Sultansiz",
-    profileUrl: "/kamila-sultanli.jpg",
-    star: 1.9,
-  },
-  {
-    id: 3,
-    name: "Kama Sultanli",
-    profileUrl: "/kamila-sultanli.jpg",
-    star: 2.9,
-  },
-  {
-    id: 4,
-    name: "Kamush Sultanli",
-    profileUrl: "/kamila-sultanli.jpg",
-    star: 3.9,
-  },
-  {
-    id: 5,
-    name: "Kamila Sultanli",
-    profileUrl: "/kamila-sultanli.jpg",
-    star: 4.9,
-  },
-  {
-    id: 6,
-    name: "Kamila Sultansiz",
-    profileUrl: "/kamila-sultanli.jpg",
-    star: 1.9,
-  },
-  {
-    id: 7,
-    name: "Kama Sultanli",
-    profileUrl: "/kamila-sultanli.jpg",
-    star: 2.9,
-  },
-  {
-    id: 8,
-    name: "Kamush Sultanli",
-    profileUrl: "/kamila-sultanli.jpg",
-    star: 3.9,
-  },
-];
+import GroupCard from "@/features/common/groups/components/GroupCard";
 
 interface StudentProfileProps {
   userId?: number;
@@ -72,6 +22,12 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
     { skip: !profileUserId }
   );
 
+  // Fetch user groups
+  const { data: userGroups = [], isLoading: isLoadingGroups } = useGetUserGroupsQuery(
+    profileUserId!,
+    { skip: !profileUserId }
+  );
+
   // Check if current user is viewing their own profile
   const isOwnProfile = currentUser?.id === profileUserId && currentUser?.role === "USER";
   const isStudentLoggedIn = isOwnProfile;
@@ -86,22 +42,13 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
   const [updateBackgroundImage, { isLoading: isUpdatingBg }] = useUpdateBackgroundImageMutation();
 
   const [isMobile, setIsMobile] = useState(false);
-  const [isSelected, setIsSelected] = useState("teachers");
   const [currentPage, setCurrentPage] = useState(1);
   const [isHeroHovered, setisHeroHovered] = useState(false);
   const [isPpHovered, setIsPpHovered] = useState(false);
 
-  const handleSelectedCategory = (category: string) => {
-    setIsSelected(category);
-  };
-
-  useEffect(() => {
-    // handleSelectedCategory('teachers');
-  }, [isSelected]);
-
   const itemsPerPage = 6;
-  const totalPages = Math.ceil(Teachers.length / itemsPerPage);
-  const paginatedTeachers = Teachers.slice(
+  const totalPages = Math.ceil(userGroups.length / itemsPerPage);
+  const paginatedGroups = userGroups.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -281,97 +228,90 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
           </div>
 
           <div className="xxl:flex-1 flex flex-col gap-[24px] items-center px-[12px] pb-[12px] xxl:p-0">
-            {/* Only show teachers tab for public view */}
-            {!isStudentLoggedIn && (
-              <>
-                <div className="flex items-center w-full select-none">
-                  <div className="text-primary text-center border-b py-[12px] flex-1">
-                    Teachers {Teachers.length}
-                  </div>
-                </div>
+            <div className="flex items-center w-full select-none">
+              <div className="text-primary text-center border-b py-[12px] flex-1">
+                Groups {userGroups.length}
+              </div>
+            </div>
 
-                <div>
-                  <div className="grid w-full grid-cols-2 xxl:grid-cols-3 mb-[24px] gap-[12px]">
-                    {paginatedTeachers.map((teacher) => (
-                      <div
-                        key={teacher.id}
-                        className="border border-1 border-gray-light p-[24px]"
-                      >
-                        <div className="xxl:mb-[24px] mb-[12px] xxl:flex-row flex flex-col gap-[12px] items-center">
-                          <div>
-                            <Image
-                              width={80}
-                              height={80}
-                              className="rounded-full"
-                              src={teacher.profileUrl}
-                              alt="The photo of the teacher"
-                            />
-                          </div>
-                          <div>
-                            <div className="xxl:text-[24px] text-[18px] text-secondary leading-[130%] font-medium break-all">
-                              {teacher.name}
-                            </div>
-                            <div className="flex gap-[6px] items-center">
-                              <Image
-                                src={"/star.svg"}
-                                width={16}
-                                height={16}
-                                alt={`star`}
-                                className="w-[16px] h-[16px]"
-                              />
-                              <span className="text-custom-yellow font-medium">
-                                4.9
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <button className="cursor-pointer bg-secondary text-white py-[12px] w-full">
-                          View Profile
-                        </button>
+            <div className="w-full">
+              {isLoadingGroups ? (
+                <div className="grid w-full grid-cols-2 xxl:grid-cols-3 mb-[24px] gap-[12px]">
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="border border-gray-light animate-pulse">
+                      <div className="w-full h-[120px] bg-gray-200"></div>
+                      <div className="p-[12px] xxl:p-[24px] space-y-[12px]">
+                        <div className="h-[14px] bg-gray-200 w-3/4"></div>
+                        <div className="h-[24px] bg-gray-200 w-full"></div>
+                        <div className="h-[40px] bg-gray-200 w-full"></div>
                       </div>
+                    </div>
+                  ))}
+                </div>
+              ) : paginatedGroups.length === 0 ? (
+                <div className="text-center py-[40px] text-tertiary">
+                  No groups available
+                </div>
+              ) : (
+                <>
+                  <div className="grid w-full grid-cols-2 xxl:grid-cols-3 mb-[24px] gap-[12px]">
+                    {paginatedGroups.map((group) => (
+                      <GroupCard
+                        key={group.id}
+                        id={group.id}
+                        imageUrl={group.imageUrl || ""}
+                        degree={group.degree}
+                        language={group.language}
+                        subjectName={group.subjectName}
+                        teacherName={group.teacherName}
+                        price={group.price}
+                        col={2}
+                      />
                     ))}
                   </div>
 
-                  <div className="flex justify-center items-center">
-                    {Array.from({ length: totalPages }).map((_, index) => {
-                      const page = index + 1;
+                  {totalPages > 1 && (
+                    <div className="flex justify-center items-center">
+                      {Array.from({ length: totalPages }).map((_, index) => {
+                        const page = index + 1;
 
-                      return (
-                        <button
-                          key={page}
-                          onClick={() => setCurrentPage(page)}
-                          className={`
-                        w-[40px] h-[40px] font-medium border-gray-light text flex items-center justify-center cursor-pointer
-                        ${
-                          currentPage === page
-                            ? "bg-secondary text-white"
-                            : "text-secondary"
+                        return (
+                          <button
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                            className={`
+                              w-[40px] h-[40px] font-medium border-gray-light text flex items-center justify-center cursor-pointer
+                              ${
+                                currentPage === page
+                                  ? "bg-secondary text-white"
+                                  : "text-secondary"
+                              }
+                            `}
+                          >
+                            {page}
+                          </button>
+                        );
+                      })}
+
+                      <button
+                        onClick={() =>
+                          setCurrentPage((p) => Math.min(p + 1, totalPages))
                         }
-                      `}
-                        >
-                          {page}
-                        </button>
-                      );
-                    })}
-
-                    <button
-                      onClick={() =>
-                        setCurrentPage((p) => Math.min(p + 1, totalPages))
-                      }
-                      disabled={currentPage === totalPages}
-                      className="w-[40px] h-[40px] border border-gray-light flex items-center justify-center cursor-pointer disabled:opacity-40"
-                    >
-                      <Image
-                        src="/arrow-right.svg"
-                        width={22}
-                        height={22}
-                        alt="right-arrow"
-                      />
-                    </button>
-                  </div>
-                </div>
-              </>
-            )}
+                        disabled={currentPage === totalPages}
+                        className="w-[40px] h-[40px] border border-gray-light flex items-center justify-center cursor-pointer disabled:opacity-40"
+                      >
+                        <Image
+                          src="/arrow-right.svg"
+                          width={22}
+                          height={22}
+                          alt="right-arrow"
+                        />
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>

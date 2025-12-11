@@ -1,83 +1,9 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState, useRef } from "react";
-import { useGetTeacherPublicProfileQuery, useUploadProfilePictureMutation, useUpdateProfilePictureMutation, useUploadBackgroundImageMutation, useUpdateBackgroundImageMutation, useUploadDemoVideoMutation } from "@/features/profile/api/profileApi";
+import { useGetTeacherPublicProfileQuery, useUploadProfilePictureMutation, useUpdateProfilePictureMutation, useUploadBackgroundImageMutation, useUpdateBackgroundImageMutation, useUploadDemoVideoMutation, useGetTeacherGroupsQuery } from "@/features/profile/api/profileApi";
 import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
-
-const Groups = [
-  {
-    category: "Math",
-    language: "English",
-    subject: "Chemistry",
-    teacher: "Kamila Sultanli",
-    profileUrl: "/course-picture.png",
-    price: 40,
-  },
-  {
-    category: "Physics",
-    language: "English",
-    subject: "Physics",
-    teacher: "Kamila Sultanli",
-    profileUrl: "/course-picture.png",
-    price: 45,
-  },
-  {
-    category: "Biology",
-    language: "Russian",
-    subject: "Biology",
-    teacher: "Kamila Sultanli",
-    profileUrl: "/course-picture.png",
-    price: 35,
-  },
-  {
-    category: "IT",
-    language: "English",
-    subject: "JavaScript",
-    teacher: "Kamila Sultanli",
-    profileUrl: "/course-picture.png",
-    price: 60,
-  },
-  {
-    category: "Language",
-    language: "English",
-    subject: "IELTS",
-    teacher: "Kamila Sultanli",
-    profileUrl: "/course-picture.png",
-    price: 50,
-  },
-  {
-    category: "Math",
-    language: "Azerbaijani",
-    subject: "Algebra",
-    teacher: "Kamila Sultanli",
-    profileUrl: "/course-picture.png",
-    price: 30,
-  },
-  {
-    category: "Chemistry",
-    language: "English",
-    subject: "Organic Chemistry",
-    teacher: "Kamila Sultanli",
-    profileUrl: "/course-picture.png",
-    price: 55,
-  },
-  {
-    category: "IT",
-    language: "English",
-    subject: "React",
-    teacher: "Kamila Sultanli",
-    profileUrl: "/course-picture.png",
-    price: 65,
-  },
-  {
-    category: "Language",
-    language: "Russian",
-    subject: "TOEFL",
-    teacher: "Kamila Sultanli",
-    profileUrl: "/course-picture.png",
-    price: 45,
-  },
-];
+import GroupCard from "@/features/common/groups/components/GroupCard";
 
 type RatingStarProps = {
   rate: number;
@@ -147,6 +73,12 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
     { skip: !profileTeacherId }
   );
 
+  // Fetch teacher groups
+  const { data: teacherGroups = [], isLoading: isLoadingGroups } = useGetTeacherGroupsQuery(
+    profileTeacherId!,
+    { skip: !profileTeacherId }
+  );
+
   // Check if current user is viewing their own profile
   const isOwnProfile = currentUser?.id === profileTeacherId && currentUser?.role === "TEACHER";
   const isTeacherLoggedIn = isOwnProfile;
@@ -176,9 +108,9 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
 
 
   const itemsPerPage = 8;
-  const totalPages = Math.ceil(Groups.length / itemsPerPage);
+  const totalPages = Math.ceil(teacherGroups.length / itemsPerPage);
 
-  const paginatedGroups = Groups.slice(
+  const paginatedGroups = teacherGroups.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -446,16 +378,14 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
               >
                 Demo Lesson
               </div>
-              {!isTeacherLoggedIn && (
-                <div
-                  onClick={() => handleSelectedCategory("groups")}
-                  className={`${
-                    isSelected !== "groups" ? "text-secondary" : "text-primary"
-                  } text-center border-b-1 py-[12px] flex-1 cursor-pointer`}
-                >
-                  Groups {Groups.length}
-                </div>
-              )}
+              <div
+                onClick={() => handleSelectedCategory("groups")}
+                className={`${
+                  isSelected !== "groups" ? "text-secondary" : "text-primary"
+                } text-center border-b-1 py-[12px] flex-1 cursor-pointer`}
+              >
+                Groups {teacherGroups.length}
+              </div>
             </div>
             {isSelected === "demo" ? (
               <div className="relative w-full h-[159px] xxl:w-[570px] xxl:h-[278px]">
@@ -505,92 +435,80 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
               </div>
             ) : (
               <div>
-                <div className="grid xxl:grid-cols-4 grid-cols-2 gap-[12px] mb-[24px]">
-                  {paginatedGroups.map((group, index) => (
-                    <div
-                      className="flex border border-gray-light flex-col xxl:gap-[24px] gap-[12px] xxl:pb-[24px] pb-[12px]"
-                      key={index}
+                {isLoadingGroups ? (
+                  <div className="grid xxl:grid-cols-4 grid-cols-2 gap-[12px] mb-[24px]">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <div key={index} className="border border-gray-light animate-pulse">
+                        <div className="w-full h-[120px] xxl:h-[170px] bg-gray-200"></div>
+                        <div className="p-[12px] xxl:p-[24px] space-y-[12px]">
+                          <div className="h-[14px] bg-gray-200 w-3/4"></div>
+                          <div className="h-[24px] bg-gray-200 w-full"></div>
+                          <div className="h-[40px] bg-gray-200 w-full"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : paginatedGroups.length === 0 ? (
+                  <div className="text-center py-[40px] text-tertiary">
+                    No groups available
+                  </div>
+                ) : (
+                  <div className="grid xxl:grid-cols-4 grid-cols-2 gap-[12px] mb-[24px]">
+                    {paginatedGroups.map((group) => (
+                      <GroupCard
+                        key={group.id}
+                        id={group.id}
+                        imageUrl={group.imageUrl || ""}
+                        degree={group.degree}
+                        language={group.language}
+                        subjectName={group.subjectName}
+                        teacherName={group.teacherName}
+                        price={group.price}
+                        col={2}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {!isLoadingGroups && paginatedGroups.length > 0 && totalPages > 1 && (
+                  <div className="flex justify-center items-center">
+                    {Array.from({ length: totalPages }).map((_, index) => {
+                      const page = index + 1;
+
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`
+                                        w-[40px] h-[40px] font-medium border-gray-light text flex items-center justify-center cursor-pointer
+                                        ${
+                                          currentPage === page
+                                            ? "bg-secondary text-white"
+                                            : "text-secondary"
+                                        }
+                                      `}
+                        >
+                          {page}
+                        </button>
+                      );
+                    })}
+
+                    <button
+                      onClick={() =>
+                        setCurrentPage((p) => Math.min(p + 1, totalPages))
+                      }
+                      disabled={currentPage === totalPages}
+                      className="w-[40px] h-[40px] border border-gray-light flex items-center justify-center cursor-pointer disabled:opacity-40"
                     >
                       <Image
-                        src={group.profileUrl}
-                        alt="course picture"
-                        width={200}
-                        height={170}
-                        className="w-full h-auto"
+                        src="/arrow-right.svg"
+                        width={22}
+                        height={22}
+                        alt="right-arrow"
                       />
-                      <div className="xxl:ml-[24px] text-left ml-[12px]">
-                        <div className="flex items-center gap-[8px] text-tertiary mb-[6px] xxl:mb-[12px] text-[12px] xxl:text-[14px]">
-                          <div>{group.category}</div>
-                          <div className="w-px h-[10px] bg-tertiary"></div>
-                          <div className="flex items-center gap-[4px]">
-                            <Image
-                              src={"/globe.svg"}
-                              alt=""
-                              width={12}
-                              height={12}
-                              className="xxl:size-[16px]"
-                            />
-                            <div>{group.language}</div>
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-secondary text-[20px] xxl:text-[24px] mb-[4px]">
-                            {group.subject}
-                          </div>
-                          <div className="text-tertiary text-[12px] xxl:text-[14px]">
-                            {group.teacher}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="xxl:mx-[24px] mx-[12px] flex items-center xxl:gap-[24px] gap-[12px] justify-between">
-                        <div className="text-secondary text-[20px] font-semibold">
-                          40$
-                        </div>
-                        <button className="cursor-pointer bg-secondary text-[#EBEBEB] py-[12px] w-full text-[18px]">
-                          Details
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="flex justify-center items-center">
-                  {Array.from({ length: totalPages }).map((_, index) => {
-                    const page = index + 1;
-
-                    return (
-                      <button
-                        key={page}
-                        onClick={() => setCurrentPage(page)}
-                        className={`
-                                      w-[40px] h-[40px] font-medium border-gray-light text flex items-center justify-center cursor-pointer
-                                      ${
-                                        currentPage === page
-                                          ? "bg-secondary text-white"
-                                          : "text-secondary"
-                                      }
-                                    `}
-                      >
-                        {page}
-                      </button>
-                    );
-                  })}
-
-                  <button
-                    onClick={() =>
-                      setCurrentPage((p) => Math.min(p + 1, totalPages))
-                    }
-                    disabled={currentPage === totalPages}
-                    className="w-[40px] h-[40px] border border-gray-light flex items-center justify-center cursor-pointer disabled:opacity-40"
-                  >
-                    <Image
-                      src="/arrow-right.svg"
-                      width={22}
-                      height={22}
-                      alt="right-arrow"
-                    />
-                  </button>
-                </div>
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
