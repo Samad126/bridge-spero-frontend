@@ -30,8 +30,9 @@ export async function DELETE(
     headers.append("Authorization", `Bearer ${access_token.value}`);
     headers.append("Content-Type", "application/json");
 
+    // Use resource delete API endpoint which also deletes recordings
     const response = await fetch(
-      `${API_BASE_URL}/groups/${id}/recordings/${recordingId}`,
+      `${API_BASE_URL}/resources/${recordingId}`,
       {
         method: "DELETE",
         headers,

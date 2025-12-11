@@ -68,14 +68,29 @@ function Login() {
         return;
       }
 
-      // Redirect to dashboard or home page after successful login
-      const redirectPath = sessionStorage.getItem("redirectAfterLogin");
-      if (redirectPath) {
-        sessionStorage.removeItem("redirectAfterLogin");
-        router.push(redirectPath);
-        return;
+      // Parse JWT to get user role and redirect to appropriate dashboard
+      const response2 = await fetch("/api/me", {
+        credentials: "include",
+      });
+
+      if (response2.ok) {
+        const userData = await response2.json();
+        const dashboardPath = userData.role === "USER" ? "/student" : "/teacher";
+
+        // Check if there was a redirect path stored
+        const redirectPath = sessionStorage.getItem("redirectAfterLogin");
+        if (redirectPath) {
+          sessionStorage.removeItem("redirectAfterLogin");
+          router.push(redirectPath);
+          return;
+        }
+
+        // Redirect to role-based dashboard
+        router.push(dashboardPath);
+      } else {
+        // Fallback to home page if unable to get user data
+        router.push("/");
       }
-      router.push("/");
     } catch (error) {
       console.error("Login error:", error);
       setApiError("An unexpected error occurred. Please try again.");

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { useUploadRecordingMutation } from "@/features/group-details/api/groupDetailsApi";
+import { useDeleteRecordingMutation, useUploadRecordingMutation } from "@/features/group-details/api/groupDetailsApi";
 import { RecordingItem } from "@/features/group-details/types/groupDetailsTypes";
 import FileActionModal from "@/features/group-details/Tabs/components/FileViewer/FileActionModal";
 import FilePreviewPopup from "@/features/group-details/Tabs/components/FileViewer/FilePreviewPopup";
@@ -27,6 +27,8 @@ function RecordingCard({
   const [recordingName, setRecordingName] = useState("");
   const [uploadRecording, { isLoading: isUploading }] =
     useUploadRecordingMutation();
+  const [deleteRecording, { isLoading: isDeleting }] =
+    useDeleteRecordingMutation();
 
   const {
     showActionModal,
@@ -102,6 +104,27 @@ function RecordingCard({
     openFile(recording);
   };
 
+  const handleDeleteRecording = async () => {
+    if (!recording) return;
+
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${recording.name || formatDate(recording.createdAt)}"?`
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await deleteRecording({
+        groupId,
+        recordingId: recording.id,
+      }).unwrap();
+      console.log("Recording deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete recording:", error);
+      alert("Failed to delete recording. Please try again.");
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-GB", {
@@ -111,7 +134,7 @@ function RecordingCard({
     });
   };
 
-  const isLoading = isUploading || isDownloading;
+  const isLoading = isUploading || isDownloading || isDeleting;
 
   // Add mode with input form
   if (cardStatus === "add" && isTeacher && isAddMode) {
@@ -175,10 +198,10 @@ function RecordingCard({
     <>
       <div className="border border-gray-light flex items-center w-full">
         {cardStatus === "view" && recording && (
-          <div className="p-[24px] flex items-center justify-between w-full">
+          <div className="p-[24px] flex items-center justify-between w-full gap-[12px]">
             <button
               onClick={handleRecordingClick}
-              className="w-full flex items-center gap-[12px]"
+              className="flex-1 flex items-center gap-[12px]"
               disabled={isLoading}
             >
               <Image
@@ -199,6 +222,22 @@ function RecordingCard({
                 )}
               </div>
             </button>
+            {isTeacher && (
+              <button
+                onClick={handleDeleteRecording}
+                disabled={isDeleting}
+                className="disabled:opacity-50 hover:opacity-70 transition-opacity"
+                aria-label="Delete recording"
+              >
+                <Image
+                  src={"/trash-2.svg"}
+                  alt="delete"
+                  width={24}
+                  height={24}
+                  className="w-[24px] h-[24px]"
+                />
+              </button>
+            )}
           </div>
         )}
         {cardStatus === "add" && isTeacher && !isAddMode && (

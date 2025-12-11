@@ -187,7 +187,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
             </div>
 
             <p className="text-[32px] mb-[12px] mt-[30px] text-white">
-              ${price} / <span className="text-[20px]">month</span>
+              {price}₼ / <span className="text-[20px]">month</span>
             </p>
 
             <div className="flex gap-[12px]">
@@ -247,7 +247,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
             </div>
 
             <p className="text-[32px] mb-[12px] mt-[30px] text-white">
-              ${price} / <span className="text-[20px]">month</span>
+              {price}₼ / <span className="text-[20px]">month</span>
             </p>
 
             <Link

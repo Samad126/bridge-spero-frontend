@@ -39,7 +39,7 @@ export function Header({ role, fullName }: HeaderProps) {
       <header className="sticky z-50 top-[24px] w-full">
         <div className="container container-header mx-auto">
           <div className="relative flex items-center h-[62px] border-y border-gray-light bg-white">
-            <Logo />
+            <Logo role={role} />
 
             <SearchInput className={searchInputClasses} />
 
