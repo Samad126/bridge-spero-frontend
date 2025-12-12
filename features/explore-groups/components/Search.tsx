@@ -3,6 +3,7 @@
 import { useQueryStates, parseAsString } from "nuqs";
 import { useRouter } from "next/navigation";
 import { FormEvent, useTransition } from "react";
+import { Language } from "@/features/group-form/types/groupFormTypes";
 
 function Search() {
   const router = useRouter();
@@ -71,11 +72,10 @@ function Search() {
                 className="border border-gray-light h-[46px] px-[12px] w-full inline-block text-tertiary"
                 defaultValue={filters.language}
               >
-                <option value="">Language</option>
-                <option value="English">English</option>
-                <option value="Spanish">Spanish</option>
-                <option value="French">French</option>
-                <option value="German">German</option>
+                <option value={Language.AZERBAIJANI}>Azerbaijani</option>
+                <option value={Language.ENGLISH}>English</option>
+                <option value={Language.RUSSIAN}>Russian</option>
+                <option value={Language.TURKISH}>Turkish</option>
               </select>
             </p>
           </div>
