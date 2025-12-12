@@ -5,6 +5,7 @@ import TabHeader from "./TabHeader";
 import TabContent from "./TabContent";
 import { tabData } from "../constants/tabData";
 import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
+import { useCheckIsMemberQuery } from "../../api/groupDetailsApi";
 
 interface TabsProps {
   groupId: string;
@@ -14,15 +15,21 @@ interface TabsProps {
 
 function Tabs({ groupId, isAuthenticated, teacherId }: TabsProps) {
   const [activeTabId, setActiveTabId] = useState(1);
-  const isEnrolled = true;
 
   const { data: userData, isLoading } = useGetUserProfileOptionalQuery(undefined, {
     skip: !isAuthenticated,
-    
+
   });
 
   const userRole = userData?.role || "USER";
   const isGroupOwner = userData?.role === "TEACHER" && userData?.id === teacherId;
+
+  // Check if student is enrolled (only for students)
+  const { data: isMemberData } = useCheckIsMemberQuery(Number(groupId), {
+    skip: !userData || userData.role !== "USER",
+  });
+
+  const isEnrolled = isMemberData?.isMember || false;
 
   const filteredTabs = useMemo(() => {
     // Not logged in: Show only Schedule and Syllabus

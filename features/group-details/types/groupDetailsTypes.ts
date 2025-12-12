@@ -75,6 +75,7 @@ export interface MemberStudent {
   id: number;
   name: string;
   surname: string;
+  role?: "USER" | "TEACHER";
 }
 
 export interface MembersResponse {
