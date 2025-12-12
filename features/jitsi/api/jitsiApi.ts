@@ -4,7 +4,7 @@ export const jitsiApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     startJitsiLesson: builder.query<string, number>({
       query: (groupId) => ({
-        url: `/groups/${groupId}/start-jitsi-lesson`,
+        url: `/groups/${groupId}/start-lesson`,
         method: "GET",
         meta: { authMode: "strict" },
         responseHandler: "text",
@@ -14,7 +14,7 @@ export const jitsiApi = baseApi.injectEndpoints({
 
     joinJitsiLesson: builder.query<string, number>({
       query: (groupId) => ({
-        url: `/groups/${groupId}/join-jitsi-lesson`,
+        url: `/groups/${groupId}/join-lesson`,
         method: "GET",
         meta: { authMode: "strict" },
         responseHandler: "text",

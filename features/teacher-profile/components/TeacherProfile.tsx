@@ -323,11 +323,28 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
             {isSelected === "demo" ? (
               <div className="relative w-full h-[159px] xxl:w-[570px] xxl:h-[278px]">
                 {teacherProfile?.demoVideoUrl ? (
-                  <video
-                    src={getImageUrl(teacherProfile.demoVideoUrl) || undefined}
-                    controls
-                    className="w-full h-full object-cover"
-                  />
+                  <>
+                    <video
+                      src={getImageUrl(teacherProfile.demoVideoUrl) || undefined}
+                      controls
+                      className="w-full h-full object-cover"
+                    />
+                    {isTeacherLoggedIn && (
+                      <button
+                        onClick={handleOpenDemoVideo}
+                        disabled={isUploadingVideo}
+                        className="absolute top-[12px] right-[12px] border border-[#EBEBEB] p-[8px] bg-black/50 hover:bg-black/70 disabled:opacity-50 z-10"
+                        title="Update demo video"
+                      >
+                        <Image
+                          src={"/upload-white.svg"}
+                          alt="update icon"
+                          width={24}
+                          height={24}
+                        />
+                      </button>
+                    )}
+                  </>
                 ) : (
                   <>
                     <Image

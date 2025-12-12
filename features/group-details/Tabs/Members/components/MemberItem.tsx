@@ -4,6 +4,7 @@ import Image from "next/image";
 import { MemberStudent } from "@/features/group-details/types/groupDetailsTypes";
 import { useDeleteMemberMutation } from "@/features/group-details/api/groupDetailsApi";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface MemberItemProps {
   member: MemberStudent;
@@ -35,9 +36,14 @@ function MemberItem({ member, groupId, isTeacher }: MemberItemProps) {
     }
   };
 
+  // Determine profile URL based on role
+  const profileUrl = member.role === "TEACHER"
+    ? `/teachers/${member.id}`
+    : `/users/${member.id}`;
+
   return (
     <div className="flex items-center justify-between gap-[12px] border-b border-gray-light p-[12px]">
-      <div className="flex items-center gap-[12px]">
+      <Link href={profileUrl} className="flex items-center gap-[12px] flex-1 hover:opacity-80 transition-opacity">
         <div className="w-[42px] h-[42px] flex items-center justify-center bg">
           <Image
             src="/user.svg"
@@ -48,7 +54,7 @@ function MemberItem({ member, groupId, isTeacher }: MemberItemProps) {
           />
         </div>
         <p>{member.name} {member.surname}</p>
-      </div>
+      </Link>
       {isTeacher && (
         <button
           onClick={handleDelete}
