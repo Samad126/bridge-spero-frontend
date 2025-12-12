@@ -9,7 +9,7 @@ const API_BASE_URL =
 export async function fetchExploreTeachers(
   filters: ExploreTeachersFilters = {}
 ): Promise<ExploreTeachersResponse> {
-  const { name, pageNumber = 0, pageSize = 10 } = filters;
+  const { name, pageNumber = 0, pageSize = 1000 } = filters;
 
   const params = new URLSearchParams({
     pageNumber: pageNumber.toString(),

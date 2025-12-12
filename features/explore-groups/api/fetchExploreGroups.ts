@@ -9,7 +9,7 @@ const API_BASE_URL =
 export async function fetchExploreGroups(
   filters: ExploreGroupsFilters = {}
 ): Promise<ExploreGroupsResponse> {
-  const { groupName, language, pageNumber = 0, pageSize = 10 } = filters;
+  const { groupName, language, pageNumber = 0, pageSize = 1000 } = filters;
 
   const params = new URLSearchParams({
     pageNumber: pageNumber.toString(),
