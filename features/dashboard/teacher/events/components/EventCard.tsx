@@ -106,13 +106,11 @@ const EventCard = ({
               </button>
             </a>
           ) : (
-            <Link href={`/groups/${groupId}`}>
-              <button
-                className="h-[46px] w-[186px] bg-secondary text-white disabled:opacity-50"
-                disabled={!isWithinTimeRange() && isActive}
-              >
-                View Details
-              </button>
+            <Link
+              href={`/groups/${groupId}`}
+              className={`flex items-center justify-center h-[46px] w-[186px] bg-secondary text-white disabled:opacity-50`}
+            >
+              View Details
             </Link>
           )}
         </div>

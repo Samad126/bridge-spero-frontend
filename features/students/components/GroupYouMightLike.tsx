@@ -71,6 +71,7 @@ function GroupYouMightLike() {
     subjectName: group.name,
     teacherName: `${group.teacherName} ${group.teacherSurname}`,
     price: group.price,
+    id: group.id,
   }));
 
   return (
@@ -90,7 +91,7 @@ function GroupYouMightLike() {
           </div>
         ) : (
           <>
-            <GroupList demoGroups={transformedGroups} />
+            <GroupList groups={transformedGroups} />
             <Link
               href={"/explore-groups"}
               className="border mt-[15px] py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"

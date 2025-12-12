@@ -306,7 +306,7 @@ function Form() {
 
           <div>
             <label className="block mb-[8px]" htmlFor="price">
-              Price (monthly) *
+              Price ₼ (monthly) *
             </label>
             <input
               id="price"
