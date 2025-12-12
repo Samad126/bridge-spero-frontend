@@ -1,9 +1,10 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 
 const AuthLogo = () => {
     return (
-        <div className='w-[219px] h-[36px] flex items-center justify-center mx-auto'>
+        <Link href="/" className='w-[219px] h-[36px] flex items-center justify-center mx-auto hover:opacity-80 transition-opacity'>
             <div className="relative w-[62px] h-[36px] lg:w-[72px] lg:h-[36px]">
                 <Image
                     src="/logo.svg"
@@ -16,7 +17,7 @@ const AuthLogo = () => {
             <p className="font-bold text-[22px]">
                 Bridge<span className="text-primary">Spero</span>
             </p>
-        </div>
+        </Link>
     )
 }
 

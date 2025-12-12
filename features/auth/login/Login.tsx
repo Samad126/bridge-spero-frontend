@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import AuthLogo from "../AuthLogo";
 import { loginSchema, LoginFormData } from "../schemas/authSchemas";
 import { useState } from "react";
+import PasswordInput from "../components/PasswordInput";
 
 interface BackendError {
   field: string;
@@ -137,26 +138,18 @@ function Login() {
               )}
             </div>
 
-            <div>
-              <div className="w-full flex justify-between">
-                <label htmlFor="password">Password</label>
+            <PasswordInput
+              id="password"
+              placeholder="Password"
+              label="Password"
+              labelRight={
                 <Link href={"/"} className="text-primary">
                   Forgot password?
                 </Link>
-              </div>
-              <input
-                id="password"
-                type="password"
-                placeholder="Password"
-                {...register("password")}
-                className="w-full p-[12px] gap-[10px] border border-gray-light placeholder-gray-light mt-[10px]"
-              />
-              {(errors.password || fieldErrors.password) && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.password?.message || fieldErrors.password}
-                </p>
-              )}
-            </div>
+              }
+              error={errors.password?.message || fieldErrors.password}
+              {...register("password")}
+            />
 
             <button
               type="submit"

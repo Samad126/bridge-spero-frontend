@@ -12,6 +12,7 @@ import {
 } from "../schemas/authSchemas";
 import { useState, useEffect } from "react";
 import PrivacyPolicyModal from "@/features/privacy-policy/components/PrivacyPolicyModal";
+import PasswordInput from "../components/PasswordInput";
 
 interface BackendError {
   field: string;
@@ -264,45 +265,25 @@ const TeacherRegistration = () => {
             </div>
 
             <div className="w-full">
-              <label
-                htmlFor="password"
-                className="leading-[100%] block w-full mb-[8px]"
-              >
-                Password *
-              </label>
-              <input
+              <PasswordInput
                 id="password"
-                type="password"
                 placeholder="Password"
+                label="Password *"
+                error={errors.password?.message || fieldErrors.password}
+                className="outline-0 h-[43px]"
                 {...register("password")}
-                className="w-full p-[12px] gap-[10px] border border-gray-light placeholder-gray-light outline-0 h-[43px]"
               />
-              {(errors.password || fieldErrors.password) && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.password?.message || fieldErrors.password}
-                </p>
-              )}
             </div>
 
             <div className="w-full">
-              <label
-                htmlFor="confirmPassword"
-                className="leading-[100%] block w-full mb-[8px]"
-              >
-                Confirm Password *
-              </label>
-              <input
+              <PasswordInput
                 id="confirmPassword"
-                type="password"
                 placeholder="Confirm Password"
+                label="Confirm Password *"
+                error={errors.confirmPassword?.message || fieldErrors.confirmPassword}
+                className="outline-0 h-[43px]"
                 {...register("confirmPassword")}
-                className="w-full p-[12px] gap-[10px] border border-gray-light placeholder-gray-light outline-0 h-[43px]"
               />
-              {(errors.confirmPassword || fieldErrors.confirmPassword) && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.confirmPassword?.message || fieldErrors.confirmPassword}
-                </p>
-              )}
             </div>
 
             <div className="w-full lg:col-span-2">

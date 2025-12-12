@@ -1,5 +1,6 @@
 import GroupCard from "@/features/common/groups/components/GroupCard";
 import { fetchExploreGroups } from "../api/fetchExploreGroups";
+import Pagination from "./Pagination";
 
 interface ExploreGroupsGridProps {
   groupName?: string;
@@ -12,7 +13,7 @@ export default async function ExploreGroupsGrid({
   groupName,
   language,
   pageNumber = 0,
-  pageSize = 10,
+  pageSize = 12,
 }: ExploreGroupsGridProps) {
   const response = await fetchExploreGroups({
     groupName,
@@ -34,21 +35,28 @@ export default async function ExploreGroupsGrid({
   }
 
   return (
-    <div className="grid grid-cols-2 mb-[32px] gap-[12px] lg:grid-cols-3 lg:flex-row lg:mb-[42px] xxl:grid-cols-4">
-      {groups.map((group) => (
-        <GroupCard
-          key={group.id}
-          id={group.id}
-          imageUrl={group.imageUrl}
-          degree={group.category}
-          language={group.language}
-          subjectName={group.name}
-          teacherName={`${group.teacherName} ${group.teacherSurname}`}
-          price={group.price}
-          col={2}
-        />
-      ))}
-    </div>
+    <>
+      <div className="grid grid-cols-2 mb-[32px] gap-[12px] lg:grid-cols-3 lg:flex-row lg:mb-[42px] xxl:grid-cols-4">
+        {groups.map((group) => (
+          <GroupCard
+            key={group.id}
+            id={group.id}
+            imageUrl={group.imageUrl}
+            degree={group.category}
+            language={group.language}
+            subjectName={group.name}
+            teacherName={`${group.teacherName} ${group.teacherSurname}`}
+            price={group.price}
+            col={2}
+          />
+        ))}
+      </div>
+      <Pagination
+        currentPage={response.pageNumber}
+        totalPages={response.totalPagesCount}
+        totalElements={response.totalElements}
+      />
+    </>
   );
 }
 

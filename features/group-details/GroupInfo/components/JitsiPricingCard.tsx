@@ -260,8 +260,11 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
               <button className="w-[46px] h-[46px] flex items-center justify-center border border-tertiary">
                 <Image src="/heart.svg" alt="heart" width={22} height={22} />
               </button>
-              <button className="w-[46px] h-[46px] flex items-center justify-center border border-tertiary">
-                <Image src="/share.svg" alt="logout" width={22} height={22} />
+              <button
+                onClick={handleShare}
+                className="w-[46px] h-[46px] flex items-center justify-center border border-tertiary"
+              >
+                <Image src="/share.svg" alt="share" width={22} height={22} />
               </button>
             </div>
 

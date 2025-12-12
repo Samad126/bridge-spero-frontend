@@ -72,6 +72,7 @@ function Search() {
                 className="border border-gray-light h-[46px] px-[12px] w-full inline-block text-tertiary"
                 defaultValue={filters.language}
               >
+                <option value="">All Languages</option>
                 <option value={Language.AZERBAIJANI}>Azerbaijani</option>
                 <option value={Language.ENGLISH}>English</option>
                 <option value={Language.RUSSIAN}>Russian</option>
