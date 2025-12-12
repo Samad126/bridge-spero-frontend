@@ -113,3 +113,69 @@ export async function PATCH(
     );
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const cookieStore = await cookies();
+    const access_token = cookieStore.get("access_token");
+
+    if (!access_token) {
+      return new Response(
+        JSON.stringify({
+          errorCode: "UNAUTHORIZED",
+          errorMessage: "No access token found",
+        }),
+        {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    const headers = new Headers();
+    headers.append("Authorization", `Bearer ${access_token.value}`);
+    headers.append("Content-Type", "application/json");
+
+    const response = await fetch(`${API_BASE_URL}/groups/${id}`, {
+      method: "DELETE",
+      headers,
+    });
+
+    if (!response.ok) {
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = {
+          errorCode: "API_ERROR",
+          errorMessage: `API request failed with status ${response.status}`,
+        };
+      }
+
+      return new Response(JSON.stringify(errorData), {
+        status: response.status,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(null, {
+      status: 204,
+    });
+  } catch (error) {
+    console.error("Delete group API error:", error);
+    return new Response(
+      JSON.stringify({
+        errorCode: "INTERNAL_SERVER_ERROR",
+        errorMessage: "An error occurred while deleting the group",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+}

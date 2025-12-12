@@ -239,6 +239,15 @@ export const groupDetailsApi = baseApi.injectEndpoints({
         },
       }),
     }),
+
+    deleteGroup: builder.mutation<void, number>({
+      query: (groupId) => ({
+        url: `/groups/${groupId}`,
+        method: "DELETE",
+        meta: { authMode: "strict" },
+      }),
+      invalidatesTags: ["Groups", "Dashboard"],
+    }),
   }),
 });
 
@@ -263,5 +272,6 @@ export const {
   useGetResourceStreamQuery,
   useGetResourceDownloadQuery,
   useLazyGetResourceDownloadQuery,
+  useDeleteGroupMutation,
 } = groupDetailsApi;
 

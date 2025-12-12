@@ -69,7 +69,9 @@ const TodaysEvents = () => {
                 <EventCard
                   key={event.id}
                   id={event.id}
+                  groupId={event.groupId}
                   time={event.startTime}
+                  endTime={event.endTime || undefined}
                   isActive={event.status === "active"}
                   subjectName={event.name}
                   studentNumber={`${event.numberOfStudents}/${event.maxStudents}`}

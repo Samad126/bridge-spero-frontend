@@ -4,6 +4,7 @@ export interface TeacherDashboardEvent {
   name: string;
   status: string;
   startTime: string;
+  endTime?: string;
   numberOfStudents: number;
   maxStudents: number;
   startUrl: string;
