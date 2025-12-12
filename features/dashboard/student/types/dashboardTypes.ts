@@ -1,20 +1,24 @@
-export interface DashboardGroup {
+export interface DashboardEvent {
   id: number;
-  teacherId: number;
+  groupId: number;
   name: string;
   status: string;
   startTime: string;
-  teacher: string;
-  joinUrl: string;
+  numberOfStudents: number;
+  maxStudents: number;
+  startUrl: string;
   isMeetingActive: boolean;
+  teacher?: string;
+  joinUrl?: string;
 }
 
 export interface DashboardResponse {
   name: string;
   activeGroups: number;
-  studyHours: number;
-  lessonsToday: number;
-  groups: DashboardGroup[];
+  activeStudents?: number;
+  studyHours?: number;
+  lessonsToday?: number;
+  events: DashboardEvent[];
 }
 
 export interface ScheduleGroup {

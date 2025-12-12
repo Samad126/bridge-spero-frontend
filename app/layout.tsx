@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Urbanist } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import AuthWrapper from "@/features/auth/components/AuthWrapper";
 import SessionExpiredPopup from "@/features/auth/components/SessionExpiredPopup";
 import StoreProvider from "@/lib/redux/StoreProvider";
@@ -7,6 +8,11 @@ import StoreProvider from "@/lib/redux/StoreProvider";
 const urbanist = Urbanist({
   subsets: ["latin"],
   variable: "--font-urbanist",
+});
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  variable: "--font-montserrat",
 });
 
 export default function RootLayout({
@@ -22,7 +28,7 @@ export default function RootLayout({
           content="ZOOM_verify_0b2df51ec84e43fdbc97704f7bb39801"
         />
       </head>
-      <body className={`${urbanist.variable} bg-white`}>
+      <body className={`${urbanist.variable} ${montserrat.variable} bg-white`}>
         <StoreProvider>
           <AuthWrapper>
             <SessionExpiredPopup />

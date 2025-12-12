@@ -1,11 +1,11 @@
-export interface TeacherDashboardGroup {
+export interface TeacherDashboardEvent {
   id: number;
+  groupId: number;
   name: string;
   status: string;
   startTime: string;
   numberOfStudents: number;
   maxStudents: number;
-  minStudents: number;
   startUrl: string;
   isMeetingActive: boolean;
 }
@@ -14,9 +14,9 @@ export interface TeacherDashboardResponse {
   name: string;
   activeGroups: number;
   activeStudents: number;
-  totalEarning: number;
-  rating: number;
-  groups: TeacherDashboardGroup[];
+  totalEarning: number | null;
+  rating: number | null;
+  events: TeacherDashboardEvent[];
 }
 
 export interface TeacherScheduleGroup {

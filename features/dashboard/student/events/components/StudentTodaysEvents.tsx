@@ -43,7 +43,7 @@ const StudentTodaysEvents = () => {
         );
     }
 
-    const groups = data?.groups || [];
+    const events = data?.events || [];
 
     return (
         <section>
@@ -57,27 +57,27 @@ const StudentTodaysEvents = () => {
                         Explore Groups
                     </Link>
                 </div>
-                {groups.length === 0 ? (
+                {events.length === 0 ? (
                     <div className="text-center text-secondary text-[18px] py-[40px]">
                         No events scheduled for today
                     </div>
                 ) : (
                     <>
                         <div className="grid grid-cols-1 gap-[12px] [&>*:nth-child(4)]:hidden xxl:[&>*:nth-child(4)]:block xxl:grid-cols-2">
-                            {groups.map((group) => (
+                            {events.map((event) => (
                                 <EventCard
-                                    key={group.id}
-                                    id={group.id}
-                                    time={group.startTime}
-                                    isActive={group.isMeetingActive}
-                                    subjectName={group.name}
-                                    teacherName={group.teacher}
-                                    joinUrl={group.joinUrl}
-                                    status={group.status}
+                                    key={event.id}
+                                    id={event.id}
+                                    time={event.startTime}
+                                    isActive={event.status === "active"}
+                                    subjectName={event.name}
+                                    teacherName={event.teacher || ''}
+                                    joinUrl={event.joinUrl || event.startUrl}
+                                    status={event.status}
                                 />
                             ))}
                         </div>
-                        {groups.length > 3 && (
+                        {events.length > 3 && (
                             <Link
                                 href={"/my-groups"}
                                 className="border text-[18px] w-[200px] mx-auto flex justify-center py-[12px] px-[30px] my-8"

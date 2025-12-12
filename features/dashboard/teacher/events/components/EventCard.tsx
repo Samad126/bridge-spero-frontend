@@ -28,7 +28,7 @@ const EventCard = ({
           <h3 className="text-[22px] text-primary leading-[100%] tracking-[0%]">
             {subjectName}
           </h3>
-          <div className="flex items-center">
+          <div className="flex gap-[4px] items-center">
             <Image
               width={20}
               height={20}
@@ -45,7 +45,7 @@ const EventCard = ({
               <Image width={22} height={22} src={"/trash-2.svg"} alt="" />
             </button>
           </Link>
-          <Link href={`/groups/${id}`}>
+          <Link href={`edit-group/${id}`}>
             <button className="w-[46px] h-[46px] border border-gray-light flex items-center justify-center">
               <Image width={22} height={22} src={"/edit-2.svg"} alt="" />
             </button>

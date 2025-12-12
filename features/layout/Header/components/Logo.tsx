@@ -23,7 +23,7 @@ export function Logo({ role }: LogoProps) {
           sizes="(max-width: 768px) 54px, 72px"
         />
       </div>
-      <p className="font-bold text-[22px]">
+      <p className="font-bold text-[22px] font-montserrat">
         Bridge<span className="text-primary">Spero</span>
       </p>
     </Link>
