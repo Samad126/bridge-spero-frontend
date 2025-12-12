@@ -32,6 +32,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "dev.bridgespero.com",
       },
+      {
+        protocol: "https",
+        hostname: "bridgespero.com",
+      },
     ],
   },
   output: "standalone",
