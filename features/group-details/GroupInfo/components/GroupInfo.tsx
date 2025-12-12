@@ -4,6 +4,7 @@ import GroupMetadata from "./GroupMetadata";
 import PricingCard from "./PricingCard";
 import TeacherCard from "./TeacherCard";
 import { GroupDetails } from "../../types/groupDetailsTypes";
+import JitsiPricingCard from "./JitsiPricingCard";
 
 interface GroupInfoProps {
   group: GroupDetails;
@@ -43,7 +44,7 @@ function GroupInfo({ group, groupId, isAuthenticated }: GroupInfoProps) {
             teacherId={group.teacher.id}
           />
         </div>
-        <PricingCard
+        <JitsiPricingCard
           price={group.price}
           groupId={groupId}
           teacherId={group.teacher.id}
