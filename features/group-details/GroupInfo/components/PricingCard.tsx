@@ -1,10 +1,11 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
+import { useGetUserProfileOptionalQuery, useGetUserProfileQuery } from "@/features/profile/api/userProfileApi";
 import {
   useCheckIsMemberQuery,
   useJoinGroupMutation,
+  useDeleteMemberMutation,
 } from "../../api/groupDetailsApi";
 import {
   useLazyGetZoomAuthorizeQuery,
@@ -46,10 +47,13 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
   const isMember = isMemberData?.isMember || false;
 
   const [joinGroup, { isLoading: isJoining }] = useJoinGroupMutation();
+  const [deleteMember, { isLoading: isLeaving }] = useDeleteMemberMutation();
   const [getZoomAuthorize] = useLazyGetZoomAuthorizeQuery();
   const [verifyZoomConnection] = useLazyVerifyZoomConnectionQuery();
   const [startLessonTrigger] = useLazyStartLessonQuery();
   const [joinLessonTrigger] = useLazyJoinLessonQuery();
+
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
   const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
 
@@ -130,6 +134,53 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
     }
   };
 
+  const handleLeaveGroup = async () => {
+    if (!showLeaveConfirm) {
+      setShowLeaveConfirm(true);
+      return;
+    }
+
+    if (!userData?.id) {
+      alert('Unable to leave group. Please try again.');
+      return;
+    }
+
+    try {
+      await deleteMember({ groupId: Number(groupId), studentId: userData.id }).unwrap();
+      console.log("Successfully left group");
+      setShowLeaveConfirm(false);
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to leave group:", error);
+      alert("Failed to leave group. Please try again.");
+    }
+  };
+
+  const handleShare = async () => {
+    const url = window.location.href;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Bridge Spero Group',
+          text: 'Check out this group on Bridge Spero!',
+          url: url,
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      // Fallback: Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(url);
+        alert('Link copied to clipboard!');
+      } catch (error) {
+        console.error('Failed to copy link:', error);
+        alert('Failed to copy link. Please try again.');
+      }
+    }
+  };
+
   // Show loading skeleton while fetching user data
   if (isLoading) {
     return <PricingCardSkeleton isOpened={isOpened} />;
@@ -190,18 +241,13 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
               {price}₼ / <span className="text-[20px]">month</span>
             </p>
 
-            <div className="flex gap-[12px]">
-              <button className="p-[12px] min-w-[46px] border border-tertiary">
-                <Image src="/share.svg" alt="share" width={22} height={22} />
-              </button>
-              <button
-                onClick={handleStartLesson}
-                disabled={isStartingLesson}
-                className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
-              >
-                {isStartingLesson ? "Starting..." : "Start Lesson"}
-              </button>
-            </div>
+            <button
+              onClick={handleStartLesson}
+              disabled={isStartingLesson}
+              className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
+            >
+              {isStartingLesson ? "Starting..." : "Start Lesson"}
+            </button>
           </div>
         </div>
       </div>
@@ -288,41 +334,71 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
 
         <div className={`relative ${isOpened ? "max-h-none" : "max-h-0"}`}>
           <div className="flex justify-between gap-[12px]">
-            <button className="w-[46px] h-[46px] flex items-center justify-center border border-tertiary">
-              <Image src="/heart.svg" alt="heart" width={22} height={22} />
-            </button>
-            <Link
-              href="/api/logout"
+            {isMember ? (
+              <button
+                onClick={handleLeaveGroup}
+                disabled={isLeaving}
+                className="w-[46px] h-[46px] flex items-center justify-center border border-tertiary disabled:opacity-50"
+              >
+                <Image src="/log-out.svg" alt="leave group" width={22} height={22} />
+              </button>
+            ) : (
+              <button className="w-[46px] h-[46px] flex items-center justify-center border border-tertiary">
+                <Image src="/heart.svg" alt="heart" width={22} height={22} />
+              </button>
+            )}
+            <button
+              onClick={handleShare}
               className="w-[46px] h-[46px] flex items-center justify-center border border-tertiary"
             >
-              <Image src="/log-out.svg" alt="logout" width={22} height={22} />
-            </Link>
+              <Image src="/share.svg" alt="share" width={22} height={22} />
+            </button>
           </div>
 
           <p className="text-[32px] mb-[12px] mt-[30px] text-white">
             ${price} / <span className="text-[20px]">month</span>
           </p>
 
-          <div className="flex gap-[12px]">
-            <button className="p-[12px] min-w-[46px] border border-tertiary">
-              <Image src="/share.svg" alt="share" width={22} height={22} />
-            </button>
-            <button
-              onClick={isMember ? handleJoinLesson : handleJoinGroup}
-              disabled={isJoining || isStartingLesson}
-              className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
-            >
-              {isJoining
-                ? "Joining..."
-                : isStartingLesson
-                ? "Starting..."
-                : isMember
-                ? "Join Lesson"
-                : "Enroll Now"}
-            </button>
-          </div>
+          <button
+            onClick={isMember ? handleJoinLesson : handleJoinGroup}
+            disabled={isJoining || isStartingLesson || isLeaving}
+            className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
+          >
+            {isJoining
+              ? "Joining..."
+              : isStartingLesson
+              ? "Starting..."
+              : isLeaving
+              ? "Leaving..."
+              : isMember
+              ? "Join Lesson"
+              : "Enroll Now"}
+          </button>
         </div>
       </div>
+      {showLeaveConfirm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg max-w-md">
+            <h3 className="text-xl font-semibold mb-4">Leave Group</h3>
+            <p className="mb-6">Are you sure you want to leave this group?</p>
+            <div className="flex gap-4 justify-end">
+              <button
+                onClick={() => setShowLeaveConfirm(false)}
+                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleLeaveGroup}
+                disabled={isLeaving}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+              >
+                {isLeaving ? "Leaving..." : "Leave"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
