@@ -27,7 +27,8 @@ function TeacherCard({ experience, profileUrl, star, name, col = 1, id }: Teache
     ? "text-[18px] md:text-[24px]"
     : "text-[24px]";
 
-  const fullPath = profileUrl ? `${process.env.NEXT_PUBLIC_PAGE_URL}${profileUrl}` : "/none.png";
+  const hasProfilePicture = profileUrl && profileUrl.trim() !== '';
+  const fullPath = hasProfilePicture ? `${process.env.NEXT_PUBLIC_PAGE_URL}${profileUrl}` : "/user.svg";
 
   return (
     <div className="p-[24px] flex-1 border border-gray-light">
@@ -38,13 +39,21 @@ function TeacherCard({ experience, profileUrl, star, name, col = 1, id }: Teache
             width={80}
             height={80}
             alt={`${name} profile picture`}
-            className="rounded-full w-[80px] h-[80px] object-cover"
+            className={`rounded-full w-[80px] h-[80px] object-cover ${!hasProfilePicture ? 'bg-gray-light p-[17px]' : ''}`}
           />
         </div>
         <div className={contentContainerClass}>
-          <h3 className={`mb-[10px] ${nameSize} leading-[130%] font-medium`}>
-            {name}
-          </h3>
+          {id ? (
+            <Link href={`/teachers/${id}`}>
+              <h3 className={`mb-[10px] ${nameSize} leading-[130%] font-medium hover:text-primary transition-colors cursor-pointer`}>
+                {name}
+              </h3>
+            </Link>
+          ) : (
+            <h3 className={`mb-[10px] ${nameSize} leading-[130%] font-medium`}>
+              {name}
+            </h3>
+          )}
           <div className="flex items-center">
             <Image
               src={"/star.svg"}
@@ -60,8 +69,8 @@ function TeacherCard({ experience, profileUrl, star, name, col = 1, id }: Teache
         </div>
       </div>
       <Link
-        className="block text-center text-[18px] py-[12px] bg-secondary text-custom-white"
-        href={id ? `/teacher-profile/${id}` : "#"}
+        className="block text-center text-[18px] py-[12px] bg-secondary text-custom-white hover:opacity-90 transition-opacity"
+        href={id ? `/teachers/${id}` : "#"}
       >
         View Profile
       </Link>

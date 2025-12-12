@@ -1,10 +1,12 @@
 import Image from "next/image";
+import Link from "next/link";
 
 interface TeacherCardProps {
   name: string;
   profilePicture: string;
   rating: number;
   activeStudents: number;
+  teacherId?: number;
 }
 
 function TeacherCard({
@@ -12,23 +14,37 @@ function TeacherCard({
   profilePicture,
   rating,
   activeStudents,
+  teacherId,
 }: TeacherCardProps) {
+  const hasProfilePicture = profilePicture && profilePicture.trim() !== '';
+  const displayPicture = hasProfilePicture
+    ? `${process.env.NEXT_PUBLIC_PAGE_URL}${profilePicture}`
+    : "/user.svg";
+
   return (
     <div className="p-[24px] border border-gray-light mt-[32px] mb-[60px] xxl:mt-[24px] xxl:mb-[32px]">
       <div className="flex flex-col items-center gap-[12px] md:flex-row">
         <div className="flex justify-start">
           <Image
-            src={profilePicture}
+            src={displayPicture}
             width={80}
             height={80}
             alt="Teacher profile picture"
-            className="rounded-full w-[80px] h-[80px] object-cover"
+            className={`rounded-full w-[80px] h-[80px] object-cover ${!hasProfilePicture ? 'bg-gray-light p-[17px]' : ''}`}
           />
         </div>
         <div className="flex flex-col items-start">
-          <h3 className="w-full text-center mb-[10px] text-[24px] leading-[130%] font-medium md:text-left">
-            {name}
-          </h3>
+          {teacherId ? (
+            <Link href={`/teachers/${teacherId}`}>
+              <h3 className="w-full text-center mb-[10px] text-[24px] leading-[130%] font-medium md:text-left hover:text-primary transition-colors cursor-pointer">
+                {name}
+              </h3>
+            </Link>
+          ) : (
+            <h3 className="w-full text-center mb-[10px] text-[24px] leading-[130%] font-medium md:text-left">
+              {name}
+            </h3>
+          )}
           <div className="flex items-center">
             <Image
               src="/star.svg"

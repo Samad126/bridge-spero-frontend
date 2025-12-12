@@ -337,33 +337,23 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
                       className="object-cover"
                     />
                     <div className="absolute inset-0 bg-[#00000099]"></div>
-                  </>
-                )}
-                {isTeacherLoggedIn && (
-                  <div className="absolute inset-0 flex items-center justify-center gap-[12px]">
-                    {teacherProfile?.demoVideoUrl && (
-                      <button className="border border-[#EBEBEB] p-[12px] bg-black/50 hover:bg-black/70">
-                        <Image
-                          src={"/play.svg"}
-                          alt="play icon"
-                          width={46}
-                          height={46}
-                        />
-                      </button>
+                    {isTeacherLoggedIn && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <button
+                          onClick={handleOpenDemoVideo}
+                          disabled={isUploadingVideo}
+                          className="border border-[#EBEBEB] p-[12px] bg-black/50 hover:bg-black/70 disabled:opacity-50"
+                        >
+                          <Image
+                            src={"/upload-white.svg"}
+                            alt="upload icon"
+                            width={46}
+                            height={46}
+                          />
+                        </button>
+                      </div>
                     )}
-                    <button
-                      onClick={handleOpenDemoVideo}
-                      disabled={isUploadingVideo}
-                      className="border border-[#EBEBEB] p-[12px] bg-black/50 hover:bg-black/70 disabled:opacity-50"
-                    >
-                      <Image
-                        src={"/upload-white.svg"}
-                        alt="upload icon"
-                        width={46}
-                        height={46}
-                      />
-                    </button>
-                  </div>
+                  </>
                 )}
               </div>
             ) : (

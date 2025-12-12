@@ -10,6 +10,7 @@ import {
   studentRegistrationSchema,
 } from "../schemas/authSchemas";
 import { useState, useEffect } from "react";
+import PrivacyPolicyModal from "@/features/privacy-policy/components/PrivacyPolicyModal";
 
 interface BackendError {
   field: string;
@@ -36,6 +37,7 @@ const StudentRegistration = () => {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [selectedSubjects, setSelectedSubjects] = useState<number[]>([]);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const {
     register,
@@ -322,7 +324,15 @@ const StudentRegistration = () => {
               />
               <label htmlFor="agreedToTerms" className="text-[15px] leading-[100%] lg:block">
                 I agree to the{" "}
-                <span className="text-primary">terms and conditions</span>
+                <span
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowPrivacyModal(true);
+                  }}
+                  className="text-primary cursor-pointer hover:underline"
+                >
+                  terms and conditions
+                </span>
               </label>
             </div>
             {errors.agreedToTerms && (
@@ -347,6 +357,10 @@ const StudentRegistration = () => {
           </form>
         </div>
       </section>
+      <PrivacyPolicyModal
+        isOpen={showPrivacyModal}
+        onClose={() => setShowPrivacyModal(false)}
+      />
     </div>
   );
 };

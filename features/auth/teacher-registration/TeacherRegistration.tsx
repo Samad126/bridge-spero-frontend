@@ -11,6 +11,7 @@ import {
   TeacherRegistrationFormData,
 } from "../schemas/authSchemas";
 import { useState, useEffect } from "react";
+import PrivacyPolicyModal from "@/features/privacy-policy/components/PrivacyPolicyModal";
 
 interface BackendError {
   field: string;
@@ -38,6 +39,7 @@ const TeacherRegistration = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [demoVideoFile, setDemoVideoFile] = useState<File | null>(null);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const {
     register,
@@ -384,7 +386,15 @@ const TeacherRegistration = () => {
               />
               <label htmlFor="agreedToTerms" className="text-[15px] leading-[100%] lg:block">
                 I agree to the{" "}
-                <span className="text-primary">terms and conditions</span>
+                <span
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowPrivacyModal(true);
+                  }}
+                  className="text-primary cursor-pointer hover:underline"
+                >
+                  terms and conditions
+                </span>
               </label>
             </div>
             {errors.agreedToTerms && (
@@ -409,6 +419,10 @@ const TeacherRegistration = () => {
           </form>
         </div>
       </section>
+      <PrivacyPolicyModal
+        isOpen={showPrivacyModal}
+        onClose={() => setShowPrivacyModal(false)}
+      />
     </div>
   );
 };

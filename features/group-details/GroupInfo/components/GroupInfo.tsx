@@ -35,6 +35,7 @@ function GroupInfo({ group, groupId, isAuthenticated }: GroupInfoProps) {
             profilePicture={group.teacher.profilePictureName}
             rating={group.teacher.rating}
             activeStudents={group.teacher.activeStudents}
+            teacherId={group.teacher.id}
           />
           <Tabs
             groupId={groupId}
