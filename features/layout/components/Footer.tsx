@@ -36,26 +36,45 @@ export function Footer({ role }: { role: JWTPayload["role"] | null }) {
             </div>
           </>
         )}
-        <div className="flex flex-col justify-between text-center items-center text-secondary mb-[60px] gap-[48px] lg:flex-row lg:mb-[80px] xxl:mb-[100px] xxl:px-[14px] lg:text-left">
+        <div className="flex flex-col justify-between text-center items-start text-secondary mb-[60px] gap-[48px] lg:flex-row lg:mb-[80px] xxl:mb-[100px] xxl:px-[14px] lg:text-left">
           <ul className="space-y-[12px]">
             <li>Azerbaijan, Baku</li>
-            <li>someone@gmail.com</li>
-            <li>+994558888888</li>
+
+            <li>
+              <a href="mailto:bridgespero@gmail.com">bridgespero@gmail.com</a>
+            </li>
+
+            <li>
+              <a
+                href="https://wa.me/994706109182"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                +994 55 888 88 88
+              </a>
+            </li>
           </ul>
+
           <ul className="space-y-[12px]">
             <li>
               <Link href={"/"}>About</Link>
             </li>
             <li>
-              <Link href={"/"}>Explore</Link>
+              <Link href={"/explore-groups"}>Explore</Link>
             </li>
             <li>
-              <Link href={"/"}>Contact</Link>
+              <Link href={"/contact"}>Contact</Link>
             </li>
           </ul>
           <ul className="space-y-[12px]">
             <li>
-              <Link className="flex items-center gap-[12px]" href={"/"}>
+              <Link
+                target="_blank"
+                className="flex items-center gap-[12px]"
+                href={
+                  "https://www.instagram.com/bridgespero?igsh=MTRzZXdxbXExMndsZw=="
+                }
+              >
                 <Image
                   src="/instagram.svg"
                   alt="instagram icon"
@@ -66,7 +85,13 @@ export function Footer({ role }: { role: JWTPayload["role"] | null }) {
               </Link>
             </li>
             <li>
-              <Link className="flex items-center gap-[12px]" href={"/"}>
+              <Link
+                target="_blank"
+                className="flex items-center gap-[12px]"
+                href={
+                  "https://www.linkedin.com/in/bridgespero-startup-13117038a/"
+                }
+              >
                 <Image
                   src="/linkedin.svg"
                   alt="linkedin icon"
@@ -74,17 +99,6 @@ export function Footer({ role }: { role: JWTPayload["role"] | null }) {
                   height={22}
                 />
                 <span>Linkedin</span>
-              </Link>
-            </li>
-            <li>
-              <Link className="flex items-center gap-[12px]" href={"/"}>
-                <Image
-                  src="/facebook.svg"
-                  alt="Facebook icon"
-                  width={22}
-                  height={22}
-                />
-                <span>Facebook</span>
               </Link>
             </li>
           </ul>
