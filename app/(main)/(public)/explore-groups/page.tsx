@@ -1,6 +1,14 @@
 import Groups from "@/features/explore-groups/components/Groups";
 import Hero from "@/features/explore-groups/components/Hero";
 import Search from "@/features/explore-groups/components/Search";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Explore Groups | Bridge Spero",
+  description:
+    "Discover and join learning groups across various subjects and languages. Find the perfect group to enhance your education with Bridge Spero.",
+  keywords: "learning groups, online education, study groups, Bridge Spero groups, educational groups",
+};
 
 interface PageProps {
   searchParams: Promise<{

@@ -30,7 +30,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
   // Construct the full image URL
   const backgroundImage = imageUrl
     ? `${process.env.NEXT_PUBLIC_PAGE_URL}${imageUrl}`
-    : '/groupimage.png';
+    : '/group-template.svg';
 
   // Fetch user data using RTK Query (optional auth - won't redirect if not authenticated)
   const { data: userData, isLoading } = useGetUserProfileOptionalQuery(undefined, {

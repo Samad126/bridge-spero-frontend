@@ -1,0 +1,17 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Clean gradient background -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0f4f8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d9e2ec;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="400" height="300" fill="url(#bgGradient)"/>
+
+  <!-- Just text - no icon -->
+  <text x="200" y="155" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#9fb3c8" text-anchor="middle" font-weight="500" letter-spacing="1">
+    Bridge Spero
+  </text>
+</svg>
