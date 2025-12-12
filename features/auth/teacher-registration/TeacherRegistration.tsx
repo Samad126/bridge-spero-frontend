@@ -334,7 +334,7 @@ const TeacherRegistration = () => {
                 htmlFor="demoVideo"
                 className="leading-[100%] block w-full mb-[8px]"
               >
-                Demo Lesson Video *
+                Demo Lesson Video
               </label>
               <label
                 htmlFor="demoVideo"
