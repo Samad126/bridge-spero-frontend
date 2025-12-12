@@ -124,7 +124,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
         // Open Zoom URL in new tab
         window.open(result.data, '_blank');
       } else {
-        alert('Failed to get Zoom meeting URL. Please try again.');
+        alert('The lesson has not been started yet. Please wait for the teacher to start the lesson.');
       }
     } catch (error) {
       console.error('Failed to join lesson:', error);

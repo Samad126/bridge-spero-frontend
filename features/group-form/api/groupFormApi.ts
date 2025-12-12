@@ -18,18 +18,11 @@ export const groupFormApi = baseApi.injectEndpoints({
         // Create FormData
         const formData = new FormData();
 
-        // Convert date from YYYY-MM-DD to dd.MM.yyyy format
-        const dateObj = new Date(payload.startDate);
-        const day = String(dateObj.getDate()).padStart(2, "0");
-        const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-        const year = dateObj.getFullYear();
-        const formattedDate = `${day}.${month}.${year}`;
-
         // Append required fields
         formData.append("name", payload.name);
         formData.append("categoryId", payload.categoryId.toString());
         formData.append("language", payload.language);
-        formData.append("startDate", formattedDate);
+        formData.append("startDate", payload.startDate);
         formData.append("durationInMonths", payload.durationInMonths.toString());
         formData.append("maxStudents", payload.maxStudents.toString());
         formData.append("price", payload.price.toString());
@@ -62,18 +55,11 @@ export const groupFormApi = baseApi.injectEndpoints({
         // Create FormData
         const formData = new FormData();
 
-        // Convert date from YYYY-MM-DD to dd.MM.yyyy format
-        const dateObj = new Date(payload.startDate);
-        const day = String(dateObj.getDate()).padStart(2, "0");
-        const month = String(dateObj.getMonth() + 1).padStart(2, "0");
-        const year = dateObj.getFullYear();
-        const formattedDate = `${day}.${month}.${year}`;
-
         // Append required fields
         formData.append("name", payload.name);
         formData.append("categoryId", payload.categoryId.toString());
         formData.append("language", payload.language);
-        formData.append("startDate", formattedDate);
+        formData.append("startDate", payload.startDate);
         formData.append("durationInMonths", payload.durationInMonths.toString());
         formData.append("maxStudents", payload.maxStudents.toString());
         formData.append("price", payload.price.toString());
