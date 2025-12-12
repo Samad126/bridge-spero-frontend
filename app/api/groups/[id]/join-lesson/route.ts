@@ -49,11 +49,11 @@ export async function GET(
       );
     }
 
-    // Backend returns plain text (the Zoom URL) on success
-    const zoomUrl = await response.text();
+    // Backend returns plain text (the Jitsi URL) on success
+    const jitsiUrl = await response.text();
 
-    // Return the plain Zoom URL string
-    return new Response(zoomUrl, {
+    // Return the plain Jitsi URL string
+    return new Response(jitsiUrl, {
       status: 200,
       headers: { "Content-Type": "text/plain" },
     });
