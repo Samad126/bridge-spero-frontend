@@ -30,7 +30,7 @@ function TeacherCard({
             width={80}
             height={80}
             alt="Teacher profile picture"
-            className={`rounded-full w-[80px] h-[80px] object-cover ${!hasProfilePicture ? 'bg-gray-light p-[17px]' : ''}`}
+            className={`rounded-full min-w-[80px] min-h-[80px] object-cover ${!hasProfilePicture ? 'bg-gray-light p-[17px]' : ''}`}
           />
         </div>
         <div className="w-full flex flex-col items-start min-w-0">
@@ -45,7 +45,7 @@ function TeacherCard({
               {name}
             </h3>
           )}
-          <div className="flex items-center">
+          <div className="flex w-full items-center justify-center md:justify-start">
             <Image
               src="/star.svg"
               width={16}

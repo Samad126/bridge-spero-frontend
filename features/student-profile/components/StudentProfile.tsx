@@ -177,7 +177,7 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
             </>
           )}
         </div>
-        <div className="xxl:flex xxl:p-[30px]">
+        <div className="xxl:flex xxl:p-[30px] xxl:gap-[30px]">
           <div className="mb-[24px] xxl:w-[314px] mt-[-34px] xxl:mt-[-99px] flex flex-col justify-center items-center xxl:justify-start xxl:items-start gap-[24px] mx-[18px] xxl:mx-0">
             <div
               onClick={isStudentLoggedIn ? handleOpenProfilePicture : undefined}
@@ -213,8 +213,8 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
                 </>
               )}
             </div>
-            <div>
-              <h3 className="text-[32px] text-secondary leading-[130%] font-medium">
+            <div className="w-full">
+              <h3 className="truncate text-[32px] text-secondary leading-[130%] font-medium">
                 {userProfile?.name || ''} {userProfile?.surname || ''}
               </h3>
             </div>

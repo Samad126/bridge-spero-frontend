@@ -43,7 +43,7 @@ function MemberItem({ member, groupId, isTeacher }: MemberItemProps) {
 
   return (
     <div className="flex items-center justify-between gap-[12px] border-b border-gray-light p-[12px]">
-      <Link href={profileUrl} className="flex items-center gap-[12px] flex-1 hover:opacity-80 transition-opacity">
+      <Link href={profileUrl} className="w-full flex items-center gap-[12px] flex-1 hover:opacity-80 transition-opacity">
         <div className="w-[42px] h-[42px] flex items-center justify-center bg">
           <Image
             src="/user.svg"
@@ -53,7 +53,7 @@ function MemberItem({ member, groupId, isTeacher }: MemberItemProps) {
             className="w-[24px] h-[24px]"
           />
         </div>
-        <p>{member.name} {member.surname}</p>
+        <p className="truncate w-full">{member.name} {member.surname}</p>
       </Link>
       {isTeacher && (
         <button

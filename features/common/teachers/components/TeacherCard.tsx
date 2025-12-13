@@ -19,8 +19,8 @@ function TeacherCard({ experience, profileUrl, star, name, col = 1, id }: Teache
     : "flex justify-start";
 
   const contentContainerClass = col === 2
-    ? "flex flex-col items-center md:items-start"
-    : "flex flex-col items-start";
+    ? "flex flex-col items-center md:items-start min-w-0"
+    : "flex flex-col items-start min-w-0";
 
   // Name text size: 18px for mobile 2-col, 24px for mobile 1-col and tablet/desktop
   const nameSize = col === 2
@@ -39,13 +39,13 @@ function TeacherCard({ experience, profileUrl, star, name, col = 1, id }: Teache
             width={80}
             height={80}
             alt={`${name} profile picture`}
-            className={`rounded-full w-[80px] h-[80px] object-cover ${!hasProfilePicture ? 'bg-gray-light p-[17px]' : ''}`}
+            className={`rounded-full min-w-[80px] min-h-[80px] object-cover ${!hasProfilePicture ? 'bg-gray-light p-[17px]' : ''}`}
           />
         </div>
         <div className={contentContainerClass}>
           {id ? (
-            <Link href={`/teachers/${id}`}>
-              <h3 className={`mb-[10px] ${nameSize} leading-[130%] font-medium hover:text-primary transition-colors cursor-pointer`}>
+            <Link className="w-full block truncate" href={`/teachers/${id}`}>
+              <h3 className={`mb-[10px] truncate ${nameSize} leading-[130%] font-medium hover:text-primary transition-colors cursor-pointer`}>
                 {name}
               </h3>
             </Link>
