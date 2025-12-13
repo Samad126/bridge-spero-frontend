@@ -36,7 +36,7 @@ export function Footer({ role }: { role: JWTPayload["role"] | null }) {
             </div>
           </>
         )}
-        <div className="flex flex-col justify-between text-center items-start text-secondary mb-[60px] gap-[48px] lg:flex-row lg:mb-[80px] xxl:mb-[100px] xxl:px-[14px] lg:text-left">
+        <div className="flex flex-col justify-between items-center text-center text-secondary mb-[60px] gap-[48px] lg:flex-row lg:mb-[80px] xxl:mb-[100px] xxl:px-[14px] lg:text-left lg:items-start">
           <ul className="space-y-[12px]">
             <li>Azerbaijan, Baku</li>
 

@@ -15,10 +15,10 @@ interface GroupInfoProps {
 function GroupInfo({ group, groupId, isAuthenticated }: GroupInfoProps) {
   return (
     <section>
-      <div className="container flex gap-[80px] items-start">
-        <div className="w-full">
+      <div className="container w-full flex gap-[80px] items-start">
+        <div className="w-full min-w-0">
           <GroupLevel category={group.category} language={group.language} />
-          <h2 className="text-center text-primary text-[32px] leading-[130%] font-normal tracking-[0%] xxl:text-[54px] xxl:text-left">
+          <h2 className="w-full text-center truncate text-primary text-[32px] leading-[130%] font-normal tracking-[0%] xxl:text-[54px] xxl:text-left">
             {group.name}
           </h2>
           <p className="my-[32px] text-center text-secondary leading-[140%] xxl:text-[20px] xxl:my-[24px] xxl:text-left">

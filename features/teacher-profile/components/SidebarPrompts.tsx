@@ -26,7 +26,7 @@ export default function SidebarPrompts({ isZoomConnected, isBecomeStudent }: Sid
         <div className="border border-1 border-gray-light p-[12px]">
           <div className="flex flex-col items-center py-[24px] px-[12px] xxl:p-[30px]">
             <h3 className="text-primary mb-[12px] xxl:mb-[16px] text-center xxl:text-[32px] text-[24px]">
-              Learning isn't just for students — join the fun
+              Learning isn&apos;t just for students — join the fun
             </h3>
             <p className="text-center text-secondary mb-[24px] xxl:mb-[42px]">
               Keep growing, stay curious, and bring that energy back to your

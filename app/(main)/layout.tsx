@@ -1,4 +1,4 @@
-import Footer from "@/features/layout/components/Footer";
+import Footer from "@/features/layout/Footer/Footer";
 import { HeaderWrapper } from "@/features/layout/Header/components/HeaderWrapper";
 import { cookies } from "next/headers";
 import { NuqsAdapter } from "nuqs/adapters/next/app";

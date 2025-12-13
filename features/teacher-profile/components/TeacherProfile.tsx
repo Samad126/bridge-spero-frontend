@@ -1,7 +1,15 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState, useRef } from "react";
-import { useGetTeacherPublicProfileQuery, useUploadProfilePictureMutation, useUpdateProfilePictureMutation, useUploadBackgroundImageMutation, useUpdateBackgroundImageMutation, useUploadDemoVideoMutation, useGetTeacherGroupsQuery } from "@/features/profile/api/profileApi";
+import {
+  useGetTeacherPublicProfileQuery,
+  useUploadProfilePictureMutation,
+  useUpdateProfilePictureMutation,
+  useUploadBackgroundImageMutation,
+  useUpdateBackgroundImageMutation,
+  useUploadDemoVideoMutation,
+  useGetTeacherGroupsQuery,
+} from "@/features/profile/api/profileApi";
 import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
 import GroupCard from "@/features/common/groups/components/GroupCard";
 import RateModal from "./RateModal";
@@ -27,13 +35,12 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
   );
 
   // Fetch teacher groups
-  const { data: teacherGroups = [], isLoading: isLoadingGroups } = useGetTeacherGroupsQuery(
-    profileTeacherId!,
-    { skip: !profileTeacherId }
-  );
+  const { data: teacherGroups = [], isLoading: isLoadingGroups } =
+    useGetTeacherGroupsQuery(profileTeacherId!, { skip: !profileTeacherId });
 
   // Check if current user is viewing their own profile
-  const isOwnProfile = currentUser?.id === profileTeacherId && currentUser?.role === "TEACHER";
+  const isOwnProfile =
+    currentUser?.id === profileTeacherId && currentUser?.role === "TEACHER";
   const isTeacherLoggedIn = isOwnProfile;
 
   // Upload mutations
@@ -41,11 +48,16 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
   const backgroundImageInputRef = useRef<HTMLInputElement>(null);
   const demoVideoInputRef = useRef<HTMLInputElement>(null);
 
-  const [uploadProfilePicture, { isLoading: isUploadingProfilePic }] = useUploadProfilePictureMutation();
-  const [updateProfilePicture, { isLoading: isUpdatingProfilePic }] = useUpdateProfilePictureMutation();
-  const [uploadBackgroundImage, { isLoading: isUploadingBg }] = useUploadBackgroundImageMutation();
-  const [updateBackgroundImage, { isLoading: isUpdatingBg }] = useUpdateBackgroundImageMutation();
-  const [uploadDemoVideo, { isLoading: isUploadingVideo }] = useUploadDemoVideoMutation();
+  const [uploadProfilePicture, { isLoading: isUploadingProfilePic }] =
+    useUploadProfilePictureMutation();
+  const [updateProfilePicture, { isLoading: isUpdatingProfilePic }] =
+    useUpdateProfilePictureMutation();
+  const [uploadBackgroundImage, { isLoading: isUploadingBg }] =
+    useUploadBackgroundImageMutation();
+  const [updateBackgroundImage, { isLoading: isUpdatingBg }] =
+    useUpdateBackgroundImageMutation();
+  const [uploadDemoVideo, { isLoading: isUploadingVideo }] =
+    useUploadDemoVideoMutation();
 
   const [isZoomConnected, setIsZoomConnected] = useState(true);
   const [isBecomeStudent, setIsBecomeStudent] = useState(true);
@@ -55,7 +67,6 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
   const [isPpHovered, setIsPpHovered] = useState(false);
   const [showRateModal, setShowRateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-
 
   const itemsPerPage = 8;
   const totalPages = Math.ceil(teacherGroups.length / itemsPerPage);
@@ -80,7 +91,9 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
   };
 
   // Handle profile picture upload
-  const handleProfilePictureChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProfilePictureChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -97,7 +110,9 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
   };
 
   // Handle background image upload
-  const handleBackgroundImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBackgroundImageChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -114,7 +129,9 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
   };
 
   // Handle demo video upload
-  const handleDemoVideoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleDemoVideoChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -144,8 +161,6 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
     }
   };
 
-
-
   // Show loading state
   if (isLoading) {
     return (
@@ -169,7 +184,9 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
   };
 
   const profileImageUrl = getImageUrl(teacherProfile?.imageUrl);
-  const backgroundImageUrl = getImageUrl(teacherProfile?.backgroundImageUrl) || "/teacher-profile-hero.jpg";
+  const backgroundImageUrl =
+    getImageUrl(teacherProfile?.backgroundImageUrl) ||
+    "/teacher-profile-hero.jpg";
 
   return (
     <section className="container flex flex-col gap-[24px] xxl:flex-row">
@@ -198,9 +215,15 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
       <div className="border border-gray-light flex flex-col xxl:flex-1">
         <div
           onClick={isTeacherLoggedIn ? handleOpenBackgroundImage : undefined}
-          onMouseEnter={isTeacherLoggedIn ? () => setisHeroHovered(true) : undefined}
-          onMouseLeave={isTeacherLoggedIn ? () => setisHeroHovered(false) : undefined}
-          className={`${isTeacherLoggedIn ? 'cursor-pointer' : ''} w-full relative overflow-hidden h-[146px] xxl:h-[262px]`}
+          onMouseEnter={
+            isTeacherLoggedIn ? () => setisHeroHovered(true) : undefined
+          }
+          onMouseLeave={
+            isTeacherLoggedIn ? () => setisHeroHovered(false) : undefined
+          }
+          className={`${
+            isTeacherLoggedIn ? "cursor-pointer" : ""
+          } w-full relative overflow-hidden h-[146px] xxl:h-[262px]`}
         >
           <Image
             src={backgroundImageUrl}
@@ -229,12 +252,18 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
         </div>
 
         <div className="flex xxl:flex-row flex-col p-[12px] xxl:p-[30px] xxl:gap-[30px] xxl:justify-start xxl:items-start">
-          <div className="relative w-fit xxl:w-[314px] mx-auto xxl:mx-0 flex flex-col justify-center items-center xxl:items-start xxl:pl-0 pl-[24px] gap-[24px]">
+          <div className="relative w-full xxl:w-[314px] mx-auto xxl:mx-0 flex flex-col justify-center items-center xxl:items-start xxl:pl-0 px-[6px] gap-[24px]">
             <div
               onClick={isTeacherLoggedIn ? handleOpenProfilePicture : undefined}
-              onMouseEnter={isTeacherLoggedIn ? () => setIsPpHovered(true) : undefined}
-              onMouseLeave={isTeacherLoggedIn ? () => setIsPpHovered(false) : undefined}
-              className={`relative ${isTeacherLoggedIn ? 'cursor-pointer' : ''} xxl:size-[178px] w-[100px] h-[100px] mt-[-50px] xxl:mt-[-96px] object-cover z-20 mx-auto xxl:mx-0`}
+              onMouseEnter={
+                isTeacherLoggedIn ? () => setIsPpHovered(true) : undefined
+              }
+              onMouseLeave={
+                isTeacherLoggedIn ? () => setIsPpHovered(false) : undefined
+              }
+              className={`relative ${
+                isTeacherLoggedIn ? "cursor-pointer" : ""
+              } xxl:size-[178px] w-[100px] h-[100px] mt-[-50px] xxl:mt-[-96px] object-cover z-20 mx-auto xxl:mx-0`}
             >
               <Image
                 src={profileImageUrl || "/user.svg"}
@@ -265,9 +294,10 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
               )}
             </div>
 
-            <div>
+            <div className="w-full">
               <h3 className="text-[32px] text-secondary text-center leading-[130%] font-medium xxl:text-left mb-[12px]">
-                {teacherProfile?.name || ''} {teacherProfile?.surname || ''}
+                <span className="truncate block">{teacherProfile?.name || ""}</span>{" "}
+                <span className="truncate block">{teacherProfile?.surname || ""}</span>
               </h3>
               <div className="xxl:w-[200px] w-[185px] xxl:w-max flex items-center mx-auto xxl:mx-0">
                 <Image
@@ -277,7 +307,9 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
                   alt={`star`}
                   className="mr-[6px] w-[16px] h-[16px]"
                 />
-                <span className="text-custom-yellow">{teacherProfile?.rating?.toFixed(1) || '0.0'}</span>
+                <span className="text-custom-yellow">
+                  {teacherProfile?.rating?.toFixed(1) || "0.0"}
+                </span>
                 <div className="w-px h-[10px] bg-tertiary mx-[12px]"></div>
                 <Image
                   src={"/users-1.svg"}
@@ -286,12 +318,14 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
                   alt={`students`}
                   className="mr-[8px] w-[18px] h-[18px]"
                 />
-                <span className="text-tertiary">{teacherProfile?.students || 0} students</span>
+                <span className="text-tertiary">
+                  {teacherProfile?.students || 0} students
+                </span>
               </div>
             </div>
 
             <p className="text-center xxl:text-left w-full">
-              {teacherProfile?.bio || ''}
+              {teacherProfile?.bio || ""}
             </p>
             <ProfileActions
               isOwnProfile={isTeacherLoggedIn}
@@ -306,7 +340,9 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
               <div
                 onClick={() => handleSelectedCategory("demo")}
                 className={`${
-                  isSelected === "demo" ? "text-primary border-b-2 border-primary" : "text-secondary"
+                  isSelected === "demo"
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-secondary"
                 } text-center py-[12px] flex-1 cursor-pointer transition-colors`}
               >
                 Demo Lesson
@@ -314,18 +350,22 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
               <div
                 onClick={() => handleSelectedCategory("groups")}
                 className={`${
-                  isSelected === "groups" ? "text-primary border-b-2 border-primary" : "text-secondary"
+                  isSelected === "groups"
+                    ? "text-primary border-b-2 border-primary"
+                    : "text-secondary"
                 } text-center py-[12px] flex-1 cursor-pointer transition-colors`}
               >
                 Groups {teacherGroups.length}
               </div>
             </div>
             {isSelected === "demo" ? (
-              <div className="relative w-full h-[159px] xxl:w-[570px] xxl:h-[278px]">
+              <div className="relative min-w-0 w-full h-[159px] xxl:w-[570px] xxl:h-[278px]">
                 {teacherProfile?.demoVideoUrl ? (
                   <>
                     <video
-                      src={getImageUrl(teacherProfile.demoVideoUrl) || undefined}
+                      src={
+                        getImageUrl(teacherProfile.demoVideoUrl) || undefined
+                      }
                       controls
                       className="w-full h-full object-cover"
                     />
@@ -378,7 +418,10 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
                 {isLoadingGroups ? (
                   <div className="grid grid-cols-2 md:grid-cols-3 xxl:grid-cols-4 gap-[12px] mb-[24px]">
                     {Array.from({ length: 4 }).map((_, index) => (
-                      <div key={index} className="border border-gray-light animate-pulse">
+                      <div
+                        key={index}
+                        className="border border-gray-light animate-pulse"
+                      >
                         <div className="w-full h-[120px] md:h-[240px] bg-gray-200"></div>
                         <div className="p-[12px] md:p-[20px] space-y-[12px]">
                           <div className="h-[14px] bg-gray-200 w-3/4"></div>
@@ -393,7 +436,13 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
                     No groups available
                   </div>
                 ) : (
-                  <div className={`grid grid-cols-2 ${isZoomConnected && isBecomeStudent ? "xxl:grid-cols-4" : "xxl:grid-cols-2"} gap-[12px] mb-[24px]`}>
+                  <div
+                    className={`grid grid-cols-2 ${
+                      isZoomConnected && isBecomeStudent
+                        ? "xxl:grid-cols-4"
+                        : "xxl:grid-cols-2"
+                    } gap-[12px] mb-[24px]`}
+                  >
                     {paginatedGroups.map((group) => (
                       <GroupCard
                         key={group.id}
@@ -410,16 +459,18 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
                   </div>
                 )}
 
-                {!isLoadingGroups && paginatedGroups.length > 0 && totalPages > 1 && (
-                  <div className="flex justify-center items-center">
-                    {Array.from({ length: totalPages }).map((_, index) => {
-                      const page = index + 1;
+                {!isLoadingGroups &&
+                  paginatedGroups.length > 0 &&
+                  totalPages > 1 && (
+                    <div className="flex justify-center items-center">
+                      {Array.from({ length: totalPages }).map((_, index) => {
+                        const page = index + 1;
 
-                      return (
-                        <button
-                          key={page}
-                          onClick={() => setCurrentPage(page)}
-                          className={`
+                        return (
+                          <button
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                            className={`
                                         w-[40px] h-[40px] font-medium border-gray-light text flex items-center justify-center cursor-pointer
                                         ${
                                           currentPage === page
@@ -427,34 +478,34 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
                                             : "text-secondary"
                                         }
                                       `}
-                        >
-                          {page}
-                        </button>
-                      );
-                    })}
+                          >
+                            {page}
+                          </button>
+                        );
+                      })}
 
-                    <button
-                      onClick={() =>
-                        setCurrentPage((p) => Math.min(p + 1, totalPages))
-                      }
-                      disabled={currentPage === totalPages}
-                      className="w-[40px] h-[40px] border border-gray-light flex items-center justify-center cursor-pointer disabled:opacity-40"
-                    >
-                      <Image
-                        src="/arrow-right.svg"
-                        width={22}
-                        height={22}
-                        alt="right-arrow"
-                      />
-                    </button>
-                  </div>
-                )}
+                      <button
+                        onClick={() =>
+                          setCurrentPage((p) => Math.min(p + 1, totalPages))
+                        }
+                        disabled={currentPage === totalPages}
+                        className="w-[40px] h-[40px] border border-gray-light flex items-center justify-center cursor-pointer disabled:opacity-40"
+                      >
+                        <Image
+                          src="/arrow-right.svg"
+                          width={22}
+                          height={22}
+                          alt="right-arrow"
+                        />
+                      </button>
+                    </div>
+                  )}
               </div>
             )}
           </div>
         </div>
       </div>
-      {isTeacherLoggedIn && (
+      {(isTeacherLoggedIn && (!isZoomConnected || !isBecomeStudent)) && (
         <SidebarPrompts
           isZoomConnected={isZoomConnected}
           isBecomeStudent={isBecomeStudent}

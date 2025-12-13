@@ -26,7 +26,7 @@ const WelcomeBack = () => {
     <section>
       <div className="container">
         <h2 className="text-center text-primary text-[34px] leading-[130%] font-normal tracking-[0%] xxl:text-[54px]">
-          Welcome back, {data?.name || "Teacher"}!
+          Welcome back, <span className="truncate block">{data?.name || "Teacher"}!</span>
         </h2>
         <div className="border border-gray-light max-w-[350px] mt-10 mx-auto lg:max-w-[1440px] lg:flex lg:border-none xxl:max-w-[1440px] lg:justify-center lg:space-x-[48px] lg:items-center xxl:lg:space-x-[64px]">
           <div className="flex justify-between px-[20px] py-[14.5px] lg:flex lg:flex-col-reverse lg:py-0 lg:px-0!">

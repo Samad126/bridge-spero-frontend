@@ -22,8 +22,8 @@ function TeacherCard({
     : "/user.svg";
 
   return (
-    <div className="p-[24px] border border-gray-light mt-[32px] mb-[60px] xxl:mt-[24px] xxl:mb-[32px]">
-      <div className="flex flex-col items-center gap-[12px] md:flex-row">
+    <div className="w-full p-[24px] border border-gray-light mt-[32px] mb-[60px] xxl:mt-[24px] xxl:mb-[32px]">
+      <div className="w-full flex flex-col items-center gap-[12px] md:flex-row">
         <div className="flex justify-start">
           <Image
             src={displayPicture}
@@ -33,10 +33,10 @@ function TeacherCard({
             className={`rounded-full w-[80px] h-[80px] object-cover ${!hasProfilePicture ? 'bg-gray-light p-[17px]' : ''}`}
           />
         </div>
-        <div className="flex flex-col items-start">
+        <div className="w-full flex flex-col items-start min-w-0">
           {teacherId ? (
-            <Link href={`/teachers/${teacherId}`}>
-              <h3 className="w-full text-center mb-[10px] text-[24px] leading-[130%] font-medium md:text-left hover:text-primary transition-colors cursor-pointer">
+            <Link className="w-full block" href={`/teachers/${teacherId}`}>
+              <h3 className="w-full truncate text-center mb-[10px] text-[24px] leading-[130%] font-medium md:text-left hover:text-primary transition-colors cursor-pointer">
                 {name}
               </h3>
             </Link>

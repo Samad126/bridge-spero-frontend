@@ -22,18 +22,16 @@ export function ProfilePopup({
   userRole,
 }: ProfilePopupProps) {
   const dispatch = useAppDispatch();
-  const { data: userData } = useGetUserProfileOptionalQuery(undefined, {
-    
-  });
+  const { data: userData } = useGetUserProfileOptionalQuery(undefined, {});
 
   const router = useRouter();
 
   if (!isOpen) return null;
 
   // Use RTK Query data if available, otherwise fall back to props
-  const displayName = userData
-    ? `${userData.name} ${userData.surname}`
-    : userName;
+  // const displayName = userData
+  //   ? `${userData.name} ${userData.surname}`
+  //   : userName;
 
   const handleLogout = async () => {
     try {
@@ -49,8 +47,10 @@ export function ProfilePopup({
     }
   };
 
-  const profileHref = userRole === "USER" ? "/student-profile" : "/teacher-profile";
-  const settingsHref = userRole === "USER" ? "/student/settings" : "/teacher/settings";
+  const profileHref =
+    userRole === "USER" ? "/student-profile" : "/teacher-profile";
+  const settingsHref =
+    userRole === "USER" ? "/student/settings" : "/teacher/settings";
 
   return (
     <>
@@ -72,7 +72,16 @@ export function ProfilePopup({
               className="min-w-[32px] min-h-[32px]"
             />
           </div>
-          <p className="font-medium text-[20px] text-center">{displayName}</p>
+          <p className="w-full min-w-0 font-medium text-[20px] text-center">
+            {userData ? (
+              <>
+                <span className="w-full block truncate">{userData.name}</span>{" "}
+                <span className="w-full block truncate">{userData.surname}</span>
+              </>
+            ) : (
+              userName
+            )}
+          </p>
         </div>
 
         {/* Menu Items */}
@@ -110,4 +119,3 @@ export function ProfilePopup({
     </>
   );
 }
-

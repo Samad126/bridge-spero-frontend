@@ -12,7 +12,7 @@ function TabHeader({
       {tabData.map((tab) => (
         <button
           key={tab.id}
-          className={`py-[12px] flex-1 min-w-[180px] text-[18px] bg-white border border-gray-light ${
+          className={`py-[12px] flex-1 min-w-[179px] text-[18px] bg-white border border-gray-light ${
             tab.id === activeTabId ? "text-white bg-secondary!" : ""
           }`}
           onClick={() => setActiveTabId(tab.id)}

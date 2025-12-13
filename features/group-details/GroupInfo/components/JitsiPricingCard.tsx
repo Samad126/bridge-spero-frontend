@@ -332,7 +332,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
           </div>
 
           <p className="text-[32px] mb-[12px] mt-[30px] text-white">
-            ${price} / <span className="text-[20px]">month</span>
+            ₼{price} / <span className="text-[20px]">month</span>
           </p>
 
           <button

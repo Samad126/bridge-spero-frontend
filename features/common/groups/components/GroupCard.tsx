@@ -48,7 +48,7 @@ const GroupCard = ({
 
       <div className={padding}>
         <div className="flex flex-center items-center">
-          <span className={`text-tertiary ${textSize}`}>{degree}</span>
+          <span className={`text-tertiary truncate ${textSize}`}>{degree}</span>
           <div className="w-px h-[10px] bg-tertiary mx-[12px]"></div>
           <Image
             width={16}
@@ -57,11 +57,11 @@ const GroupCard = ({
             alt=""
             className="w-[16px] h-[16px]"
           />
-          <span className={`ml-1 text-tertiary ${textSize}`}>{formattedLanguage}</span>
+          <span className={`ml-1 text-tertiary truncate ${textSize}`}>{formattedLanguage}</span>
         </div>
         <div className={marginBottom}>
-          <h3 className={`text-secondary ${titleSize}`}>{subjectName}</h3>
-          <p className={`text-tertiary ${textSize}`}>{teacherName}</p>
+          <h3 className={`text-secondary ${titleSize} truncate`}>{subjectName}</h3>
+          <p className={`text-tertiary ${textSize} truncate`}>{teacherName}</p>
         </div>
         <div className="flex justify-between items-center gap-[24px]">
           <span className="text-[20px] text-secondary">{price}₼</span>
