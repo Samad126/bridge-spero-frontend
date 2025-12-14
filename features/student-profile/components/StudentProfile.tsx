@@ -163,7 +163,7 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
               <div
                 className={`xxl:${
                   isHeroHovered ? "block" : "hidden"
-                } absolute inset-0 bg-[#00000099] z-10 block`}
+                } absolute inset-0 bg-[#00000099] z-5 block`}
               ></div>
               <Image
                 src={"/camera_white.svg"}
@@ -172,7 +172,7 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
                 alt=""
                 className={`xxl:${
                   isHeroHovered ? "block" : "hidden"
-                } absolute block inset-0 m-auto cursor-pointer z-20`}
+                } absolute block inset-0 m-auto cursor-pointer z-5`}
               />
             </>
           )}
@@ -183,14 +183,14 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
               onClick={isStudentLoggedIn ? handleOpenProfilePicture : undefined}
               onMouseEnter={isStudentLoggedIn ? () => setIsPpHovered(true) : undefined}
               onMouseLeave={isStudentLoggedIn ? () => setIsPpHovered(false) : undefined}
-              className={`relative ${isStudentLoggedIn ? 'cursor-pointer' : ''} xxl:size-[178px] w-[100px] h-[100px] object-cover z-20 mx-auto xxl:mx-0`}
+              className={`relative ${isStudentLoggedIn ? 'cursor-pointer' : ''} xxl:size-[178px] w-[100px] h-[100px] object-cover z-5 mx-auto xxl:mx-0`}
             >
               <Image
                 src={profileImageUrl || "/user.svg"}
                 alt="student"
                 width={178}
                 height={178}
-                className={`relative z-20 w-[100px] h-[100px] xxl:w-[178px] xxl:h-[178px] rounded-full bg-gray-light ${
+                className={`relative z-5 w-[100px] h-[100px] xxl:w-[178px] xxl:h-[178px] rounded-full bg-gray-light object-cover ${
                   profileImageUrl ? "p-0" : "xxl:p-[38px] p-[21px]"
                 }`}
               />
@@ -214,7 +214,7 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
               )}
             </div>
             <div className="w-full">
-              <h3 className="truncate text-[32px] text-secondary leading-[130%] font-medium">
+              <h3 className="truncate text-center text-[32px] text-secondary leading-[130%] font-medium xxl:text-left">
                 {userProfile?.name || ''} {userProfile?.surname || ''}
               </h3>
             </div>

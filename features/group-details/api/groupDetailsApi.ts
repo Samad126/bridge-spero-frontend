@@ -204,6 +204,7 @@ export const groupDetailsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (result, error, { groupId }) => [
         { type: "Groups", id: `members-${groupId}` },
+        "Groups",
       ],
     }),
 

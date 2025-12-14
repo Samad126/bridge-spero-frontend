@@ -236,7 +236,7 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
               <div
                 className={`xxl:${
                   isHeroHovered ? "block" : "hidden"
-                } absolute inset-0 bg-[#00000099] z-10 block`}
+                } absolute inset-0 bg-[#00000099] z-5 block`}
               ></div>
               <Image
                 src={"/camera_white.svg"}
@@ -245,7 +245,7 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
                 alt=""
                 className={`xxl:${
                   isHeroHovered ? "block" : "hidden"
-                } absolute block inset-0 m-auto cursor-pointer z-20`}
+                } absolute block inset-0 m-auto cursor-pointer z-5`}
               />
             </>
           )}
@@ -263,14 +263,14 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
               }
               className={`relative ${
                 isTeacherLoggedIn ? "cursor-pointer" : ""
-              } xxl:size-[178px] w-[100px] h-[100px] mt-[-50px] xxl:mt-[-96px] object-cover z-20 mx-auto xxl:mx-0`}
+              } xxl:size-[178px] w-[100px] h-[100px] mt-[-50px] xxl:mt-[-96px] object-cover z-5 mx-auto xxl:mx-0`}
             >
               <Image
                 src={profileImageUrl || "/user.svg"}
                 alt="teacher"
                 width={178}
                 height={178}
-                className={`relative z-20 w-[100px] h-[100px] xxl:w-[178px] xxl:h-[178px] rounded-full bg-gray-light ${
+                className={`relative z-5 w-[100px] h-[100px] xxl:w-[178px] xxl:h-[178px] rounded-full bg-gray-light object-cover ${
                   profileImageUrl ? "p-0" : "xxl:p-[38px] p-[21px]"
                 }`}
               />

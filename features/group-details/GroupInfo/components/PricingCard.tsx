@@ -6,6 +6,7 @@ import {
   useCheckIsMemberQuery,
   useJoinGroupMutation,
   useDeleteMemberMutation,
+  useDeleteGroupMutation,
 } from "../../api/groupDetailsApi";
 import {
   useLazyGetZoomAuthorizeQuery,
@@ -40,9 +41,10 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
     
   });
 
-  // Check if user is a member (only if user is authenticated and is a student)
+  // Check if user is a member (skip only if not authenticated or if user is the teacher owner)
+  const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
   const { data: isMemberData } = useCheckIsMemberQuery(Number(groupId), {
-    skip: !userData || userData.role !== "USER",
+    skip: !userData || isTeacher,
   });
 
   const isMember = isMemberData?.isMember || false;
@@ -53,10 +55,10 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
   const [verifyZoomConnection] = useLazyVerifyZoomConnectionQuery();
   const [startLessonTrigger] = useLazyStartLessonQuery();
   const [joinLessonTrigger] = useLazyJoinLessonQuery();
+  const [deleteGroup, { isLoading: isDeleting }] = useDeleteGroupMutation();
 
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
-
-  const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleJoinGroup = async () => {
     try {
@@ -191,6 +193,23 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
     }
   };
 
+  const handleDeleteGroup = async () => {
+    if (!showDeleteConfirm) {
+      setShowDeleteConfirm(true);
+      return;
+    }
+
+    try {
+      await deleteGroup(Number(groupId)).unwrap();
+      console.log("Group deleted successfully");
+      router.push('/teacher');
+    } catch (error) {
+      handleApiError(error, "Delete Group");
+    } finally {
+      setShowDeleteConfirm(false);
+    }
+  };
+
   // Show loading skeleton while fetching user data
   if (isLoading) {
     return <PricingCardSkeleton isOpened={isOpened} />;
@@ -234,10 +253,11 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
                   height={22}
                 />
               </Link>
-              {/* <button className="p-[12px] border border-tertiary">
-                <Image src="/share.svg" alt="share" width={22} height={22} />
-              </button> */}
-              <button className="flex items-center justify-center w-[46px] h-[46px] border border-tertiary">
+              <button
+                onClick={handleDeleteGroup}
+                disabled={isDeleting}
+                className="flex items-center justify-center w-[46px] h-[46px] border border-tertiary hover:bg-red-600/10 disabled:opacity-50"
+              >
                 <Image
                   src="/trash-2-light.svg"
                   alt="delete"
@@ -260,6 +280,29 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
             </button>
           </div>
         </div>
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+            <div className="bg-white p-6 rounded-lg max-w-md">
+              <h3 className="text-xl font-semibold mb-4">Confirm Delete</h3>
+              <p className="mb-6">Are you sure you want to delete this group? This action cannot be undone.</p>
+              <div className="flex gap-4 justify-end">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteGroup}
+                  disabled={isDeleting}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -387,7 +430,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
         </div>
       </div>
       {showLeaveConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
           <div className="bg-white p-6 rounded-lg max-w-md">
             <h3 className="text-xl font-semibold mb-4">Leave Group</h3>
             <p className="mb-6">Are you sure you want to leave this group?</p>
