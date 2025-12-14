@@ -24,7 +24,7 @@ function Hero() {
             Become a Teacher
           </Link>
         </div>
-        <div className="border border-gray-light max-w-[350px] mx-auto lg:max-w-[476px] lg:flex lg:border-none xxl:max-w-[571px] lg:justify-center lg:space-x-[48px] lg:items-center xxl:lg:space-x-[64px]">
+        {/* <div className="border border-gray-light max-w-[350px] mx-auto lg:max-w-[476px] lg:flex lg:border-none xxl:max-w-[571px] lg:justify-center lg:space-x-[48px] lg:items-center xxl:lg:space-x-[64px]">
           <div className="flex justify-between px-[20px] py-[14.5px] lg:flex lg:flex-col-reverse lg:py-0 lg:px-0!">
             <span className="leading-[100%] text-secondary text-[20px] xxl:text-[24px]">
               Teachers
@@ -53,7 +53,7 @@ function Hero() {
               250+
             </span>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );
