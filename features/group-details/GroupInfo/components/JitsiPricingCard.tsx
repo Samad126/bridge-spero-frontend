@@ -280,7 +280,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
   // Non-logged-in user view
   if (!isAuthenticated) {
     return (
-      <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-10 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
+      <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-5 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
         <button
           className="bg-secondary py-[6px] px-[12px] xxl:hidden"
           onClick={() => setIsOpened(!isOpened)}
@@ -333,7 +333,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
 
   // Student (logged-in) view
   return (
-    <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-10 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
+    <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-5 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
       <button
         className="bg-secondary py-[6px] px-[12px] xxl:hidden"
         onClick={() => setIsOpened(!isOpened)}
@@ -400,7 +400,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
         </div>
       </div>
       {showLeaveConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-9999">
           <div className="bg-white p-6 rounded-lg max-w-md">
             <h3 className="text-xl font-semibold mb-4">Leave Group</h3>
             <p className="mb-6">Are you sure you want to leave this group?</p>
