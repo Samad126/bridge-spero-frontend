@@ -58,10 +58,10 @@ export type ProfileGroup = TeacherGroup | UserGroup;
 export interface UpdateProfileRequest {
   name?: string;
   surname?: string;
-  email?: string;
-  phone?: string;
+  phoneCode?: string;
+  phoneNumber?: string;
+  interests?: string[];
   bio?: string;
-  categories?: number[];
 }
 
 export const profileApi = baseApi.injectEndpoints({
@@ -92,7 +92,7 @@ export const profileApi = baseApi.injectEndpoints({
     uploadDemoVideo: builder.mutation<void, File>({
       query: (file) => {
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("demoVideo", file);
         return {
           url: "/teachers/demo-video",
           method: "PUT",

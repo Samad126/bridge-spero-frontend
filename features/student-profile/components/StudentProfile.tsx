@@ -328,9 +328,10 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
         currentData={{
           name: userProfile?.name || "",
           surname: userProfile?.surname || "",
-          email: userProfile?.email || "",
-          phone: userProfile?.phone || "",
+          phoneNumber: userProfile?.phone || "",
+          phoneCode: "+994",
           bio: userProfile?.bio || "",
+          interests: userProfile?.interests || [],
         }}
       />
     </section>

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getFileTypeInfo } from "@/features/group-details/Tabs/utils/fileTypeUtils";
 import dynamic from "next/dynamic";
 
@@ -33,6 +33,25 @@ function FilePreviewPopup({
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
   const docxContainerRef = useRef<HTMLDivElement>(null);
   const fileInfo = getFileTypeInfo(contentType);
+  const [textContent, setTextContent] = useState<string>("");
+
+  // --- Text File Logic ---
+  useEffect(() => {
+    if (isOpen && fileInfo.category === "text" && fileUrl) {
+      const loadTextFile = async () => {
+        try {
+          const response = await fetch(fileUrl);
+          const text = await response.text();
+          setTextContent(text);
+        } catch (error) {
+          console.error("Error loading text file:", error);
+          setTextContent("Error loading file");
+        }
+      };
+
+      loadTextFile();
+    }
+  }, [isOpen, fileInfo.category, fileUrl]);
 
   // --- DOCX Logic ---
   useEffect(() => {
@@ -156,6 +175,17 @@ function FilePreviewPopup({
                 ref={docxContainerRef}
                 className="w-full min-h-full p-4 sm:p-8 mx-auto"
               />
+            </div>
+          </div>
+        );
+
+      case 'text':
+        return (
+          <div className="flex-1 flex flex-col bg-white min-h-0 overflow-hidden">
+            <div className="flex-1 overflow-auto p-4 sm:p-8">
+              <pre className="font-mono text-sm text-gray-800 whitespace-pre-wrap break-words">
+                {textContent || "Loading..."}
+              </pre>
             </div>
           </div>
         );
