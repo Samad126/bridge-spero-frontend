@@ -226,7 +226,9 @@ export const groupDetailsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: (result, error, groupId) => [
         { type: "Groups", id: `members-${groupId}` },
+        { type: "Groups", id: `is-member-${groupId}` },
         "Groups",
+        "User", // Invalidate user profile to ensure fresh data
       ],
     }),
 

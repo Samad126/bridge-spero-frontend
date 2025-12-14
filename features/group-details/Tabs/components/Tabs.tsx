@@ -24,9 +24,9 @@ function Tabs({ groupId, isAuthenticated, teacherId }: TabsProps) {
   const userRole = userData?.role || "USER";
   const isGroupOwner = userData?.role === "TEACHER" && userData?.id === teacherId;
 
-  // Check if student is enrolled (only for students)
+  // Check if user is enrolled (for both students and non-owner teachers)
   const { data: isMemberData } = useCheckIsMemberQuery(Number(groupId), {
-    skip: !userData || userData.role !== "USER",
+    skip: !userData || isGroupOwner, // Skip only if not logged in or if user owns the group
   });
 
   const isEnrolled = isMemberData?.isMember || false;
