@@ -50,7 +50,7 @@ export function Footer({ role }: { role: JWTPayload["role"] | null }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                +994 55 888 88 88
+                +994 70 610 91 82
               </a>
             </li>
           </ul>

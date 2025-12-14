@@ -6,6 +6,7 @@ import {
   useCheckIsMemberQuery,
   useJoinGroupMutation,
   useDeleteMemberMutation,
+  useDeleteGroupMutation,
 } from "../../api/groupDetailsApi";
 import {
   useLazyGetZoomAuthorizeQuery,
@@ -16,6 +17,7 @@ import {
 import Link from "next/link";
 import PricingCardSkeleton from "./PricingCardSkeleton";
 import { useRouter } from "next/navigation";
+import { handleApiError } from "@/lib/utils/errorDisplay";
 
 interface PricingCardProps {
   price: number;
@@ -39,9 +41,10 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
     
   });
 
-  // Check if user is a member (only if user is authenticated and is a student)
+  // Check if user is a member (skip only if not authenticated or if user is the teacher owner)
+  const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
   const { data: isMemberData } = useCheckIsMemberQuery(Number(groupId), {
-    skip: !userData || userData.role !== "USER",
+    skip: !userData || isTeacher,
   });
 
   const isMember = isMemberData?.isMember || false;
@@ -52,10 +55,10 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
   const [verifyZoomConnection] = useLazyVerifyZoomConnectionQuery();
   const [startLessonTrigger] = useLazyStartLessonQuery();
   const [joinLessonTrigger] = useLazyJoinLessonQuery();
+  const [deleteGroup, { isLoading: isDeleting }] = useDeleteGroupMutation();
 
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
-
-  const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleJoinGroup = async () => {
     try {
@@ -63,8 +66,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
       console.log("Successfully joined group");
       router.refresh();
     } catch (error) {
-      console.error("Failed to join group:", error);
-      alert("Failed to join group. Please try again.");
+      handleApiError(error, "Join Group");
     }
   };
 
@@ -73,13 +75,22 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
     try {
       // First, verify Zoom connection
       const verifyResult = await verifyZoomConnection();
+
+      if (verifyResult.error) {
+        handleApiError(verifyResult.error, "Verify Zoom Connection");
+        setIsStartingLesson(false);
+        return;
+      }
+
       const isConnected = verifyResult.data?.connected;
 
       if (!isConnected) {
         // If not connected, fetch authorization URL and open it in new tab
         const authorizeResult = await getZoomAuthorize();
 
-        if (authorizeResult.data) {
+        if (authorizeResult.error) {
+          handleApiError(authorizeResult.error, "Zoom Authorization");
+        } else if (authorizeResult.data) {
           // Extract the redirect URL from the "redirect:URL" format
           const authorizeUrl = authorizeResult.data.replace(/^redirect:/, '');
           window.open(authorizeUrl, '_blank');
@@ -94,15 +105,16 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
       // If connected, start the lesson
       const result = await startLessonTrigger(Number(groupId));
 
-      if (result.data) {
+      if (result.error) {
+        handleApiError(result.error, "Start Lesson");
+      } else if (result.data) {
         // Open Zoom URL in new tab
         window.open(result.data, '_blank');
       } else {
         alert('Failed to get Zoom meeting URL. Please try again.');
       }
     } catch (error) {
-      console.error('Failed to start lesson:', error);
-      alert('Failed to start lesson. Please try again.');
+      handleApiError(error, "Start Lesson");
     } finally {
       setIsStartingLesson(false);
     }
@@ -120,15 +132,16 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
       // Join the lesson
       const result = await joinLessonTrigger(Number(groupId));
 
-      if (result.data) {
+      if (result.error) {
+        handleApiError(result.error, "Join Lesson");
+      } else if (result.data) {
         // Open Zoom URL in new tab
         window.open(result.data, '_blank');
       } else {
         alert('The lesson has not been started yet. Please wait for the teacher to start the lesson.');
       }
     } catch (error) {
-      console.error('Failed to join lesson:', error);
-      alert('Failed to join lesson. Please try again.');
+      handleApiError(error, "Join Lesson");
     } finally {
       setIsStartingLesson(false);
     }
@@ -151,8 +164,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
       setShowLeaveConfirm(false);
       router.refresh();
     } catch (error) {
-      console.error("Failed to leave group:", error);
-      alert("Failed to leave group. Please try again.");
+      handleApiError(error, "Leave Group");
     }
   };
 
@@ -178,6 +190,23 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
         console.error('Failed to copy link:', error);
         alert('Failed to copy link. Please try again.');
       }
+    }
+  };
+
+  const handleDeleteGroup = async () => {
+    if (!showDeleteConfirm) {
+      setShowDeleteConfirm(true);
+      return;
+    }
+
+    try {
+      await deleteGroup(Number(groupId)).unwrap();
+      console.log("Group deleted successfully");
+      router.push('/teacher');
+    } catch (error) {
+      handleApiError(error, "Delete Group");
+    } finally {
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -224,10 +253,11 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
                   height={22}
                 />
               </Link>
-              {/* <button className="p-[12px] border border-tertiary">
-                <Image src="/share.svg" alt="share" width={22} height={22} />
-              </button> */}
-              <button className="flex items-center justify-center w-[46px] h-[46px] border border-tertiary">
+              <button
+                onClick={handleDeleteGroup}
+                disabled={isDeleting}
+                className="flex items-center justify-center w-[46px] h-[46px] border border-tertiary hover:bg-red-600/10 disabled:opacity-50"
+              >
                 <Image
                   src="/trash-2-light.svg"
                   alt="delete"
@@ -250,6 +280,29 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
             </button>
           </div>
         </div>
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+            <div className="bg-white p-6 rounded-lg max-w-md">
+              <h3 className="text-xl font-semibold mb-4">Confirm Delete</h3>
+              <p className="mb-6">Are you sure you want to delete this group? This action cannot be undone.</p>
+              <div className="flex gap-4 justify-end">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteGroup}
+                  disabled={isDeleting}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -377,7 +430,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
         </div>
       </div>
       {showLeaveConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
           <div className="bg-white p-6 rounded-lg max-w-md">
             <h3 className="text-xl font-semibold mb-4">Leave Group</h3>
             <p className="mb-6">Are you sure you want to leave this group?</p>

@@ -6,6 +6,7 @@ import {
   useCheckIsMemberQuery,
   useJoinGroupMutation,
   useDeleteMemberMutation,
+  useDeleteGroupMutation,
 } from "../../api/groupDetailsApi";
 import {
   useLazyStartJitsiLessonQuery,
@@ -14,6 +15,7 @@ import {
 import Link from "next/link";
 import PricingCardSkeleton from "./PricingCardSkeleton";
 import { useRouter } from "next/navigation";
+import { handleApiError } from "@/lib/utils/errorDisplay";
 
 interface JitsiPricingCardProps {
   price: number;
@@ -37,9 +39,10 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
 
   });
 
-  // Check if user is a member (only if user is authenticated and is a student)
+  // Check if user is a member (skip only if not authenticated or if user is the teacher owner)
+  const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
   const { data: isMemberData } = useCheckIsMemberQuery(Number(groupId), {
-    skip: !userData || userData.role !== "USER",
+    skip: !userData || isTeacher,
   });
 
   const isMember = isMemberData?.isMember || false;
@@ -48,10 +51,10 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
   const [deleteMember, { isLoading: isLeaving }] = useDeleteMemberMutation();
   const [startJitsiLessonTrigger] = useLazyStartJitsiLessonQuery();
   const [joinJitsiLessonTrigger] = useLazyJoinJitsiLessonQuery();
+  const [deleteGroup, { isLoading: isDeleting }] = useDeleteGroupMutation();
 
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
-
-  const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleJoinGroup = async () => {
     try {
@@ -59,8 +62,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
       console.log("Successfully joined group");
       router.refresh();
     } catch (error) {
-      console.error("Failed to join group:", error);
-      alert("Failed to join group. Please try again.");
+      handleApiError(error, "Join Group");
     }
   };
 
@@ -70,15 +72,16 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
       // Start the Jitsi lesson - returns URL as string
       const result = await startJitsiLessonTrigger(Number(groupId));
 
-      if (result.data) {
+      if (result.error) {
+        handleApiError(result.error, "Start Lesson");
+      } else if (result.data) {
         // Open Jitsi URL in new tab
         window.open(result.data, '_blank');
       } else {
         alert('Failed to get Jitsi meeting URL. Please try again.');
       }
     } catch (error) {
-      console.error('Failed to start lesson:', error);
-      alert('Failed to start lesson. Please try again.');
+      handleApiError(error, "Start Lesson");
     } finally {
       setIsStartingLesson(false);
     }
@@ -96,15 +99,16 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
       // Join the Jitsi lesson - returns URL as string
       const result = await joinJitsiLessonTrigger(Number(groupId));
 
-      if (result.data) {
+      if (result.error) {
+        handleApiError(result.error, "Join Lesson");
+      } else if (result.data) {
         // Open Jitsi URL in new tab
         window.open(result.data, '_blank');
       } else {
         alert('The lesson has not been started yet. Please wait for the teacher to start the lesson.');
       }
     } catch (error) {
-      console.error('Failed to join lesson:', error);
-      alert('Failed to join lesson. Please try again.');
+      handleApiError(error, "Join Lesson");
     } finally {
       setIsStartingLesson(false);
     }
@@ -127,8 +131,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
       setShowLeaveConfirm(false);
       router.refresh();
     } catch (error) {
-      console.error("Failed to leave group:", error);
-      alert("Failed to leave group. Please try again.");
+      handleApiError(error, "Leave Group");
     }
   };
 
@@ -157,6 +160,23 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
     }
   };
 
+  const handleDeleteGroup = async () => {
+    if (!showDeleteConfirm) {
+      setShowDeleteConfirm(true);
+      return;
+    }
+
+    try {
+      await deleteGroup(Number(groupId)).unwrap();
+      console.log("Group deleted successfully");
+      router.push('/teacher');
+    } catch (error) {
+      handleApiError(error, "Delete Group");
+    } finally {
+      setShowDeleteConfirm(false);
+    }
+  };
+
   // Show loading skeleton while fetching user data
   if (isLoading) {
     return <PricingCardSkeleton isOpened={isOpened} />;
@@ -165,7 +185,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
   // Teacher view (if user is the owner of the group)
   if (isTeacher) {
     return (
-      <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-10 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
+      <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-5 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
         <button
           className="bg-secondary py-[6px] px-[12px] xxl:hidden"
           onClick={() => setIsOpened(!isOpened)}
@@ -200,7 +220,11 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
                   height={22}
                 />
               </Link>
-              <button className="flex items-center justify-center w-[46px] h-[46px] border border-tertiary">
+              <button
+                onClick={handleDeleteGroup}
+                disabled={isDeleting}
+                className="flex items-center justify-center w-[46px] h-[46px] border border-tertiary hover:bg-red-600/10 disabled:opacity-50"
+              >
                 <Image
                   src="/trash-2-light.svg"
                   alt="delete"
@@ -223,6 +247,29 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
             </button>
           </div>
         </div>
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+            <div className="bg-white p-6 rounded-lg max-w-md">
+              <h3 className="text-xl font-semibold mb-4">Confirm Delete</h3>
+              <p className="mb-6">Are you sure you want to delete this group? This action cannot be undone.</p>
+              <div className="flex gap-4 justify-end">
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteGroup}
+                  disabled={isDeleting}
+                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+                >
+                  {isDeleting ? "Deleting..." : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -233,7 +280,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
   // Non-logged-in user view
   if (!isAuthenticated) {
     return (
-      <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-10 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
+      <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-5 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
         <button
           className="bg-secondary py-[6px] px-[12px] xxl:hidden"
           onClick={() => setIsOpened(!isOpened)}
@@ -286,7 +333,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
 
   // Student (logged-in) view
   return (
-    <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-10 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
+    <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-5 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
       <button
         className="bg-secondary py-[6px] px-[12px] xxl:hidden"
         onClick={() => setIsOpened(!isOpened)}
@@ -353,21 +400,21 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
         </div>
       </div>
       {showLeaveConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-9999">
           <div className="bg-white p-6 rounded-lg max-w-md">
             <h3 className="text-xl font-semibold mb-4">Leave Group</h3>
             <p className="mb-6">Are you sure you want to leave this group?</p>
             <div className="flex gap-4 justify-end">
               <button
                 onClick={() => setShowLeaveConfirm(false)}
-                className="px-4 py-2 border border-gray-300 rounded"
+                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
               >
                 Cancel
               </button>
               <button
                 onClick={handleLeaveGroup}
                 disabled={isLeaving}
-                className="px-4 py-2 bg-red-600 text-white rounded disabled:opacity-50"
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
               >
                 {isLeaving ? "Leaving..." : "Leave"}
               </button>

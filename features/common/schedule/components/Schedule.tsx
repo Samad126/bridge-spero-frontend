@@ -5,10 +5,26 @@ import WeekDayMobile from "./WeekDayMobile";
 import ScheduleSkeleton from "./ScheduleSkeleton";
 import { useGetStudentScheduleQuery } from "@/features/dashboard/student/api/studentDashboardApi";
 import { useGetTeacherScheduleQuery } from "@/features/dashboard/teacher/api/teacherDashboardApi";
+import { ScheduleDay } from "@/features/dashboard/student/types/dashboardTypes";
 
 interface ScheduleProps {
   userRole?: "student" | "teacher";
 }
+
+const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+const normalizeSchedule = (apiSchedule: ScheduleDay[]): ScheduleDay[] => {
+  const scheduleMap = new Map(
+    apiSchedule.map(day => [day.dayOfWeek, day])
+  );
+
+  return WEEKDAYS.map(dayOfWeek =>
+    scheduleMap.get(dayOfWeek) || {
+      dayOfWeek,
+      groups: []
+    }
+  );
+};
 
 function Schedule({ userRole = "student" }: ScheduleProps) {
   // Use the appropriate query based on user role
@@ -38,6 +54,7 @@ function Schedule({ userRole = "student" }: ScheduleProps) {
   }
 
   const schedule = data?.schedule || [];
+  const normalizedSchedule = normalizeSchedule(schedule);
 
   return (
     <section>
@@ -49,24 +66,18 @@ function Schedule({ userRole = "student" }: ScheduleProps) {
           <p className="text-secondary text-[24px]">{data?.date || "No date available"}</p>
         </div>
         <div className="p-[24px] border border-gray-light">
-          {schedule.length === 0 ? (
-            <div className="text-center text-secondary text-[18px] py-[40px]">
-              No schedule available
+          <>
+            <div className="hidden space-x-[12px] xxl:flex">
+              {normalizedSchedule.map((day) => (
+                <WeekDay
+                  key={day.dayOfWeek}
+                  dayOfWeek={day.dayOfWeek}
+                  groups={day.groups}
+                />
+              ))}
             </div>
-          ) : (
-            <>
-              <div className="hidden space-x-[12px] xxl:flex">
-                {schedule.map((day) => (
-                  <WeekDay
-                    key={day.dayOfWeek}
-                    dayOfWeek={day.dayOfWeek}
-                    groups={day.groups}
-                  />
-                ))}
-              </div>
-              <WeekDayMobile schedule={schedule} />
-            </>
-          )}
+            <WeekDayMobile schedule={normalizedSchedule} />
+          </>
         </div>
       </div>
     </section>
