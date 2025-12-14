@@ -38,6 +38,10 @@ export async function PUT(
       cache: "no-store",
     });
 
+    if (response.status === 204) {
+      return new Response(null, { status: 204 });
+    }
+
     const data = await response.json();
 
     return new Response(JSON.stringify(data), {

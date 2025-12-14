@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import { useGetUserProfileOptionalQuery, useGetUserProfileQuery } from "@/features/profile/api/userProfileApi";
+import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
 import {
   useCheckIsMemberQuery,
   useJoinGroupMutation,
@@ -57,7 +57,6 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
   const [joinLessonTrigger] = useLazyJoinLessonQuery();
   const [deleteGroup, { isLoading: isDeleting }] = useDeleteGroupMutation();
 
-  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleJoinGroup = async () => {
@@ -148,20 +147,18 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
   };
 
   const handleLeaveGroup = async () => {
-    if (!showLeaveConfirm) {
-      setShowLeaveConfirm(true);
+    if (!userData?.id) {
+      alert('Unable to leave group. Please try again.');
       return;
     }
 
-    if (!userData?.id) {
-      alert('Unable to leave group. Please try again.');
+    if (!confirm('Are you sure you want to leave this group?')) {
       return;
     }
 
     try {
       await deleteMember({ groupId: Number(groupId), studentId: userData.id }).unwrap();
       console.log("Successfully left group");
-      setShowLeaveConfirm(false);
       router.refresh();
     } catch (error) {
       handleApiError(error, "Leave Group");
@@ -429,29 +426,6 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
           </button>
         </div>
       </div>
-      {showLeaveConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
-          <div className="bg-white p-6 rounded-lg max-w-md">
-            <h3 className="text-xl font-semibold mb-4">Leave Group</h3>
-            <p className="mb-6">Are you sure you want to leave this group?</p>
-            <div className="flex gap-4 justify-end">
-              <button
-                onClick={() => setShowLeaveConfirm(false)}
-                className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleLeaveGroup}
-                disabled={isLeaving}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
-              >
-                {isLeaving ? "Leaving..." : "Leave"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
