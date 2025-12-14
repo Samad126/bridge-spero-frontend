@@ -37,9 +37,13 @@ export const groupDetailsApi = baseApi.injectEndpoints({
         body: data,
         meta: { authMode: "strict" },
       }),
-      invalidatesTags: (result, error, { groupId }) => [
-        { type: "Groups", id: `schedule-${groupId}` },
-      ],
+      invalidatesTags: (result, error, { groupId }) => {
+        if (error) return [];
+        return [
+          { type: "Groups", id: `schedule-${groupId}` },
+          "Dashboard",
+        ];
+      },
     }),
 
     updateSchedule: builder.mutation<void, { scheduleId: number; data: UpdateScheduleRequest }>({
@@ -49,7 +53,10 @@ export const groupDetailsApi = baseApi.injectEndpoints({
         body: data,
         meta: { authMode: "strict" },
       }),
-      invalidatesTags: ["Groups"],
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+        return ["Groups", "Dashboard"];
+      },
     }),
 
     deleteSchedule: builder.mutation<void, number>({
@@ -58,7 +65,10 @@ export const groupDetailsApi = baseApi.injectEndpoints({
         method: "DELETE",
         meta: { authMode: "strict" },
       }),
-      invalidatesTags: ["Groups"],
+      invalidatesTags: (result, error) => {
+        if (error) return [];
+        return ["Groups", "Dashboard"];
+      },
     }),
 
     getGroupSyllabus: builder.query<SyllabusResponse, number>({

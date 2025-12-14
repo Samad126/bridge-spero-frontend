@@ -2,10 +2,11 @@
 import { EventCardTypes } from "../types/eventTypes";
 import Image from "next/image";
 import Link from "next/link";
-import { useDeleteGroupMutation } from "@/features/group-details/api/groupDetailsApi";
+import { useDeleteScheduleMutation } from "@/features/group-details/api/groupDetailsApi";
 import { useState } from "react";
 
 const EventCard = ({
+  id,
   groupId,
   time,
   endTime,
@@ -14,7 +15,7 @@ const EventCard = ({
   studentNumber,
   startUrl,
 }: EventCardTypes) => {
-  const [deleteGroup, { isLoading: isDeleting }] = useDeleteGroupMutation();
+  const [deleteSchedule, { isLoading: isDeleting }] = useDeleteScheduleMutation();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Check if current time is between startTime and endTime
@@ -45,11 +46,11 @@ const EventCard = ({
     }
 
     try {
-      await deleteGroup(groupId).unwrap();
-      console.log("Group deleted successfully");
+      await deleteSchedule(id).unwrap();
+      console.log("Schedule deleted successfully");
     } catch (error) {
-      console.error("Failed to delete group:", error);
-      alert("Failed to delete group. Please try again.");
+      console.error("Failed to delete schedule:", error);
+      alert("Failed to delete schedule. Please try again.");
     } finally {
       setShowDeleteConfirm(false);
     }
@@ -94,7 +95,7 @@ const EventCard = ({
           >
             <Image width={22} height={22} src={"/trash-2.svg"} alt="delete" />
           </button>
-          <Link href={`edit-group/${groupId}`}>
+          <Link href={`/groups/${groupId}`}>
             <button className="w-[46px] h-[46px] border border-gray-light flex items-center justify-center hover:bg-gray-50">
               <Image width={22} height={22} src={"/edit-2.svg"} alt="edit" />
             </button>
@@ -119,7 +120,7 @@ const EventCard = ({
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg max-w-md">
             <h3 className="text-xl font-semibold mb-4">Confirm Delete</h3>
-            <p className="mb-6">Are you sure you want to delete this group? This action cannot be undone.</p>
+            <p className="mb-6">Are you sure you want to delete this schedule? This action cannot be undone.</p>
             <div className="flex gap-4 justify-end">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
