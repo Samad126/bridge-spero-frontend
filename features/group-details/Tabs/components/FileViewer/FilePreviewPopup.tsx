@@ -104,29 +104,34 @@ function FilePreviewPopup({
       const context = canvas.getContext("2d");
       if (!context) return;
 
-      // Calculate Scale: Fit to width of container
-      const unscaledViewport = page.getViewport({ scale: 1 });
+      // Get viewport with rotation = 0 to handle orientation correctly
+      const unscaledViewport = page.getViewport({ scale: 1, rotation: 0 });
       const padding = 32; // Safety margin
       const scaleToFit = (containerWidth - padding) / unscaledViewport.width;
-      
+
       // Apply user zoom on top of the "Fit Width" scale
       const finalScale = scaleToFit * zoomLevel;
 
-      const viewport = page.getViewport({ scale: finalScale });
-      
+      // Get viewport with proper rotation preserved
+      const viewport = page.getViewport({ scale: finalScale, rotation: 0 });
+
       // Handle High DPI (Retina)
       const outputScale = window.devicePixelRatio || 1;
 
       canvas.width = Math.floor(viewport.width * outputScale);
       canvas.height = Math.floor(viewport.height * outputScale);
-      
+
       // CSS controls the display size
       canvas.style.width = Math.floor(viewport.width) + "px";
       canvas.style.height = Math.floor(viewport.height) + "px";
 
-      const transform = outputScale !== 1 
-        ? [outputScale, 0, 0, outputScale, 0, 0] 
-        : null;
+      // Clear canvas before rendering
+      context.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Apply transform for high DPI
+      const transform = outputScale !== 1
+        ? [outputScale, 0, 0, outputScale, 0, 0]
+        : undefined;
 
       const renderContext = {
         canvasContext: context,
