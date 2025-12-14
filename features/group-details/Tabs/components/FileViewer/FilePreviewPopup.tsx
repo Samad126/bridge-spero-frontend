@@ -1,19 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import { getFileTypeInfo } from "@/features/group-details/Tabs/utils/fileTypeUtils";
+import dynamic from "next/dynamic";
 
-// Dynamically import pdf.js and docx-preview to avoid SSR issues
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const pdfjsLib = typeof window !== "undefined" ? require("pdfjs-dist") : null;
+// Dynamically import PDF viewer components to avoid SSR issues
+const PDFViewer = dynamic(
+  () => import("./PDFViewer"),
+  { ssr: false }
+);
+
+// Dynamically import docx-preview to avoid SSR issues
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const renderAsync = typeof window !== "undefined" ? require("docx-preview").renderAsync : null;
-
-// Configure PDF.js worker
-if (typeof window !== "undefined" && pdfjsLib) {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.js`;
-}
 
 interface FilePreviewPopupProps {
   isOpen: boolean;
@@ -31,127 +31,8 @@ function FilePreviewPopup({
   contentType,
 }: FilePreviewPopupProps) {
   const mediaRef = useRef<HTMLVideoElement | HTMLAudioElement>(null);
-  const pdfCanvasRef = useRef<HTMLCanvasElement>(null);
-  const pdfContainerRef = useRef<HTMLDivElement>(null);
   const docxContainerRef = useRef<HTMLDivElement>(null);
   const fileInfo = getFileTypeInfo(contentType);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [pdfDoc, setPdfDoc] = useState<any | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
-  
-  // Zoom logic: 1.0 = "Fit to Width"
-  const [zoomLevel, setZoomLevel] = useState(1.0); 
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // Store container width to recalculate PDF scale on resize/rotate
-  const [containerWidth, setContainerWidth] = useState(0);
-
-  // --- PDF Logic ---
-
-  // 1. Load PDF Document
-  useEffect(() => {
-    if (isOpen && fileInfo.category === "pdf" && fileUrl && pdfjsLib) {
-      setIsLoading(true);
-      const loadingTask = pdfjsLib.getDocument(fileUrl);
-      
-      loadingTask.promise
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .then((loadedDoc: any) => {
-          setPdfDoc(loadedDoc);
-          setTotalPages(loadedDoc.numPages);
-          setCurrentPage(1);
-          setZoomLevel(1.0); // Reset zoom
-          setIsLoading(false);
-        })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .catch((error: any) => {
-          console.error("Error loading PDF:", error);
-          setIsLoading(false);
-        });
-
-      return () => {
-        loadingTask.destroy(); 
-        setPdfDoc(null);
-      };
-    }
-  }, [isOpen, fileInfo.category, fileUrl]);
-
-  // 2. Watch Container Resize (Fixes Mobile Orientation & Layout)
-  useEffect(() => {
-    if (!pdfContainerRef.current) return;
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.contentRect.width > 0) {
-          setContainerWidth(entry.contentRect.width);
-        }
-      }
-    });
-
-    resizeObserver.observe(pdfContainerRef.current);
-    return () => resizeObserver.disconnect();
-  }, [isOpen, fileInfo.category]);
-
-  // 3. Render PDF Page
-  const renderPage = useCallback(() => {
-    if (!pdfDoc || !pdfCanvasRef.current || containerWidth === 0) return;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    pdfDoc.getPage(currentPage).then((page: any) => {
-      const canvas = pdfCanvasRef.current!;
-      const context = canvas.getContext("2d");
-      if (!context) return;
-
-      // Get viewport with rotation = 0 to handle orientation correctly
-      const unscaledViewport = page.getViewport({ scale: 1, rotation: 0 });
-      const padding = 32; // Safety margin
-      const scaleToFit = (containerWidth - padding) / unscaledViewport.width;
-
-      // Apply user zoom on top of the "Fit Width" scale
-      const finalScale = scaleToFit * zoomLevel;
-
-      // Get viewport with proper rotation preserved
-      const viewport = page.getViewport({ scale: finalScale, rotation: 0 });
-
-      // Handle High DPI (Retina)
-      const outputScale = window.devicePixelRatio || 1;
-
-      canvas.width = Math.floor(viewport.width * outputScale);
-      canvas.height = Math.floor(viewport.height * outputScale);
-
-      // CSS controls the display size
-      canvas.style.width = Math.floor(viewport.width) + "px";
-      canvas.style.height = Math.floor(viewport.height) + "px";
-
-      // Clear canvas before rendering
-      context.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Apply transform for high DPI
-      const transform = outputScale !== 1
-        ? [outputScale, 0, 0, outputScale, 0, 0]
-        : undefined;
-
-      const renderContext = {
-        canvasContext: context,
-        transform: transform,
-        viewport: viewport,
-      };
-
-      page.render(renderContext);
-    });
-  }, [pdfDoc, currentPage, zoomLevel, containerWidth]);
-
-  // Trigger render
-  useEffect(() => {
-    if(pdfDoc) {
-      // Small timeout to let UI settle
-      const t = setTimeout(() => renderPage(), 10);
-      return () => clearTimeout(t);
-    }
-  }, [renderPage, pdfDoc]);
-
 
   // --- DOCX Logic ---
   useEffect(() => {
@@ -162,31 +43,31 @@ function FilePreviewPopup({
       docxContainerRef.current &&
       renderAsync
     ) {
-      setIsLoading(true);
-      fetch(fileUrl)
-        .then((response) => response.blob())
-        .then((blob) => {
+      const loadDocument = async () => {
+        try {
+          const response = await fetch(fileUrl);
+          const blob = await response.blob();
           if (docxContainerRef.current && renderAsync) {
             docxContainerRef.current.innerHTML = "";
-            return renderAsync(blob, docxContainerRef.current, undefined, {
-              className: "docx-preview-content", 
+            await renderAsync(blob, docxContainerRef.current, undefined, {
+              className: "docx-preview-content",
               inWrapper: true,
-              ignoreWidth: false, // Keep false to respect doc layout
-              ignoreHeight: false, 
+              ignoreWidth: false,
+              ignoreHeight: false,
               breakPages: true,
               renderHeaders: true,
               renderFooters: true,
               experimental: false,
             });
           }
-        })
-        .then(() => setIsLoading(false))
-        .catch((error) => {
+        } catch (error) {
           console.error("Error loading DOCX:", error);
-          setIsLoading(false);
-        });
+        }
+      };
+
+      loadDocument();
     }
-  }, [isOpen, fileInfo.category, fileUrl, contentType]);
+  }, [isOpen, fileInfo.category, fileUrl]);
 
   // --- Modal Events ---
   useEffect(() => {
@@ -265,97 +146,12 @@ function FilePreviewPopup({
         );
 
       case 'pdf':
-        return (
-          <div className="flex-1 flex flex-col bg-gray-100 min-h-0">
-            {/* Toolbar */}
-            <div className="flex flex-col sm:flex-row items-center justify-between bg-gray-800 p-2 sm:p-3 border-b border-gray-700 gap-2 shrink-0 z-10">
-              {/* Pagination */}
-              <div className="flex items-center gap-2 order-2 sm:order-1">
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                  disabled={currentPage <= 1 || isLoading}
-                  className="px-3 py-1 bg-gray-700 text-white rounded text-sm disabled:opacity-50 hover:bg-gray-600"
-                >
-                  Prev
-                </button>
-                <span className="text-white text-xs sm:text-sm whitespace-nowrap min-w-[60px] text-center">
-                  {currentPage} / {totalPages}
-                </span>
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage >= totalPages || isLoading}
-                  className="px-3 py-1 bg-gray-700 text-white rounded text-sm disabled:opacity-50 hover:bg-gray-600"
-                >
-                  Next
-                </button>
-              </div>
-              
-              {/* Zoom Controls */}
-              <div className="flex items-center gap-2 order-1 sm:order-2 w-full sm:w-auto justify-center sm:justify-end">
-                <button
-                  onClick={() => setZoomLevel((prev) => Math.max(0.5, prev - 0.25))}
-                  disabled={isLoading}
-                  className="px-3 py-1 bg-gray-700 text-white rounded text-sm disabled:opacity-50 hover:bg-gray-600 w-8"
-                >
-                  -
-                </button>
-                <span className="text-white text-xs sm:text-sm w-12 text-center">
-                  {Math.round(zoomLevel * 100)}%
-                </span>
-                <button
-                  onClick={() => setZoomLevel((prev) => Math.min(3, prev + 0.25))}
-                  disabled={isLoading}
-                  className="px-3 py-1 bg-gray-700 text-white rounded text-sm disabled:opacity-50 hover:bg-gray-600 w-8"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-
-            {/* CRITICAL FIX FOR PDF CLIPPING: 
-               1. relative + overflow-auto on parent
-               2. block + mx-auto on canvas (NO flex justify-center) 
-            */}
-            <div 
-              ref={pdfContainerRef}
-              className="flex-1 relative overflow-auto bg-gray-500 w-full"
-            >
-              <div className="min-h-full p-4 sm:p-8 flex flex-col items-center">
-                  {isLoading && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gray-500/50 z-20">
-                      <div className="bg-black/75 text-white px-4 py-2 rounded">Loading...</div>
-                    </div>
-                  )}
-                  {/* Canvas must be block with margin auto to scroll correctly when zoomed */}
-                  <canvas
-                    ref={pdfCanvasRef}
-                    className="bg-white shadow-xl block mx-auto"
-                    style={{ display: isLoading ? "none" : "block" }}
-                  />
-              </div>
-            </div>
-          </div>
-        );
+        return <PDFViewer fileUrl={fileUrl} />;
 
       case 'document':
         return (
           <div className="flex-1 flex flex-col bg-gray-100 min-h-0 relative">
-             {isLoading && (
-              <div className="absolute inset-0 z-20 flex items-center justify-center bg-gray-100/90">
-                <div className="text-gray-600 font-medium">Loading document...</div>
-              </div>
-            )}
-            
-            {/* CRITICAL FIX: 
-               1. We use a plain div (not flex) for the scrolling container.
-               2. 'overflow-auto' handles the scrollbars.
-               3. We apply 'bg-[#f3f4f6]' to match the document background.
-            */}
             <div className="flex-1 overflow-auto w-full h-full bg-[#f3f4f6]">
-               {/* 1. 'min-h-full' ensures it fills height.
-                  2. 'mx-auto' centers it horizontally if the screen is wide enough.
-                  3. We REMOVED 'flex' and 'items-center' to prevent the left-side clipping.
-               */}
                <div
                 ref={docxContainerRef}
                 className="w-full min-h-full p-4 sm:p-8 mx-auto"

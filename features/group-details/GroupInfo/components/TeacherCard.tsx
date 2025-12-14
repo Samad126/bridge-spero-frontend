@@ -30,7 +30,7 @@ function TeacherCard({
             width={80}
             height={80}
             alt="Teacher profile picture"
-            className={`rounded-full min-w-[80px] min-h-[80px] object-cover ${!hasProfilePicture ? 'bg-gray-light p-[17px]' : ''}`}
+            className={`rounded-full min-w-[80px] min-h-[80px] max-h-[80px] object-cover ${!hasProfilePicture ? 'bg-gray-light p-[17px]' : ''}`}
           />
         </div>
         <div className="w-full flex flex-col items-start min-w-0">
@@ -51,7 +51,7 @@ function TeacherCard({
               width={16}
               height={16}
               alt="Teacher rating"
-              className="mr-[6px] w-[16px] h-[16px]"
+              className="mr-[6px] w-[16px] h-[16px] object-cover"
             />
             <span className="text-custom-yellow font-medium">{rating}</span>
             <div className="w-px h-[10px] bg-tertiary mx-[12px]"></div>
