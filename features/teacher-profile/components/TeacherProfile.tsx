@@ -525,9 +525,10 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
         currentData={{
           name: teacherProfile?.name || "",
           surname: teacherProfile?.surname || "",
-          email: teacherProfile?.email || "",
-          phone: teacherProfile?.phone || "",
+          phoneNumber: teacherProfile?.phone || "",
+          phoneCode: "+994",
           bio: teacherProfile?.bio || "",
+          interests: teacherProfile?.interests || [],
         }}
       />
     </section>

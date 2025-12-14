@@ -8,6 +8,7 @@ import {
 } from "@/features/group-details/api/groupDetailsApi";
 import FileActionModal from "@/features/group-details/Tabs/components/FileViewer/FileActionModal";
 import FilePreviewPopup from "@/features/group-details/Tabs/components/FileViewer/FilePreviewPopup";
+import { getContentTypeFromPath, getFileTypeInfo } from "../../utils/fileTypeUtils";
 
 interface SyllabusCardProps {
   cardStatus: "view" | "add";
@@ -27,8 +28,21 @@ function SyllabusCard({ cardStatus, syllabusPath, groupId, isTeacher }: Syllabus
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.type !== "application/pdf") {
-      alert("Please upload a PDF file");
+    // Accept PDF, images (.jpg, .png, .jpeg, .webp), and documents (.doc, .docx, .xls, .xlsx)
+    const allowedTypes = [
+      'application/pdf',
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/jpg',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      alert("Please upload a PDF, image (.jpg, .png, .jpeg, .webp), or document (.doc, .docx, .xls, .xlsx) file");
       return;
     }
 
@@ -66,7 +80,7 @@ function SyllabusCard({ cardStatus, syllabusPath, groupId, isTeacher }: Syllabus
 
     const link = document.createElement("a");
     link.href = syllabusPath;
-    link.download = syllabusPath.split("/").pop() || "syllabus.pdf";
+    link.download = syllabusPath.split("/").pop() || "syllabus";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -80,6 +94,10 @@ function SyllabusCard({ cardStatus, syllabusPath, groupId, isTeacher }: Syllabus
 
   const isLoading = isUploading || isDeleting;
 
+  // Get content type from path since backend only returns path
+  const contentType = syllabusPath ? getContentTypeFromPath(syllabusPath) : 'application/pdf';
+  const fileInfo = getFileTypeInfo(contentType);
+
   return (
     <>
       <div className="border border-gray-light w-full">
@@ -91,8 +109,8 @@ function SyllabusCard({ cardStatus, syllabusPath, groupId, isTeacher }: Syllabus
               disabled={isLoading}
             >
               <Image
-                src={"/file-text.svg"}
-                alt="file text"
+                src={fileInfo.icon}
+                alt={fileInfo.displayName}
                 width={32}
                 height={32}
                 className="w-[32px] h-[32px]"
@@ -115,7 +133,7 @@ function SyllabusCard({ cardStatus, syllabusPath, groupId, isTeacher }: Syllabus
             <input
               ref={fileInputRef}
               type="file"
-              accept="application/pdf"
+              accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.xls,.xlsx"
               onChange={handleFileSelect}
               className="hidden"
               disabled={isLoading}
@@ -141,7 +159,7 @@ function SyllabusCard({ cardStatus, syllabusPath, groupId, isTeacher }: Syllabus
             onDownload={handleDownload}
             onPreview={handlePreview}
             fileName="Syllabus"
-            contentType="application/pdf"
+            contentType={contentType}
             isDownloading={false}
           />
 
@@ -151,7 +169,7 @@ function SyllabusCard({ cardStatus, syllabusPath, groupId, isTeacher }: Syllabus
             onClose={() => setShowPreview(false)}
             fileUrl={syllabusPath}
             fileName="Syllabus"
-            contentType="application/pdf"
+            contentType={contentType}
           />
         </>
       )}

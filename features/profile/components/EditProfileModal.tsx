@@ -14,31 +14,29 @@ type EditProfileModalProps = {
   currentData: {
     name: string;
     surname: string;
-    email?: string;
-    phone?: string;
+    phoneNumber?: string;
+    phoneCode?: string;
     bio?: string;
-    categories?: number[];
+    interests?: string[];
   };
 };
 
 const editProfileSchema = yup.object({
   name: yup.string().required("First name is required"),
   surname: yup.string().required("Last name is required"),
-  email: yup.string().email("Invalid email"),
-  phone: yup.string(),
+  phoneNumber: yup.string(),
   phoneCode: yup.string(),
   bio: yup.string(),
-  categories: yup.array().of(yup.number().required()).default([]),
+  interests: yup.array().of(yup.string().required()).default([]),
 });
 
 type EditProfileFormData = {
   name: string;
   surname: string;
-  email?: string;
-  phone?: string;
+  phoneNumber?: string;
   phoneCode?: string;
   bio?: string;
-  categories: number[];
+  interests: string[];
 };
 
 export default function EditProfileModal({
@@ -63,15 +61,14 @@ export default function EditProfileModal({
     defaultValues: {
       name: currentData.name || "",
       surname: currentData.surname || "",
-      email: currentData.email || "",
-      phone: currentData.phone || "",
-      phoneCode: "+994",
+      phoneNumber: currentData.phoneNumber || "",
+      phoneCode: currentData.phoneCode || "+994",
       bio: currentData.bio || "",
-      categories: currentData.categories || [],
+      interests: currentData.interests || [],
     },
   });
 
-  const selectedCategories = watch("categories") || [];
+  const selectedInterests = watch("interests") || [];
 
   useEffect(() => {
     if (isOpen) {
@@ -79,11 +76,10 @@ export default function EditProfileModal({
       reset({
         name: currentData.name || "",
         surname: currentData.surname || "",
-        email: currentData.email || "",
-        phone: currentData.phone || "",
-        phoneCode: "+994",
+        phoneNumber: currentData.phoneNumber || "",
+        phoneCode: currentData.phoneCode || "+994",
         bio: currentData.bio || "",
-        categories: currentData.categories || [],
+        interests: currentData.interests || [],
       });
     } else {
       document.body.style.overflow = "unset";
@@ -98,10 +94,10 @@ export default function EditProfileModal({
       const updateData: UpdateProfileRequest = {
         name: data.name,
         surname: data.surname,
-        email: data.email,
-        phone: data.phone,
+        phoneCode: data.phoneCode,
+        phoneNumber: data.phoneNumber,
         bio: data.bio,
-        categories: data.categories,
+        interests: data.interests,
       };
 
       if (profileType === "student") {
@@ -117,12 +113,12 @@ export default function EditProfileModal({
     }
   };
 
-  const handleCategoryToggle = (categoryId: number) => {
-    const current = selectedCategories;
-    const newCategories = current.includes(categoryId)
-      ? current.filter((id) => id !== categoryId)
-      : [...current, categoryId];
-    setValue("categories", newCategories);
+  const handleInterestToggle = (categoryName: string) => {
+    const current = selectedInterests;
+    const newInterests = current.includes(categoryName)
+      ? current.filter((name) => name !== categoryName)
+      : [...current, categoryName];
+    setValue("interests", newInterests);
   };
 
   if (!isOpen) return null;
@@ -166,54 +162,42 @@ export default function EditProfileModal({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-[24px]">
-            <div className="flex flex-col gap-[12px]">
-              <label className="text-secondary text-[18px]">Email</label>
-              <input
-                type="email"
-                {...register("email")}
-                className="border border-gray-light px-[16px] py-[12px] text-[18px] focus:outline-none focus:border-secondary"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email.message}</p>
-              )}
-            </div>
-
-            <div className="flex flex-col gap-[12px]">
-              <label className="text-secondary text-[18px]">Phone Number</label>
-              <div className="flex gap-[8px]">
-                <div className="relative">
-                  <select
-                    {...register("phoneCode")}
-                    className="border border-gray-light px-[12px] py-[12px] text-[18px] appearance-none pr-[32px] focus:outline-none focus:border-secondary h-full"
-                  >
-                    <option value="+994">+994</option>
-                    <option value="+1">+1</option>
-                    <option value="+44">+44</option>
-                    <option value="+90">+90</option>
-                  </select>
-                  <div className="absolute right-[12px] top-1/2 -translate-y-1/2 pointer-events-none">
-                    <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
-                      <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2"/>
-                    </svg>
-                  </div>
+          <div className="flex flex-col gap-[12px]">
+            <label className="text-secondary text-[18px]">Phone Number</label>
+            <div className="flex gap-[8px]">
+              <div className="relative">
+                <select
+                  {...register("phoneCode")}
+                  className="border border-gray-light px-[12px] py-[12px] text-[18px] appearance-none pr-[32px] focus:outline-none focus:border-secondary h-full"
+                >
+                  <option value="+994">+994</option>
+                  <option value="+1">+1</option>
+                  <option value="+44">+44</option>
+                  <option value="+90">+90</option>
+                  <option value="+91">+91</option>
+                  <option value="+9188">+9188</option>
+                </select>
+                <div className="absolute right-[12px] top-1/2 -translate-y-1/2 pointer-events-none">
+                  <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+                    <path d="M1 1L6 6L11 1" stroke="currentColor" strokeWidth="2"/>
+                  </svg>
                 </div>
-                <input
-                  type="tel"
-                  {...register("phone")}
-                  placeholder="55 - 555 - 55 - 55"
-                  className="border border-gray-light px-[16px] py-[12px] text-[18px] flex-1 focus:outline-none focus:border-secondary"
-                />
               </div>
-              {errors.phone && (
-                <p className="text-red-500 text-sm">{errors.phone.message}</p>
-              )}
+              <input
+                type="tel"
+                {...register("phoneNumber")}
+                placeholder="911861994"
+                className="border border-gray-light px-[16px] py-[12px] text-[18px] flex-1 focus:outline-none focus:border-secondary"
+              />
             </div>
+            {errors.phoneNumber && (
+              <p className="text-red-500 text-sm">{errors.phoneNumber.message}</p>
+            )}
           </div>
 
           <div className="flex flex-col gap-[12px]">
             <label className="text-secondary text-[18px]">
-              Choose Categories
+              Interests (Choose Categories)
             </label>
             <div className="grid grid-cols-2 gap-[12px] p-[12px] border border-gray-light">
               {isLoadingCategories ? (
@@ -232,8 +216,8 @@ export default function EditProfileModal({
                   >
                     <input
                       type="checkbox"
-                      checked={selectedCategories.includes(category.id)}
-                      onChange={() => handleCategoryToggle(category.id)}
+                      checked={selectedInterests.includes(category.name)}
+                      onChange={() => handleInterestToggle(category.name)}
                       className="w-[18px] h-[18px] border border-gray-light"
                     />
                     <span className="text-[16px]">{category.name}</span>
@@ -241,8 +225,8 @@ export default function EditProfileModal({
                 ))
               )}
             </div>
-            {errors.categories && (
-              <p className="text-red-500 text-sm">{errors.categories.message}</p>
+            {errors.interests && (
+              <p className="text-red-500 text-sm">{errors.interests.message}</p>
             )}
           </div>
 
