@@ -63,14 +63,24 @@ export function ProfilePopup({
       <div className="absolute right-0 top-full w-[247px] p-[24px] z-50 border border-gray-light bg-white shadow-lg">
         {/* User Avatar and Name */}
         <div className="flex flex-col items-center mb-[24px] px-[20px]">
-          <div className="w-[62px] h-[62px] rounded-full bg-gray-300 flex items-center justify-center mb-[12px]">
-            <Image
-              src="/user.svg"
-              alt="User avatar"
-              width={32}
-              height={32}
-              className="min-w-[32px] min-h-[32px]"
-            />
+          <div className="w-[62px] h-[62px] rounded-full bg-gray-300 flex items-center justify-center mb-[12px] overflow-hidden">
+            {userData?.imageUrl ? (
+              <Image
+                src={`${process.env.NEXT_PUBLIC_PAGE_URL}${userData.imageUrl}`}
+                alt="User avatar"
+                width={62}
+                height={62}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Image
+                src="/user.svg"
+                alt="User avatar"
+                width={32}
+                height={32}
+                className="min-w-[32px] min-h-[32px]"
+              />
+            )}
           </div>
           <p className="w-full min-w-0 font-medium text-[20px] text-center">
             {userData ? (

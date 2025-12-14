@@ -8,6 +8,7 @@ export interface UserProfile {
   name: string;
   surname: string;
   email: string;
+  imageUrl?: string | null;
   // Add other fields as needed based on backend response
 }
 
