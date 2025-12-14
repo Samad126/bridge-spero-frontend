@@ -39,7 +39,7 @@ function TeacherCard({ experience, profileUrl, star, name, col = 1, id }: Teache
             width={80}
             height={80}
             alt={`${name} profile picture`}
-            className={`rounded-full min-w-[80px] min-h-[80px] object-cover ${!hasProfilePicture ? 'bg-gray-light p-[17px]' : ''}`}
+            className={`rounded-full min-w-[80px] min-h-[80px] max-h-[80px] object-cover ${!hasProfilePicture ? 'bg-gray-light p-[17px]' : ''}`}
           />
         </div>
         <div className={contentContainerClass}>
