@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import PricingCardSkeleton from "./PricingCardSkeleton";
 import { useRouter } from "next/navigation";
+import { handleApiError } from "@/lib/utils/errorDisplay";
 
 interface JitsiPricingCardProps {
   price: number;
@@ -59,8 +60,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
       console.log("Successfully joined group");
       router.refresh();
     } catch (error) {
-      console.error("Failed to join group:", error);
-      alert("Failed to join group. Please try again.");
+      handleApiError(error, "Join Group");
     }
   };
 
@@ -70,15 +70,16 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
       // Start the Jitsi lesson - returns URL as string
       const result = await startJitsiLessonTrigger(Number(groupId));
 
-      if (result.data) {
+      if (result.error) {
+        handleApiError(result.error, "Start Lesson");
+      } else if (result.data) {
         // Open Jitsi URL in new tab
         window.open(result.data, '_blank');
       } else {
         alert('Failed to get Jitsi meeting URL. Please try again.');
       }
     } catch (error) {
-      console.error('Failed to start lesson:', error);
-      alert('Failed to start lesson. Please try again.');
+      handleApiError(error, "Start Lesson");
     } finally {
       setIsStartingLesson(false);
     }
@@ -96,15 +97,16 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
       // Join the Jitsi lesson - returns URL as string
       const result = await joinJitsiLessonTrigger(Number(groupId));
 
-      if (result.data) {
+      if (result.error) {
+        handleApiError(result.error, "Join Lesson");
+      } else if (result.data) {
         // Open Jitsi URL in new tab
         window.open(result.data, '_blank');
       } else {
         alert('The lesson has not been started yet. Please wait for the teacher to start the lesson.');
       }
     } catch (error) {
-      console.error('Failed to join lesson:', error);
-      alert('Failed to join lesson. Please try again.');
+      handleApiError(error, "Join Lesson");
     } finally {
       setIsStartingLesson(false);
     }
@@ -127,8 +129,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
       setShowLeaveConfirm(false);
       router.refresh();
     } catch (error) {
-      console.error("Failed to leave group:", error);
-      alert("Failed to leave group. Please try again.");
+      handleApiError(error, "Leave Group");
     }
   };
 

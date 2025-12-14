@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import PricingCardSkeleton from "./PricingCardSkeleton";
 import { useRouter } from "next/navigation";
+import { handleApiError } from "@/lib/utils/errorDisplay";
 
 interface PricingCardProps {
   price: number;
@@ -63,8 +64,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
       console.log("Successfully joined group");
       router.refresh();
     } catch (error) {
-      console.error("Failed to join group:", error);
-      alert("Failed to join group. Please try again.");
+      handleApiError(error, "Join Group");
     }
   };
 
@@ -73,13 +73,22 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
     try {
       // First, verify Zoom connection
       const verifyResult = await verifyZoomConnection();
+
+      if (verifyResult.error) {
+        handleApiError(verifyResult.error, "Verify Zoom Connection");
+        setIsStartingLesson(false);
+        return;
+      }
+
       const isConnected = verifyResult.data?.connected;
 
       if (!isConnected) {
         // If not connected, fetch authorization URL and open it in new tab
         const authorizeResult = await getZoomAuthorize();
 
-        if (authorizeResult.data) {
+        if (authorizeResult.error) {
+          handleApiError(authorizeResult.error, "Zoom Authorization");
+        } else if (authorizeResult.data) {
           // Extract the redirect URL from the "redirect:URL" format
           const authorizeUrl = authorizeResult.data.replace(/^redirect:/, '');
           window.open(authorizeUrl, '_blank');
@@ -94,15 +103,16 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
       // If connected, start the lesson
       const result = await startLessonTrigger(Number(groupId));
 
-      if (result.data) {
+      if (result.error) {
+        handleApiError(result.error, "Start Lesson");
+      } else if (result.data) {
         // Open Zoom URL in new tab
         window.open(result.data, '_blank');
       } else {
         alert('Failed to get Zoom meeting URL. Please try again.');
       }
     } catch (error) {
-      console.error('Failed to start lesson:', error);
-      alert('Failed to start lesson. Please try again.');
+      handleApiError(error, "Start Lesson");
     } finally {
       setIsStartingLesson(false);
     }
@@ -120,15 +130,16 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
       // Join the lesson
       const result = await joinLessonTrigger(Number(groupId));
 
-      if (result.data) {
+      if (result.error) {
+        handleApiError(result.error, "Join Lesson");
+      } else if (result.data) {
         // Open Zoom URL in new tab
         window.open(result.data, '_blank');
       } else {
         alert('The lesson has not been started yet. Please wait for the teacher to start the lesson.');
       }
     } catch (error) {
-      console.error('Failed to join lesson:', error);
-      alert('Failed to join lesson. Please try again.');
+      handleApiError(error, "Join Lesson");
     } finally {
       setIsStartingLesson(false);
     }
@@ -151,8 +162,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
       setShowLeaveConfirm(false);
       router.refresh();
     } catch (error) {
-      console.error("Failed to leave group:", error);
-      alert("Failed to leave group. Please try again.");
+      handleApiError(error, "Leave Group");
     }
   };
 

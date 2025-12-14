@@ -106,6 +106,17 @@ export async function POST(
       });
     }
 
+    // Handle error responses from backend
+    if (!response.ok) {
+      const errorData = await response.json();
+      return new Response(JSON.stringify(errorData), {
+        status: response.status,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
     const data = await response.json();
 
     return new Response(JSON.stringify(data), {
