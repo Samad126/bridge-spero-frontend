@@ -18,7 +18,10 @@ async function layout({
 
   return (
     <NuqsAdapter>
-      <HeaderWrapper />
+      <HeaderWrapper
+        access_token={access_token?.value || ""}
+        refresh_token={refresh_token?.value || ""}
+      />
       <main className="space-y-[60px] my-[60px] lg:space-y-[80px] lg:mb-[80px] lg:mt-[100px]">
         {children}
       </main>
