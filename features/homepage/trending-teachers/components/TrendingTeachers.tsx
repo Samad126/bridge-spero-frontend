@@ -25,10 +25,10 @@ function TrendingTeachers() {
 
         <Link
           href="/explore-teachers"
-          aria-label="View more teachers"
           className="border mt-[15px] py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"
         >
           More
+          <span className="sr-only"> teachers</span>
         </Link>
       </div>
     </section>

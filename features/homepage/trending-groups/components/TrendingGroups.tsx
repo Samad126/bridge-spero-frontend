@@ -27,10 +27,10 @@ const TrendingGroups = () => {
 
         <Link
           href="/explore-groups"
-          aria-label="View more groups"
           className="border mt-[15px] py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"
         >
           More
+          <span className="sr-only"> groups</span>
         </Link>
       </div>
     </section>
