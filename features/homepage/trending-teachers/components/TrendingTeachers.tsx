@@ -24,10 +24,11 @@ function TrendingTeachers() {
         </ErrorBoundary>
 
         <Link
-          href={"/explore-teachers"}
-          className="border py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"
+          href="/explore-teachers"
+          className="border mt-[15px] py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"
         >
           More
+          <span className="sr-only"> teachers</span>
         </Link>
       </div>
     </section>

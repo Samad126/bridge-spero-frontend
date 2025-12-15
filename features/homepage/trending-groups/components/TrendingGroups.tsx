@@ -26,10 +26,11 @@ const TrendingGroups = () => {
         </ErrorBoundary>
 
         <Link
-          href={"/explore-groups"}
+          href="/explore-groups"
           className="border mt-[15px] py-[12px] w-[200px] mx-auto block text-center border-secondary text-secondary"
         >
           More
+          <span className="sr-only"> groups</span>
         </Link>
       </div>
     </section>
