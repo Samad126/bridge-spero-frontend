@@ -69,7 +69,7 @@ const TeacherRegistration = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("/api/categories");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
         const data = await response.json();
         setCategories(Array.isArray(data) ? data : data.data || []);
       } catch (error) {
@@ -115,8 +115,9 @@ const TeacherRegistration = () => {
         formData.append("demoVideo", demoVideoFile);
       }
 
-      const response = await fetch("/api/auth/signup/teacher", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup/teacher`, {
         method: "POST",
+        credentials: "include",
         body: formData,
       });
 

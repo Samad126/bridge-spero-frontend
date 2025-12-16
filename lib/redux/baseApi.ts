@@ -24,13 +24,8 @@ interface CustomFetchArgs extends FetchArgs {
   };
 }
 
-const shouldGoDirectToBackend = (url: string): boolean => {
-  const directEndpoints = ["/auth/login", "/auth/register", "/auth/logout"];
-  return directEndpoints.some((endpoint) => url.includes(endpoint));
-};
-
 const dynamicBaseQuery = fetchBaseQuery({
-  baseUrl: "/",
+  baseUrl: process.env.NEXT_PUBLIC_API_URL || "https://dev.bridgespero.com/api/v1",
   credentials: "include",
   prepareHeaders: (headers) => {
     return headers;
@@ -42,21 +37,7 @@ const baseQuery: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  let adjustedArgs: CustomFetchArgs;
-
-  if (typeof args === "string") {
-    adjustedArgs = { url: args };
-  } else {
-    adjustedArgs = { ...args };
-  }
-
-  if (shouldGoDirectToBackend(adjustedArgs.url)) {
-    adjustedArgs.url = `${process.env.NEXT_PUBLIC_API_URL}${adjustedArgs.url}`;
-  } else {
-    adjustedArgs.url = `/api${adjustedArgs.url}`;
-  }
-
-  return dynamicBaseQuery(adjustedArgs, api, extraOptions);
+  return dynamicBaseQuery(args, api, extraOptions);
 };
 
 const baseQueryWithReauth: BaseQueryFn<
@@ -87,7 +68,7 @@ const baseQueryWithReauth: BaseQueryFn<
 
         const refreshResult = await baseQuery(
           {
-            url: "/refresh",
+            url: "/auth/refresh",
             method: "POST",
           },
           api,

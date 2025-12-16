@@ -16,7 +16,7 @@ export const userProfileApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserProfile: builder.query<UserProfile, void>({
       query: () => ({
-        url: "/me",
+        url: "/users/me",
         meta: { authMode: "strict" },
       }),
       providesTags: ["User"],
@@ -24,7 +24,7 @@ export const userProfileApi = baseApi.injectEndpoints({
 
     getUserProfileOptional: builder.query<UserProfile, void>({
       query: () => ({
-        url: "/me",
+        url: "/users/me",
         meta: { authMode: "optional" },
       }),
       providesTags: ["User"],

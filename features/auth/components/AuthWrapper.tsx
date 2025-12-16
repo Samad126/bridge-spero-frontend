@@ -35,8 +35,9 @@ export default function AuthWrapper({
         }
 
         // Clear Tokens
-        fetch("/api/logout", {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
           method: "POST",
+          credentials: "include",
         })
           .then(() => {})
           .catch(() => {});

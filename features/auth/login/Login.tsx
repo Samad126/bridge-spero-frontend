@@ -43,7 +43,7 @@ function Login() {
     setFieldErrors({});
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +70,7 @@ function Login() {
       }
 
       // Parse JWT to get user role and redirect to appropriate dashboard
-      const response2 = await fetch("/api/me", {
+      const response2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
         credentials: "include",
       });
 

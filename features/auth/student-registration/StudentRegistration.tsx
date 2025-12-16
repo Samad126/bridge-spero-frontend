@@ -67,7 +67,7 @@ const StudentRegistration = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await fetch("/api/categories");
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
         const data = await response.json();
         setSubjects(Array.isArray(data) ? data : data.data || []);
       } catch (error) {
@@ -83,11 +83,12 @@ const StudentRegistration = () => {
     setFieldErrors({});
 
     try {
-      const response = await fetch("/api/auth/signup/student", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup/user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(data),
       });
 
