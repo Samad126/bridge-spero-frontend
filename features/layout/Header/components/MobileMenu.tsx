@@ -36,7 +36,7 @@ export function MobileMenu({
       // Dispatch logout action to clear RTK Query cache
       dispatch(logout());
 
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signout`, {
         method: "POST",
         credentials: "include",
       });
