@@ -75,6 +75,9 @@ export const groupDetailsApi = baseApi.injectEndpoints({
       query: (groupId) => ({
         url: `/groups/${groupId}/syllabus`,
         meta: { authMode: "optional" },
+        responseHandler: async (response) => {
+          return response.text();
+        },
       }),
       providesTags: (result, error, groupId) => [
         { type: "Groups", id: `syllabus-${groupId}` },
@@ -90,6 +93,9 @@ export const groupDetailsApi = baseApi.injectEndpoints({
           method: "POST",
           body: formData,
           meta: { authMode: "strict" },
+          responseHandler: async (response) => {
+            return response.text();
+          },
         };
       },
       invalidatesTags: (result, error, { groupId }) => [
