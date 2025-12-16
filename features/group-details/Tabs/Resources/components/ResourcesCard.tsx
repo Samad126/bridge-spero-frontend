@@ -121,15 +121,6 @@ function ResourcesCard({
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
-
   const isLoading = isUploading || isDeleting;
 
   if (cardStatus === "add" && isTeacher && isAddMode) {
@@ -205,11 +196,11 @@ function ResourcesCard({
               />
               <div className="flex flex-col items-start">
                 <p className="text-[20px]">
-                  {resource.name || formatDate(resource.createdAt)}
+                  {resource.name || (resource.createdAt)}
                 </p>
                 {resource.name && (
                   <span className="text-[14px] text-gray-500">
-                    {formatDate(resource.createdAt)}
+                    {resource.createdAt}
                   </span>
                 )}
               </div>
@@ -245,7 +236,7 @@ function ResourcesCard({
             onClose={closeActionModal}
             onDownload={handleDownload}
             onPreview={handlePreview}
-            fileName={currentFile.name || formatDate(currentFile.createdAt || "")}
+            fileName={currentFile.name || (currentFile.createdAt || "")}
             contentType={currentFile.contentType}
             // isDownloading={isDownloading}
           />
@@ -255,7 +246,7 @@ function ResourcesCard({
             isOpen={showPreview}
             onClose={closePreview}
             fileUrl={getStreamUrl()}
-            fileName={currentFile.name || formatDate(currentFile.createdAt || "")}
+            fileName={currentFile.name || (currentFile.createdAt || "")}
             contentType={currentFile.contentType}
           />
         </>
