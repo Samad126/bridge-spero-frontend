@@ -34,7 +34,6 @@ function RecordingCard({
     showActionModal,
     showPreview,
     currentFile,
-    isDownloading,
     openFile,
     handleDownload,
     handlePreview,
@@ -135,7 +134,7 @@ function RecordingCard({
     });
   };
 
-  const isLoading = isUploading || isDownloading || isDeleting;
+  const isLoading = isUploading || isDeleting;
 
   // Add mode with input form
   if (cardStatus === "add" && isTeacher && isAddMode) {
@@ -263,7 +262,7 @@ function RecordingCard({
             onPreview={handlePreview}
             fileName={currentFile.name || (currentFile.createdAt || "")}
             contentType={currentFile.contentType}
-            isDownloading={isDownloading}
+            // isDownloading={isDownloading}
           />
 
           {/* File Preview Popup */}

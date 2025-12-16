@@ -34,7 +34,6 @@ function ResourcesCard({
     showActionModal,
     showPreview,
     currentFile,
-    isDownloading,
     openFile,
     handleDownload,
     handlePreview,
@@ -131,7 +130,7 @@ function ResourcesCard({
     });
   };
 
-  const isLoading = isUploading || isDeleting || isDownloading;
+  const isLoading = isUploading || isDeleting;
 
   if (cardStatus === "add" && isTeacher && isAddMode) {
     return (
@@ -248,7 +247,7 @@ function ResourcesCard({
             onPreview={handlePreview}
             fileName={currentFile.name || formatDate(currentFile.createdAt || "")}
             contentType={currentFile.contentType}
-            isDownloading={isDownloading}
+            // isDownloading={isDownloading}
           />
 
           {/* File Preview Popup */}

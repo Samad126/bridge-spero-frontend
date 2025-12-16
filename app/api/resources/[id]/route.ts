@@ -41,6 +41,8 @@ export async function GET(
       }
     );
 
+    console.log("RESOURCE RESPONSE", response);
+
     if (!response.ok) {
       const data = await response.json();
       return new Response(JSON.stringify(data), {

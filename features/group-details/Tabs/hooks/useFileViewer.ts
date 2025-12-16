@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useLazyGetResourceDownloadQuery } from "@/features/group-details/api/groupDetailsApi";
 
 export interface FileItem {
   id: number;
@@ -13,31 +12,25 @@ export function useFileViewer() {
   const [showActionModal, setShowActionModal] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [currentFile, setCurrentFile] = useState<FileItem | null>(null);
-  const [triggerDownload, { isLoading: isDownloading }] =
-    useLazyGetResourceDownloadQuery();
 
   const openFile = (file: FileItem) => {
     setCurrentFile(file);
     setShowActionModal(true);
   };
 
-  const handleDownload = async () => {
+  const handleDownload = () => {
     if (!currentFile?.id) return;
 
     try {
-      // Use RTK Query to fetch the file blob with authentication
-      const blob = await triggerDownload(currentFile.id).unwrap();
-
-      // Create download link
-      const url = window.URL.createObjectURL(blob);
+      // Direct download using the streaming endpoint with download=true
+      // This avoids loading the entire file into browser memory
       const link = document.createElement("a");
-      link.href = url;
+      link.href = `/api/resources/${currentFile.id}?download=true`;
       link.download =
         currentFile.name || currentFile.path?.split("/").pop() || "file";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Failed to download file:", error);
       alert("Failed to download file. Please try again.");
@@ -66,7 +59,6 @@ export function useFileViewer() {
     showActionModal,
     showPreview,
     currentFile,
-    isDownloading,
     openFile,
     handleDownload,
     handlePreview,
