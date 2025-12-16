@@ -97,16 +97,21 @@ export async function POST(
     }
 
     const { id } = await params;
-    const formData = await request.formData();
 
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${access_token.value}`);
-    // Don't set Content-Type for FormData - fetch will set it with boundary
+    // Forward the content-type header (includes multipart boundary)
+    const contentType = request.headers.get("content-type");
+    if (contentType) {
+      headers.append("Content-Type", contentType);
+    }
 
     const response = await fetch(`${API_BASE_URL}/groups/${id}/recordings`, {
       method: "POST",
       headers,
-      body: formData,
+      body: request.body, // Stream the body directly without buffering
+      // @ts-ignore - duplex is required for streaming request bodies
+      duplex: "half",
       cache: "no-store",
     });
 
