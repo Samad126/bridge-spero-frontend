@@ -1,5 +1,5 @@
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "https://dev.bridgespero.com/api/v1";
+  process.env.NEXT_BACKEND_API_URL || "https://dev.bridgespero.com/api/v1";
 
 export async function GET(
   request: Request,
