@@ -32,6 +32,11 @@ export async function GET(
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${access_token.value}`);
 
+    const rangeHeader = request.headers.get("Range");
+    if (rangeHeader) {
+      headers.append("Range", rangeHeader);
+    }
+
     const response = await fetch(
       `${API_BASE_URL}/resources/${id}?download=${download}`,
       {
@@ -56,11 +61,26 @@ export async function GET(
     // Stream the video/file (works for both download=true and download=false)
     const contentType = response.headers.get("Content-Type") || "application/octet-stream";
     const contentDisposition = response.headers.get("Content-Disposition");
+    const contentLength = response.headers.get("Content-Length");
+    const contentRange = response.headers.get("Content-Range");
+    const acceptRanges = response.headers.get("Accept-Ranges");
 
     const responseHeaders = new Headers();
     responseHeaders.set("Content-Type", contentType);
+
     if (contentDisposition) {
       responseHeaders.set("Content-Disposition", contentDisposition);
+    }
+
+    // Forward range-related headers for proper video seeking
+    if (contentLength) {
+      responseHeaders.set("Content-Length", contentLength);
+    }
+    if (contentRange) {
+      responseHeaders.set("Content-Range", contentRange);
+    }
+    if (acceptRanges) {
+      responseHeaders.set("Accept-Ranges", acceptRanges);
     }
 
     return new Response(response.body, {
