@@ -53,7 +53,7 @@ function FilePreviewPopup({
     }
   }, [isOpen, fileInfo.category, fileUrl]);
 
-  // --- DOCX Logic ---
+  // --- DOCX Logic with Streaming ---
   useEffect(() => {
     if (
       isOpen &&
@@ -63,25 +63,80 @@ function FilePreviewPopup({
       renderAsync
     ) {
       const loadDocument = async () => {
+        let isCancelled = false;
+
         try {
           const response = await fetch(fileUrl, { credentials: "include" });
-          const blob = await response.blob();
-          if (docxContainerRef.current && renderAsync) {
-            docxContainerRef.current.innerHTML = "";
-            await renderAsync(blob, docxContainerRef.current, undefined, {
-              className: "docx-preview-content",
-              inWrapper: true,
-              ignoreWidth: false,
-              ignoreHeight: false,
-              breakPages: true,
-              renderHeaders: true,
-              renderFooters: true,
-              experimental: false,
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const reader = response.body?.getReader();
+          if (!reader) {
+            throw new Error("Response body is not readable");
+          }
+
+          const contentLength = response.headers.get("Content-Length");
+          const total = contentLength ? parseInt(contentLength, 10) : 0;
+
+          let receivedLength = 0;
+          const chunks: Uint8Array[] = [];
+
+          // Stream the data in chunks
+          while (true) {
+            const { done, value } = await reader.read();
+
+            if (done || isCancelled) break;
+
+            chunks.push(value);
+            receivedLength += value.length;
+
+            // Optional: Update progress
+            if (total > 0) {
+              const progress = (receivedLength / total) * 100;
+              console.log(`DOCX Download Progress: ${progress.toFixed(2)}%`);
+            }
+          }
+
+          if (!isCancelled) {
+            // Combine all chunks into a single Uint8Array
+            const allChunks = new Uint8Array(receivedLength);
+            let position = 0;
+            for (const chunk of chunks) {
+              allChunks.set(chunk, position);
+              position += chunk.length;
+            }
+
+            // Convert to Blob for docx-preview
+            const blob = new Blob([allChunks], {
+              type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
             });
+
+            if (docxContainerRef.current && renderAsync && !isCancelled) {
+              docxContainerRef.current.innerHTML = "";
+              await renderAsync(blob, docxContainerRef.current, undefined, {
+                className: "docx-preview-content",
+                inWrapper: true,
+                ignoreWidth: false,
+                ignoreHeight: false,
+                breakPages: true,
+                renderHeaders: true,
+                renderFooters: true,
+                experimental: false,
+              });
+            }
           }
         } catch (error) {
           console.error("Error loading DOCX:", error);
+          if (docxContainerRef.current) {
+            docxContainerRef.current.innerHTML = `<div class="p-8 text-center text-red-600">Error loading document: ${error instanceof Error ? error.message : "Unknown error"}</div>`;
+          }
         }
+
+        return () => {
+          isCancelled = true;
+        };
       };
 
       loadDocument();
