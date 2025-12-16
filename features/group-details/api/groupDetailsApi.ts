@@ -144,8 +144,8 @@ export const groupDetailsApi = baseApi.injectEndpoints({
     }),
 
     deleteRecording: builder.mutation<void, { groupId: number; recordingId: number }>({
-      query: ({ groupId, recordingId }) => ({
-        url: `/groups/${groupId}/recordings/${recordingId}`,
+      query: ({ recordingId }) => ({
+        url: `/resources/${recordingId}`,
         method: "DELETE",
         meta: { authMode: "strict" },
       }),

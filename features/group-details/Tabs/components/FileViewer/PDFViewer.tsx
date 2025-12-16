@@ -21,6 +21,10 @@ function PDFViewer({ fileUrl }: PDFViewerProps) {
         <div className="flex-1 overflow-auto">
           <Viewer
             fileUrl={fileUrl}
+            httpHeaders={{
+              credentials: 'include',
+            }}
+            withCredentials={true}
             plugins={[defaultLayoutPluginInstance]}
           />
         </div>
