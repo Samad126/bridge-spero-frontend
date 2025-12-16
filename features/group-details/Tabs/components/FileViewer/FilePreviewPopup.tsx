@@ -40,7 +40,7 @@ function FilePreviewPopup({
     if (isOpen && fileInfo.category === "text" && fileUrl) {
       const loadTextFile = async () => {
         try {
-          const response = await fetch(fileUrl);
+          const response = await fetch(fileUrl, { credentials: "include" });
           const text = await response.text();
           setTextContent(text);
         } catch (error) {
@@ -64,7 +64,7 @@ function FilePreviewPopup({
     ) {
       const loadDocument = async () => {
         try {
-          const response = await fetch(fileUrl);
+          const response = await fetch(fileUrl, { credentials: "include" });
           const blob = await response.blob();
           if (docxContainerRef.current && renderAsync) {
             docxContainerRef.current.innerHTML = "";

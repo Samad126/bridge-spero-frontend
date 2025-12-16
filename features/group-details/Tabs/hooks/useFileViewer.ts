@@ -25,7 +25,7 @@ export function useFileViewer() {
       // Direct download using the streaming endpoint with download=true
       // This avoids loading the entire file into browser memory
       const link = document.createElement("a");
-      link.href = `/api/resources/${currentFile.id}?download=true`;
+      link.href = `${process.env.NEXT_PUBLIC_API_URL}/resources/${currentFile.id}?download=true`;
       link.download =
         currentFile.name || currentFile.path?.split("/").pop() || "file";
       document.body.appendChild(link);
@@ -52,7 +52,7 @@ export function useFileViewer() {
 
   const getStreamUrl = () => {
     if (!currentFile?.id) return "";
-    return `/api/resources/${currentFile.id}?download=false`;
+    return `${process.env.NEXT_PUBLIC_API_URL}/resources/${currentFile.id}?download=false`;
   };
 
   return {
