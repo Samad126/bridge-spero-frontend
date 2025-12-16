@@ -43,6 +43,8 @@ export async function GET(
         method: "GET",
         headers,
         cache: "no-store",
+        // @ts-expect-error - duplex is required for proper streaming
+        duplex: "half",
       }
     );
 
@@ -67,6 +69,9 @@ export async function GET(
 
     const responseHeaders = new Headers();
     responseHeaders.set("Content-Type", contentType);
+
+    // Important: Disable response buffering to prevent RAM issues
+    responseHeaders.set("X-Accel-Buffering", "no");
 
     if (contentDisposition) {
       responseHeaders.set("Content-Disposition", contentDisposition);
