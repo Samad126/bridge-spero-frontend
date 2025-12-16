@@ -126,6 +126,7 @@ function RecordingCard({
   };
 
   const formatDate = (dateString: string) => {
+    console.log("DATE STRING IS", dateString);
     const date = new Date(dateString);
     return date.toLocaleDateString("en-GB", {
       day: "2-digit",
@@ -213,11 +214,11 @@ function RecordingCard({
               />
               <div className="flex flex-col items-start">
                 <p className="text-[20px]">
-                  {recording.name || formatDate(recording.createdAt)}
+                  {recording.name || recording.createdAt}
                 </p>
                 {recording.name && (
                   <span className="text-[14px] text-gray-500">
-                    {formatDate(recording.createdAt)}
+                    {recording.createdAt}
                   </span>
                 )}
               </div>
@@ -260,7 +261,7 @@ function RecordingCard({
             onClose={closeActionModal}
             onDownload={handleDownload}
             onPreview={handlePreview}
-            fileName={currentFile.name || formatDate(currentFile.createdAt || "")}
+            fileName={currentFile.name || (currentFile.createdAt || "")}
             contentType={currentFile.contentType}
             isDownloading={isDownloading}
           />
@@ -270,7 +271,7 @@ function RecordingCard({
             isOpen={showPreview}
             onClose={closePreview}
             fileUrl={getStreamUrl()}
-            fileName={currentFile.name || formatDate(currentFile.createdAt || "")}
+            fileName={currentFile.name || (currentFile.createdAt || "")}
             contentType={currentFile.contentType}
           />
         </>
