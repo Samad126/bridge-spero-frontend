@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useUpdateUserProfileMutation, useUpdateTeacherProfileMutation, type UpdateProfileRequest } from "../api/profileApi";
+import { useUpdateUserProfileMutation, useUpdateTeacherProfileMutation, useUpdateUserByIdMutation, useUpdateTeacherByIdMutation, type UpdateProfileRequest, type UpdateTeacherProfileRequest } from "../api/profileApi";
 import { useGetCategoriesQuery } from "@/features/my-groups/api/myGroupsApi";
 import type { Category } from "@/features/my-groups/types/myGroupsTypes";
 
@@ -11,13 +11,14 @@ type EditProfileModalProps = {
   isOpen: boolean;
   onClose: () => void;
   profileType: "student" | "teacher";
+  userId?: number; // Optional: if provided, use ID-based update
   currentData: {
     name: string;
     surname: string;
     phoneNumber?: string;
     phoneCode?: string;
     bio?: string;
-    interests?: string[];
+    interests?: number[]; // Category IDs
   };
 };
 
@@ -27,7 +28,7 @@ const editProfileSchema = yup.object({
   phoneNumber: yup.string(),
   phoneCode: yup.string(),
   bio: yup.string(),
-  interests: yup.array().of(yup.string().required()).default([]),
+  interests: yup.array().of(yup.number().required()).default([]),
 });
 
 type EditProfileFormData = {
@@ -36,17 +37,20 @@ type EditProfileFormData = {
   phoneNumber?: string;
   phoneCode?: string;
   bio?: string;
-  interests: string[];
+  interests: number[]; // Store category IDs
 };
 
 export default function EditProfileModal({
   isOpen,
   onClose,
   profileType,
+  userId,
   currentData,
 }: EditProfileModalProps) {
   const [updateUserProfile, { isLoading: isUpdatingUser }] = useUpdateUserProfileMutation();
   const [updateTeacherProfile, { isLoading: isUpdatingTeacher }] = useUpdateTeacherProfileMutation();
+  const [updateUserById, { isLoading: isUpdatingUserById }] = useUpdateUserByIdMutation();
+  const [updateTeacherById, { isLoading: isUpdatingTeacherById }] = useUpdateTeacherByIdMutation();
   const { data: categories, isLoading: isLoadingCategories } = useGetCategoriesQuery();
 
   const {
@@ -64,7 +68,7 @@ export default function EditProfileModal({
       phoneNumber: currentData.phoneNumber || "",
       phoneCode: currentData.phoneCode || "+994",
       bio: currentData.bio || "",
-      interests: currentData.interests || [],
+      interests: [], // Will be populated in useEffect after converting names to IDs
     },
   });
 
@@ -73,6 +77,7 @@ export default function EditProfileModal({
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+
       reset({
         name: currentData.name || "",
         surname: currentData.surname || "",
@@ -91,19 +96,52 @@ export default function EditProfileModal({
 
   const onSubmit = async (data: EditProfileFormData) => {
     try {
-      const updateData: UpdateProfileRequest = {
-        name: data.name,
-        surname: data.surname,
-        phoneCode: data.phoneCode,
-        phoneNumber: data.phoneNumber,
-        bio: data.bio,
-        interests: data.interests,
-      };
-
-      if (profileType === "student") {
-        await updateUserProfile(updateData).unwrap();
+      // If userId is provided, use ID-based update (new approach)
+      if (userId) {
+        if (profileType === "student") {
+          const updateData: UpdateProfileRequest = {
+            name: data.name,
+            surname: data.surname,
+            phoneCode: data.phoneCode,
+            phoneNumber: data.phoneNumber,
+            bio: data.bio,
+            interests: data.interests,
+          };
+          await updateUserById({ id: userId, data: updateData }).unwrap();
+        } else {
+          const updateData: UpdateTeacherProfileRequest = {
+            name: data.name,
+            surname: data.surname,
+            phoneCode: data.phoneCode,
+            phoneNumber: data.phoneNumber,
+            bio: data.bio,
+            subjects: data.interests, // Teachers use 'subjects' field
+          };
+          await updateTeacherById({ id: userId, data: updateData }).unwrap();
+        }
       } else {
-        await updateTeacherProfile(updateData).unwrap();
+        // Otherwise, use the old approach (backward compatibility)
+        if (profileType === "student") {
+          const updateData: UpdateProfileRequest = {
+            name: data.name,
+            surname: data.surname,
+            phoneCode: data.phoneCode,
+            phoneNumber: data.phoneNumber,
+            bio: data.bio,
+            interests: data.interests,
+          };
+          await updateUserProfile(updateData).unwrap();
+        } else {
+          const updateData: UpdateTeacherProfileRequest = {
+            name: data.name,
+            surname: data.surname,
+            phoneCode: data.phoneCode,
+            phoneNumber: data.phoneNumber,
+            bio: data.bio,
+            subjects: data.interests, // Teachers use 'subjects' field
+          };
+          await updateTeacherProfile(updateData).unwrap();
+        }
       }
 
       onClose();
@@ -113,17 +151,17 @@ export default function EditProfileModal({
     }
   };
 
-  const handleInterestToggle = (categoryName: string) => {
+  const handleInterestToggle = (categoryId: number) => {
     const current = selectedInterests;
-    const newInterests = current.includes(categoryName)
-      ? current.filter((name) => name !== categoryName)
-      : [...current, categoryName];
+    const newInterests = current.includes(categoryId)
+      ? current.filter((id) => id !== categoryId)
+      : [...current, categoryId];
     setValue("interests", newInterests);
   };
 
   if (!isOpen) return null;
 
-  const isLoading = isUpdatingUser || isUpdatingTeacher;
+  const isLoading = isUpdatingUser || isUpdatingTeacher || isUpdatingUserById || isUpdatingTeacherById;
 
   return (
     <div>
@@ -216,8 +254,8 @@ export default function EditProfileModal({
                   >
                     <input
                       type="checkbox"
-                      checked={selectedInterests.includes(category.name)}
-                      onChange={() => handleInterestToggle(category.name)}
+                      checked={selectedInterests.includes(category.id)}
+                      onChange={() => handleInterestToggle(category.id)}
                       className="w-[18px] h-[18px] border border-gray-light"
                     />
                     <span className="text-[16px]">{category.name}</span>

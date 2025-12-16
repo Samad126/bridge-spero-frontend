@@ -522,6 +522,7 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         profileType="teacher"
+        userId={currentUser?.id} // Pass userId from /me endpoint
         currentData={{
           name: teacherProfile?.name || "",
           surname: teacherProfile?.surname || "",

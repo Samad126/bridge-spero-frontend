@@ -325,6 +325,7 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         profileType="student"
+        userId={currentUser?.id} // Pass userId from /me endpoint
         currentData={{
           name: userProfile?.name || "",
           surname: userProfile?.surname || "",
