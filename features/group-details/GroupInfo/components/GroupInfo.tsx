@@ -49,6 +49,7 @@ function GroupInfo({ group, groupId, isAuthenticated }: GroupInfoProps) {
           groupId={groupId}
           teacherId={group.teacher.id}
           imageUrl={group.imageUrl}
+          isAuthenticated={isAuthenticated}
         />
       </div>
     </section>
