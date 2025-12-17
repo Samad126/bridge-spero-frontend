@@ -67,7 +67,9 @@ const StudentRegistration = () => {
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/categories`
+        );
         const data = await response.json();
         setSubjects(Array.isArray(data) ? data : data.data || []);
       } catch (error) {
@@ -83,14 +85,22 @@ const StudentRegistration = () => {
     setFieldErrors({});
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup/user`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/signup/user`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (response.status === 200) {
+        router.push("/login");
+        return;
+      }
 
       const result: BackendErrorResponse = await response.json();
 
@@ -108,9 +118,6 @@ const StudentRegistration = () => {
         setApiError(result.errorMessage || "Registration failed");
         return;
       }
-
-      // Redirect to login page after successful registration
-      router.push("/login");
     } catch (error) {
       console.error("Registration error:", error);
       setApiError("An unexpected error occurred. Please try again.");
@@ -252,7 +259,9 @@ const StudentRegistration = () => {
                 id="confirmPassword"
                 placeholder="Confirm Password"
                 label="Confirm Password *"
-                error={errors.confirmPassword?.message || fieldErrors.confirmPassword}
+                error={
+                  errors.confirmPassword?.message || fieldErrors.confirmPassword
+                }
                 className="outline-0 h-[43px]"
                 {...register("confirmPassword")}
               />
@@ -264,7 +273,10 @@ const StudentRegistration = () => {
               </label>
               <div className="grid grid-cols-2 gap-2 p-[12px] border border-gray-light">
                 {subjects.map((subject) => (
-                  <label key={subject.id} className="flex items-center gap-2 cursor-pointer">
+                  <label
+                    key={subject.id}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       checked={selectedSubjects.includes(subject.id)}
@@ -304,7 +316,10 @@ const StudentRegistration = () => {
                 {...register("agreedToTerms")}
                 className="w-[18px] h-[18px] border border-gray-light"
               />
-              <label htmlFor="agreedToTerms" className="text-[15px] leading-[100%] lg:block">
+              <label
+                htmlFor="agreedToTerms"
+                className="text-[15px] leading-[100%] lg:block"
+              >
                 I agree to the{" "}
                 <span
                   onClick={(e) => {

@@ -69,7 +69,9 @@ const TeacherRegistration = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/categories`
+        );
         const data = await response.json();
         setCategories(Array.isArray(data) ? data : data.data || []);
       } catch (error) {
@@ -115,11 +117,19 @@ const TeacherRegistration = () => {
         formData.append("demoVideo", demoVideoFile);
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup/teacher`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/signup/teacher`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        }
+      );
+
+      if (response.status === 200) {
+        router.push("/login");
+        return;
+      }
 
       const result: BackendErrorResponse = await response.json();
 
@@ -137,9 +147,6 @@ const TeacherRegistration = () => {
         setApiError(result.errorMessage || "Registration failed");
         return;
       }
-
-      // Redirect to login page after successful registration
-      router.push("/login");
     } catch (error) {
       console.error("Registration error:", error);
       setApiError("An unexpected error occurred. Please try again.");
@@ -281,7 +288,9 @@ const TeacherRegistration = () => {
                 id="confirmPassword"
                 placeholder="Confirm Password"
                 label="Confirm Password *"
-                error={errors.confirmPassword?.message || fieldErrors.confirmPassword}
+                error={
+                  errors.confirmPassword?.message || fieldErrors.confirmPassword
+                }
                 className="outline-0 h-[43px]"
                 {...register("confirmPassword")}
               />
@@ -293,7 +302,10 @@ const TeacherRegistration = () => {
               </label>
               <div className="grid grid-cols-2 gap-2 p-[12px] border border-gray-light">
                 {categories.map((category) => (
-                  <label key={category.id} className="flex items-center gap-2 cursor-pointer">
+                  <label
+                    key={category.id}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       checked={selectedCategories.includes(category.id)}
@@ -366,7 +378,10 @@ const TeacherRegistration = () => {
                 {...register("agreedToTerms")}
                 className="w-[18px] h-[18px] border border-gray-light"
               />
-              <label htmlFor="agreedToTerms" className="text-[15px] leading-[100%] lg:block">
+              <label
+                htmlFor="agreedToTerms"
+                className="text-[15px] leading-[100%] lg:block"
+              >
                 I agree to the{" "}
                 <span
                   onClick={(e) => {
