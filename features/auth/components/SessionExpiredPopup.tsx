@@ -22,10 +22,10 @@ export default function SessionExpiredPopup() {
     // Dispatch logout action to clear RTK Query cache
     dispatch(logout());
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signout`, {
+    fetch(`/api/logout`, {
       method: "POST",
       credentials: "include",
-    }).then(() => {
+    }).finally(() => {
       router.refresh();
     });
   };
