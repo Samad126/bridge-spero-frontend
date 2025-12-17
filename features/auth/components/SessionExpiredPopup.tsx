@@ -19,9 +19,6 @@ export default function SessionExpiredPopup() {
   const handleStayLoggedOff = () => {
     dispatch(setSessionExpiredPopup(false));
 
-    // Dispatch logout action to clear RTK Query cache
-    dispatch(logout());
-
     fetch(`/api/logout`, {
       method: "POST",
       credentials: "include",

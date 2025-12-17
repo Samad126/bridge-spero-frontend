@@ -46,7 +46,7 @@ export default function AuthWrapper({
       }
     );
 
-    // Handle session expired (optional mode)
+    // Handle session expired (always show popup and logout)
     const unsubscribeSessionExpired = AuthEventEmitter.listen(
       AuthEventType.SESSION_EXPIRED,
       (event) => {

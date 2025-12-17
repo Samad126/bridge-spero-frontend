@@ -18,6 +18,8 @@ const mutex = new Mutex();
 
 export type AuthMode = "strict" | "optional";
 
+let globalAuthMode: AuthMode = "optional";
+
 interface CustomFetchArgs extends FetchArgs {
   meta?: {
     authMode?: AuthMode;
@@ -64,6 +66,11 @@ const baseQueryWithReauth: BaseQueryFn<
             ? args.meta.authMode
             : "strict";
 
+        // Update global mode to strict if any request is strict
+        if (authMode === "strict") {
+          globalAuthMode = "strict";
+        }
+
         api.dispatch(setRefreshing(true));
 
         const refreshResult = await baseQuery(
@@ -89,7 +96,7 @@ const baseQueryWithReauth: BaseQueryFn<
         } else {
           api.dispatch(setAuthenticated(false));
 
-          if (authMode === "strict") {
+          if (globalAuthMode === "strict") {
             AuthEventEmitter.dispatch(AuthEventType.REDIRECT_TO_LOGIN, {
               mode: "strict",
               reason: "Token refresh failed",
@@ -97,7 +104,7 @@ const baseQueryWithReauth: BaseQueryFn<
             });
 
             api.dispatch(logout());
-          } else if (authMode === "optional") {
+          } else {
             AuthEventEmitter.dispatch(AuthEventType.SESSION_EXPIRED, {
               mode: "optional",
               reason: "Token refresh failed",
