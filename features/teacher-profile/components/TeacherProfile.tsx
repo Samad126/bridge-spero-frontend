@@ -19,11 +19,14 @@ import EditProfileModal from "@/features/profile/components/EditProfileModal";
 
 interface TeacherProfileProps {
   teacherId?: number;
+  isAuthenticated?: boolean;
 }
 
-const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
+const TeacherProfile = ({ teacherId, isAuthenticated = false }: TeacherProfileProps) => {
   // Fetch current logged-in user data
-  const { data: currentUser } = useGetUserProfileOptionalQuery();
+  const { data: currentUser } = useGetUserProfileOptionalQuery(undefined, {
+    skip: !isAuthenticated,
+  });
 
   // If no teacherId provided, assume viewing own profile (for logged-in teacher)
   const profileTeacherId = teacherId || currentUser?.id;

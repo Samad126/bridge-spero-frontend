@@ -8,11 +8,14 @@ import EditProfileModal from "@/features/profile/components/EditProfileModal";
 
 interface StudentProfileProps {
   userId?: number;
+  isAuthenticated?: boolean;
 }
 
-const StudentProfile = ({ userId }: StudentProfileProps) => {
+const StudentProfile = ({ userId, isAuthenticated = false }: StudentProfileProps) => {
   // Fetch current logged-in user data
-  const { data: currentUser } = useGetUserProfileOptionalQuery();
+  const { data: currentUser } = useGetUserProfileOptionalQuery(undefined, {
+    skip: !isAuthenticated,
+  });
 
   // If no userId provided, assume viewing own profile (for logged-in student)
   const profileUserId = userId || currentUser?.id;
