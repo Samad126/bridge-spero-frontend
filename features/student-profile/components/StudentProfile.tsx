@@ -330,12 +330,12 @@ const StudentProfile = ({ userId, isAuthenticated = false }: StudentProfileProps
         profileType="student"
         userId={currentUser?.id} // Pass userId from /me endpoint
         currentData={{
-          name: userProfile?.name || "",
-          surname: userProfile?.surname || "",
-          phoneNumber: userProfile?.phone || "",
-          phoneCode: "+994",
-          bio: userProfile?.bio || "",
-          interests: userProfile?.interests || [],
+          name: currentUser?.name || userProfile?.name || "",
+          surname: currentUser?.surname || userProfile?.surname || "",
+          phoneNumber: currentUser?.phoneNumber || userProfile?.phoneNumber || "",
+          phoneCode: currentUser?.phoneCode || userProfile?.phoneCode || "+994",
+          bio: currentUser?.bio || userProfile?.bio || "",
+          interests: currentUser?.interestCategoryIds || userProfile?.interestCategoryIds || [],
         }}
       />
     </section>

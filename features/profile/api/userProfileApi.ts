@@ -8,8 +8,15 @@ export interface UserProfile {
   name: string;
   surname: string;
   email: string;
+  phoneCode: string;
+  phoneNumber: string;
+  bio?: string | null;
+  interestCategoryIds: number[];
   imageUrl?: string | null;
-  // Add other fields as needed based on backend response
+  profilePictureUrl?: string | null;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export const userProfileApi = baseApi.injectEndpoints({

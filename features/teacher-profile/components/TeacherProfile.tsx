@@ -527,11 +527,11 @@ const TeacherProfile = ({ teacherId, isAuthenticated = false }: TeacherProfilePr
         profileType="teacher"
         userId={currentUser?.id} // Pass userId from /me endpoint
         currentData={{
-          name: teacherProfile?.name || "",
-          surname: teacherProfile?.surname || "",
-          phoneNumber: teacherProfile?.phone || "",
-          phoneCode: "+994",
-          bio: teacherProfile?.bio || "",
+          name: currentUser?.name || teacherProfile?.name || "",
+          surname: currentUser?.surname || teacherProfile?.surname || "",
+          phoneNumber: currentUser?.phoneNumber || teacherProfile?.phoneNumber || "",
+          phoneCode: currentUser?.phoneCode || teacherProfile?.phoneCode || "+994",
+          bio: currentUser?.bio || teacherProfile?.bio || "",
         }}
       />
     </section>

@@ -36,11 +36,6 @@ export const studentRegistrationSchema = yup.object({
     .string()
     .oneOf([yup.ref("password")], "Passwords must match")
     .required("Confirm password is required"),
-  interests: yup
-    .array()
-    .of(yup.number().required())
-    .min(1, "Please select at least one subject")
-    .required("Subjects are required"),
   bio: yup.string().optional(),
   agreedToTerms: yup
     .boolean()

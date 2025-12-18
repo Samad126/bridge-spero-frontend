@@ -9,7 +9,7 @@ import {
   StudentRegistrationFormData,
   studentRegistrationSchema,
 } from "../schemas/authSchemas";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PrivacyPolicyModal from "@/features/privacy-policy/components/PrivacyPolicyModal";
 import PasswordInput from "../components/PasswordInput";
 
@@ -26,58 +26,26 @@ interface BackendErrorResponse {
   timestamp?: string;
 }
 
-interface Subject {
-  id: number;
-  name: string;
-}
 
 const StudentRegistration = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [subjects, setSubjects] = useState<Subject[]>([]);
-  const [selectedSubjects, setSelectedSubjects] = useState<number[]>([]);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm({
     resolver: yupResolver(studentRegistrationSchema),
     mode: "onChange",
     defaultValues: {
       phoneCode: "+994",
-      interests: [] as number[],
       agreedToTerms: false,
     },
   });
-
-  const handleSubjectChange = (subjectId: number) => {
-    const newSelectedSubjects = selectedSubjects.includes(subjectId)
-      ? selectedSubjects.filter((id) => id !== subjectId)
-      : [...selectedSubjects, subjectId];
-
-    setSelectedSubjects(newSelectedSubjects);
-    setValue("interests", newSelectedSubjects);
-  };
-
-  useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/categories`
-        );
-        const data = await response.json();
-        setSubjects(Array.isArray(data) ? data : data.data || []);
-      } catch (error) {
-        console.error("Failed to fetch subjects:", error);
-      }
-    };
-    fetchSubjects();
-  }, []);
 
   const onSubmit = async (data: StudentRegistrationFormData) => {
     setIsLoading(true);
@@ -265,33 +233,6 @@ const StudentRegistration = () => {
                 className="outline-0 h-[43px]"
                 {...register("confirmPassword")}
               />
-            </div>
-
-            <div className="w-full lg:col-span-2">
-              <label className="leading-[100%] block w-full mb-[8px]">
-                Which Categories Interests You
-              </label>
-              <div className="grid grid-cols-2 gap-2 p-[12px] border border-gray-light">
-                {subjects.map((subject) => (
-                  <label
-                    key={subject.id}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedSubjects.includes(subject.id)}
-                      onChange={() => handleSubjectChange(subject.id)}
-                      className="w-[18px] h-[18px] border border-gray-light"
-                    />
-                    <span className="text-sm">{subject.name}</span>
-                  </label>
-                ))}
-              </div>
-              {(errors.interests || fieldErrors.interests) && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.interests?.message || fieldErrors.interests}
-                </p>
-              )}
             </div>
 
             <div className="w-full lg:col-span-2">

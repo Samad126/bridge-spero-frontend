@@ -6,6 +6,8 @@ export interface TeacherPublicProfile {
   surname: string | null;
   rating: number | null;
   phone: string | null;
+  phoneCode: string | null;
+  phoneNumber: string | null;
   email: string | null;
   students: number | null;
   bio: string | null;
@@ -19,8 +21,10 @@ export interface UserPublicProfile {
   name: string | null;
   surname: string | null;
   phone: string | null;
+  phoneCode: string | null;
+  phoneNumber: string | null;
   email: string | null;
-  interests: number[]; // Category IDs
+  interestCategoryIds: number[]; // Category IDs
   bio: string | null;
   imageUrl: string | null;
   backgroundImageUrl: string | null;
@@ -59,7 +63,7 @@ export interface UpdateProfileRequest {
   surname?: string;
   phoneCode?: string;
   phoneNumber?: string;
-  interests?: number[]; // Category IDs
+  userInterestCategoryIds?: number[]; // Category IDs
   bio?: string;
 }
 

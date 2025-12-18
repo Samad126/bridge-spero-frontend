@@ -18,7 +18,7 @@ type EditProfileModalProps = {
     phoneNumber?: string;
     phoneCode?: string;
     bio?: string;
-    interests?: number[]; // Category IDs
+    interests?: number[]; // Category IDs (kept as interests for internal use)
   };
 };
 
@@ -107,7 +107,7 @@ export default function EditProfileModal({
             phoneCode: data.phoneCode,
             phoneNumber: data.phoneNumber,
             bio: data.bio,
-            interests: data.interests,
+            userInterestCategoryIds: data.interests,
           };
           await updateUserById({ id: userId, data: updateData }).unwrap();
         } else {
@@ -129,7 +129,7 @@ export default function EditProfileModal({
             phoneCode: data.phoneCode,
             phoneNumber: data.phoneNumber,
             bio: data.bio,
-            interests: data.interests,
+            userInterestCategoryIds: data.interests,
           };
           await updateUserProfile(updateData).unwrap();
         } else {
