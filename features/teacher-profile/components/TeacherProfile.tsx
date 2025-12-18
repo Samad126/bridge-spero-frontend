@@ -532,7 +532,6 @@ const TeacherProfile = ({ teacherId, isAuthenticated = false }: TeacherProfilePr
           phoneNumber: teacherProfile?.phone || "",
           phoneCode: "+994",
           bio: teacherProfile?.bio || "",
-          interests: teacherProfile?.interests || [],
         }}
       />
     </section>

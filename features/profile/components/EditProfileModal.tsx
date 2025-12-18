@@ -115,7 +115,6 @@ export default function EditProfileModal({
             phoneCode: data.phoneCode,
             phoneNumber: data.phoneNumber,
             bio: data.bio,
-            subjects: data.interests, // Teachers use 'subjects' field
           };
           await updateTeacherById({ id: userId, data: updateData }).unwrap();
         }
@@ -138,7 +137,6 @@ export default function EditProfileModal({
             phoneCode: data.phoneCode,
             phoneNumber: data.phoneNumber,
             bio: data.bio,
-            subjects: data.interests, // Teachers use 'subjects' field
           };
           await updateTeacherProfile(updateData).unwrap();
         }
@@ -233,40 +231,42 @@ export default function EditProfileModal({
             )}
           </div>
 
-          <div className="flex flex-col gap-[12px]">
-            <label className="text-secondary text-[18px]">
-              Interests (Choose Categories)
-            </label>
-            <div className="grid grid-cols-2 gap-[12px] p-[12px] border border-gray-light">
-              {isLoadingCategories ? (
-                <div className="col-span-2 text-center py-[12px] text-gray-400">
-                  Loading categories...
-                </div>
-              ) : !categories || categories.length === 0 ? (
-                <div className="col-span-2 text-center py-[12px] text-gray-400">
-                  No categories available
-                </div>
-              ) : (
-                categories.map((category: Category) => (
-                  <label
-                    key={category.id}
-                    className="flex items-center gap-[8px] cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedInterests.includes(category.id)}
-                      onChange={() => handleInterestToggle(category.id)}
-                      className="w-[18px] h-[18px] border border-gray-light"
-                    />
-                    <span className="text-[16px]">{category.name}</span>
-                  </label>
-                ))
+          {profileType === "student" && (
+            <div className="flex flex-col gap-[12px]">
+              <label className="text-secondary text-[18px]">
+                Interests (Choose Categories)
+              </label>
+              <div className="grid grid-cols-2 gap-[12px] p-[12px] border border-gray-light">
+                {isLoadingCategories ? (
+                  <div className="col-span-2 text-center py-[12px] text-gray-400">
+                    Loading categories...
+                  </div>
+                ) : !categories || categories.length === 0 ? (
+                  <div className="col-span-2 text-center py-[12px] text-gray-400">
+                    No categories available
+                  </div>
+                ) : (
+                  categories.map((category: Category) => (
+                    <label
+                      key={category.id}
+                      className="flex items-center gap-[8px] cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedInterests.includes(category.id)}
+                        onChange={() => handleInterestToggle(category.id)}
+                        className="w-[18px] h-[18px] border border-gray-light"
+                      />
+                      <span className="text-[16px]">{category.name}</span>
+                    </label>
+                  ))
+                )}
+              </div>
+              {errors.interests && (
+                <p className="text-red-500 text-sm">{errors.interests.message}</p>
               )}
             </div>
-            {errors.interests && (
-              <p className="text-red-500 text-sm">{errors.interests.message}</p>
-            )}
-          </div>
+          )}
 
           <div className="flex flex-col gap-[12px]">
             <label className="text-secondary text-[18px]">Bio</label>

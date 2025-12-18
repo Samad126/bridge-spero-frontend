@@ -10,7 +10,7 @@ import {
   teacherRegistrationSchema,
   TeacherRegistrationFormData,
 } from "../schemas/authSchemas";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PrivacyPolicyModal from "@/features/privacy-policy/components/PrivacyPolicyModal";
 import PasswordInput from "../components/PasswordInput";
 
@@ -27,18 +27,11 @@ interface BackendErrorResponse {
   timestamp?: string;
 }
 
-interface Category {
-  id: number;
-  name: string;
-}
-
 const TeacherRegistration = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [demoVideoFile, setDemoVideoFile] = useState<File | null>(null);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
@@ -46,40 +39,14 @@ const TeacherRegistration = () => {
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm({
     resolver: yupResolver(teacherRegistrationSchema),
     mode: "onChange",
     defaultValues: {
       phoneCode: "+994",
-      subjects: [] as number[],
       agreedToTerms: false,
     },
   });
-
-  const handleCategoryChange = (categoryId: number) => {
-    const newSelectedCategories = selectedCategories.includes(categoryId)
-      ? selectedCategories.filter((id) => id !== categoryId)
-      : [...selectedCategories, categoryId];
-
-    setSelectedCategories(newSelectedCategories);
-    setValue("subjects", newSelectedCategories);
-  };
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/categories`
-        );
-        const data = await response.json();
-        setCategories(Array.isArray(data) ? data : data.data || []);
-      } catch (error) {
-        console.error("Failed to fetch categories:", error);
-      }
-    };
-    fetchCategories();
-  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -102,11 +69,6 @@ const TeacherRegistration = () => {
       formData.append("phoneNumber", data.phoneNumber);
       formData.append("password", data.password);
       formData.append("confirmPassword", data.confirmPassword);
-
-      // Append each subject ID individually
-      data.subjects.forEach((subjectId) => {
-        formData.append("subjects", subjectId.toString());
-      });
 
       if (data.bio) {
         formData.append("bio", data.bio);
@@ -294,33 +256,6 @@ const TeacherRegistration = () => {
                 className="outline-0 h-[43px]"
                 {...register("confirmPassword")}
               />
-            </div>
-
-            <div className="w-full lg:col-span-2">
-              <label className="leading-[100%] block w-full mb-[8px]">
-                Choose Categories *
-              </label>
-              <div className="grid grid-cols-2 gap-2 p-[12px] border border-gray-light">
-                {categories.map((category) => (
-                  <label
-                    key={category.id}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selectedCategories.includes(category.id)}
-                      onChange={() => handleCategoryChange(category.id)}
-                      className="w-[18px] h-[18px] border border-gray-light"
-                    />
-                    <span className="text-sm">{category.name}</span>
-                  </label>
-                ))}
-              </div>
-              {(errors.subjects || fieldErrors.subjects) && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors.subjects?.message || fieldErrors.subjects}
-                </p>
-              )}
             </div>
 
             <div className="w-full lg:col-span-2">

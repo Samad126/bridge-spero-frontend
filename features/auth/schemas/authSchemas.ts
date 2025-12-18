@@ -72,11 +72,6 @@ export const teacherRegistrationSchema = yup.object({
     .string()
     .oneOf([yup.ref("password")], "Passwords must match")
     .required("Confirm password is required"),
-  subjects: yup
-    .array()
-    .of(yup.number().required())
-    .min(1, "Please select at least one category")
-    .required("Categories are required"),
   bio: yup.string().optional(),
   agreedToTerms: yup
     .boolean()
