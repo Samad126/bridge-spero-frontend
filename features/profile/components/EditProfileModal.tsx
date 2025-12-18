@@ -51,7 +51,9 @@ export default function EditProfileModal({
   const [updateTeacherProfile, { isLoading: isUpdatingTeacher }] = useUpdateTeacherProfileMutation();
   const [updateUserById, { isLoading: isUpdatingUserById }] = useUpdateUserByIdMutation();
   const [updateTeacherById, { isLoading: isUpdatingTeacherById }] = useUpdateTeacherByIdMutation();
-  const { data: categories, isLoading: isLoadingCategories } = useGetCategoriesQuery();
+  const { data: categories, isLoading: isLoadingCategories } = useGetCategoriesQuery(undefined, {
+    skip: !isOpen,
+  });
 
   const {
     register,

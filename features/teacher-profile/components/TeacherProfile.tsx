@@ -28,8 +28,8 @@ const TeacherProfile = ({ teacherId, isAuthenticated = false }: TeacherProfilePr
     skip: !isAuthenticated,
   });
 
-  // If no teacherId provided, assume viewing own profile (for logged-in teacher)
-  const profileTeacherId = teacherId || currentUser?.id;
+  // If no teacherId provided, use currentUser's ID when they're a teacher
+  const profileTeacherId = teacherId || (currentUser?.role === "TEACHER" ? currentUser?.id : undefined);
 
   // Fetch teacher profile data
   const { data: teacherProfile, isLoading } = useGetTeacherPublicProfileQuery(
