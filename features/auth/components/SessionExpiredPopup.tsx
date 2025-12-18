@@ -13,17 +13,22 @@ export default function SessionExpiredPopup() {
 
   const handleLogin = () => {
     dispatch(setSessionExpiredPopup(false));
+    dispatch(logout());
+    removeTokens();
     router.push("/login");
   };
 
   const handleStayLoggedOff = () => {
     dispatch(setSessionExpiredPopup(false));
+    removeTokens();
+  };
 
+  const removeTokens = () => {
     fetch(`/api/logout`, {
       method: "POST",
       credentials: "include",
     }).finally(() => {
-      router.refresh();
+      location.reload();
     });
   };
 

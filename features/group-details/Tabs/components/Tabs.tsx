@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import TabHeader from "./TabHeader";
 import TabContent from "./TabContent";
 import { tabData } from "../constants/tabData";
@@ -50,6 +50,12 @@ function Tabs({ groupId, isAuthenticated, teacherId }: TabsProps) {
     // Not enrolled: Show only Schedule and Syllabus
     return tabData.filter((tab) => tab.id === 1 || tab.id === 2);
   }, [isAuthenticated, isGroupOwner, isEnrolled]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setActiveTabId(1);
+    }
+  }, [isAuthenticated]);
 
   if (isLoading && isAuthenticated) {
     return (
