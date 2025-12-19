@@ -18,19 +18,16 @@ const mutex = new Mutex();
 
 export type AuthMode = "strict" | "optional";
 
+let globalAuthMode: AuthMode = "optional";
+
 interface CustomFetchArgs extends FetchArgs {
   meta?: {
     authMode?: AuthMode;
   };
 }
 
-const shouldGoDirectToBackend = (url: string): boolean => {
-  const directEndpoints = ["/auth/login", "/auth/register", "/auth/logout"];
-  return directEndpoints.some((endpoint) => url.includes(endpoint));
-};
-
 const dynamicBaseQuery = fetchBaseQuery({
-  baseUrl: "/",
+  baseUrl: process.env.NEXT_PUBLIC_API_URL || "https://dev.bridgespero.com/api/v1",
   credentials: "include",
   prepareHeaders: (headers) => {
     return headers;
@@ -42,21 +39,7 @@ const baseQuery: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  let adjustedArgs: CustomFetchArgs;
-
-  if (typeof args === "string") {
-    adjustedArgs = { url: args };
-  } else {
-    adjustedArgs = { ...args };
-  }
-
-  if (shouldGoDirectToBackend(adjustedArgs.url)) {
-    adjustedArgs.url = `${process.env.NEXT_PUBLIC_API_URL}${adjustedArgs.url}`;
-  } else {
-    adjustedArgs.url = `/api${adjustedArgs.url}`;
-  }
-
-  return dynamicBaseQuery(adjustedArgs, api, extraOptions);
+  return dynamicBaseQuery(args, api, extraOptions);
 };
 
 const baseQueryWithReauth: BaseQueryFn<
@@ -83,11 +66,16 @@ const baseQueryWithReauth: BaseQueryFn<
             ? args.meta.authMode
             : "strict";
 
+        // Update global mode to strict if any request is strict
+        if (authMode === "strict") {
+          globalAuthMode = "strict";
+        }
+
         api.dispatch(setRefreshing(true));
 
         const refreshResult = await baseQuery(
           {
-            url: "/refresh",
+            url: "/auth/refresh",
             method: "POST",
           },
           api,
@@ -108,7 +96,7 @@ const baseQueryWithReauth: BaseQueryFn<
         } else {
           api.dispatch(setAuthenticated(false));
 
-          if (authMode === "strict") {
+          if (globalAuthMode === "strict") {
             AuthEventEmitter.dispatch(AuthEventType.REDIRECT_TO_LOGIN, {
               mode: "strict",
               reason: "Token refresh failed",
@@ -116,7 +104,7 @@ const baseQueryWithReauth: BaseQueryFn<
             });
 
             api.dispatch(logout());
-          } else if (authMode === "optional") {
+          } else {
             AuthEventEmitter.dispatch(AuthEventType.SESSION_EXPIRED, {
               mode: "optional",
               reason: "Token refresh failed",

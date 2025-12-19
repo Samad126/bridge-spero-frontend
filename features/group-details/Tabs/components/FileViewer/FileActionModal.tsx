@@ -10,7 +10,7 @@ interface FileActionModalProps {
   onPreview: () => void;
   fileName: string;
   contentType: string;
-  isDownloading: boolean;
+  // isDownloading: boolean;
 }
 
 function FileActionModal({
@@ -20,7 +20,7 @@ function FileActionModal({
   onPreview,
   fileName,
   contentType,
-  isDownloading,
+  // isDownloading,
 }: FileActionModalProps) {
   if (!isOpen) return null;
 
@@ -90,12 +90,12 @@ function FileActionModal({
             {/* Download button */}
             <button
               onClick={onDownload}
-              disabled={isDownloading}
+              // disabled={isDownloading}
               className="w-full border border-gray-light p-[16px] flex items-center gap-[12px] hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Image src="/download.svg" alt="download" width={24} height={24} />
               <span className="text-[18px]">
-                {isDownloading ? "Downloading..." : `Download ${fileInfo.displayName}`}
+                Download {fileInfo.displayName}
               </span>
             </button>
           </div>

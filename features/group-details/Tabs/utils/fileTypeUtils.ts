@@ -110,7 +110,7 @@ export function getFileTypeInfo(contentType: string): FileTypeInfo {
       category: 'image',
       canStream: true,
       canPreview: true,
-      icon: '/image.svg',
+      icon: '/file-text.svg',
       displayName: 'Image',
     };
   }

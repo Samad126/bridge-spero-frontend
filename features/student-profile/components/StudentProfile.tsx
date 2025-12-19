@@ -8,11 +8,14 @@ import EditProfileModal from "@/features/profile/components/EditProfileModal";
 
 interface StudentProfileProps {
   userId?: number;
+  isAuthenticated?: boolean;
 }
 
-const StudentProfile = ({ userId }: StudentProfileProps) => {
+const StudentProfile = ({ userId, isAuthenticated = false }: StudentProfileProps) => {
   // Fetch current logged-in user data
-  const { data: currentUser } = useGetUserProfileOptionalQuery();
+  const { data: currentUser } = useGetUserProfileOptionalQuery(undefined, {
+    skip: !isAuthenticated,
+  });
 
   // If no userId provided, assume viewing own profile (for logged-in student)
   const profileUserId = userId || currentUser?.id;
@@ -325,13 +328,14 @@ const StudentProfile = ({ userId }: StudentProfileProps) => {
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         profileType="student"
+        userId={currentUser?.id} // Pass userId from /me endpoint
         currentData={{
-          name: userProfile?.name || "",
-          surname: userProfile?.surname || "",
-          phoneNumber: userProfile?.phone || "",
-          phoneCode: "+994",
-          bio: userProfile?.bio || "",
-          interests: userProfile?.interests || [],
+          name: currentUser?.name || userProfile?.name || "",
+          surname: currentUser?.surname || userProfile?.surname || "",
+          phoneNumber: currentUser?.phoneNumber || userProfile?.phoneNumber || "",
+          phoneCode: currentUser?.phoneCode || userProfile?.phoneCode || "+994",
+          bio: currentUser?.bio || userProfile?.bio || "",
+          interests: currentUser?.interestCategoryIds || userProfile?.interestCategoryIds || [],
         }}
       />
     </section>

@@ -160,7 +160,7 @@ function SyllabusCard({ cardStatus, syllabusPath, groupId, isTeacher }: Syllabus
             onPreview={handlePreview}
             fileName="Syllabus"
             contentType={contentType}
-            isDownloading={false}
+            // isDownloading={false}
           />
 
           {/* File Preview Popup */}

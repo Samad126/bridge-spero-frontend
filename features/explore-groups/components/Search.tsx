@@ -1,6 +1,6 @@
 "use client";
 
-import { useQueryStates, parseAsString } from "nuqs";
+import { useQueryStates, parseAsString, parseAsInteger } from "nuqs";
 import { useRouter } from "next/navigation";
 import { FormEvent, useTransition } from "react";
 import { Language } from "@/features/group-form/types/groupFormTypes";
@@ -12,6 +12,7 @@ function Search() {
     {
       groupName: parseAsString.withDefault(""),
       language: parseAsString.withDefault(""),
+      pageNumber: parseAsInteger.withDefault(0),
     },
     {
       history: "push",
@@ -36,6 +37,7 @@ function Search() {
     setFilters({
       groupName: groupName || "",
       language: language || "",
+      pageNumber: 0,
     });
   };
 

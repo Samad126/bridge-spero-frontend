@@ -1,5 +1,9 @@
 import TeacherRegistration from '@/features/auth/teacher-registration/TeacherRegistration'
-import React from 'react'
+
+export const metadata = {
+  title: "Teacher Registration | Bridge Spero",
+  description: "Teacher Registration to Bridge Spero",
+};
 
 const page = () => {
   return (

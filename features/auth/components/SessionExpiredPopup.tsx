@@ -13,19 +13,22 @@ export default function SessionExpiredPopup() {
 
   const handleLogin = () => {
     dispatch(setSessionExpiredPopup(false));
+    dispatch(logout());
+    removeTokens();
     router.push("/login");
   };
 
   const handleStayLoggedOff = () => {
     dispatch(setSessionExpiredPopup(false));
+    removeTokens();
+  };
 
-    // Dispatch logout action to clear RTK Query cache
-    dispatch(logout());
-
-    fetch("/api/logout", {
+  const removeTokens = () => {
+    fetch(`/api/logout`, {
       method: "POST",
-    }).then(() => {
-      router.refresh();
+      credentials: "include",
+    }).finally(() => {
+      location.reload();
     });
   };
 

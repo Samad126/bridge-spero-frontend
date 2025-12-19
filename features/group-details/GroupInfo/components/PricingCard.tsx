@@ -24,9 +24,10 @@ interface PricingCardProps {
   groupId: string;
   teacherId: number;
   imageUrl?: string;
+  isAuthenticated: boolean;
 }
 
-function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) {
+function PricingCard({ price, groupId, teacherId, imageUrl, isAuthenticated }: PricingCardProps) {
   const [isOpened, setIsOpened] = useState(true);
   const [isStartingLesson, setIsStartingLesson] = useState(false);
   const router = useRouter();
@@ -38,7 +39,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
 
   // Fetch user data using RTK Query (optional auth - won't redirect if not authenticated)
   const { data: userData, isLoading } = useGetUserProfileOptionalQuery(undefined, {
-    
+    skip: !isAuthenticated,
   });
 
   // Check if user is a member (skip only if not authenticated or if user is the teacher owner)
@@ -208,7 +209,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
   };
 
   // Show loading skeleton while fetching user data
-  if (isLoading) {
+  if (isLoading && isAuthenticated) {
     return <PricingCardSkeleton isOpened={isOpened} />;
   }
 
@@ -304,11 +305,8 @@ function PricingCard({ price, groupId, teacherId, imageUrl }: PricingCardProps) 
     );
   }
 
-  // Check if user is authenticated
-  const isAuthenticated = !!userData;
-
-  // Non-logged-in user view
-  if (!isAuthenticated) {
+  // Non-logged-in user view (using prop isAuthenticated)
+  if (!isAuthenticated || !userData) {
     return (
       <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-10 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
         <button

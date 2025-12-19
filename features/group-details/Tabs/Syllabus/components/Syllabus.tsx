@@ -9,7 +9,7 @@ interface SyllabusProps {
 }
 
 function Syllabus({ groupId, isGroupOwner }: SyllabusProps) {
-  const { data: syllabusData, isLoading, error } = useGetGroupSyllabusQuery(Number(groupId));
+  const { data: syllabusData, isLoading } = useGetGroupSyllabusQuery(Number(groupId));
 
   if (isLoading) {
     return (

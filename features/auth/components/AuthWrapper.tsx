@@ -35,8 +35,9 @@ export default function AuthWrapper({
         }
 
         // Clear Tokens
-        fetch("/api/logout", {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signout`, {
           method: "POST",
+          credentials: "include",
         })
           .then(() => {})
           .catch(() => {});
@@ -45,7 +46,7 @@ export default function AuthWrapper({
       }
     );
 
-    // Handle session expired (optional mode)
+    // Handle session expired (always show popup and logout)
     const unsubscribeSessionExpired = AuthEventEmitter.listen(
       AuthEventType.SESSION_EXPIRED,
       (event) => {

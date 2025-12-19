@@ -19,14 +19,17 @@ import EditProfileModal from "@/features/profile/components/EditProfileModal";
 
 interface TeacherProfileProps {
   teacherId?: number;
+  isAuthenticated?: boolean;
 }
 
-const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
+const TeacherProfile = ({ teacherId, isAuthenticated = false }: TeacherProfileProps) => {
   // Fetch current logged-in user data
-  const { data: currentUser } = useGetUserProfileOptionalQuery();
+  const { data: currentUser } = useGetUserProfileOptionalQuery(undefined, {
+    skip: !isAuthenticated,
+  });
 
-  // If no teacherId provided, assume viewing own profile (for logged-in teacher)
-  const profileTeacherId = teacherId || currentUser?.id;
+  // If no teacherId provided, use currentUser's ID when they're a teacher
+  const profileTeacherId = teacherId || (currentUser?.role === "TEACHER" ? currentUser?.id : undefined);
 
   // Fetch teacher profile data
   const { data: teacherProfile, isLoading } = useGetTeacherPublicProfileQuery(
@@ -522,13 +525,13 @@ const TeacherProfile = ({ teacherId }: TeacherProfileProps) => {
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
         profileType="teacher"
+        userId={currentUser?.id} // Pass userId from /me endpoint
         currentData={{
-          name: teacherProfile?.name || "",
-          surname: teacherProfile?.surname || "",
-          phoneNumber: teacherProfile?.phone || "",
-          phoneCode: "+994",
-          bio: teacherProfile?.bio || "",
-          interests: teacherProfile?.interests || [],
+          name: currentUser?.name || teacherProfile?.name || "",
+          surname: currentUser?.surname || teacherProfile?.surname || "",
+          phoneNumber: currentUser?.phoneNumber || teacherProfile?.phoneNumber || "",
+          phoneCode: currentUser?.phoneCode || teacherProfile?.phoneCode || "+994",
+          bio: currentUser?.bio || teacherProfile?.bio || "",
         }}
       />
     </section>

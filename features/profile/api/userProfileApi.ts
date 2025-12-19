@@ -8,15 +8,22 @@ export interface UserProfile {
   name: string;
   surname: string;
   email: string;
+  phoneCode: string;
+  phoneNumber: string;
+  bio?: string | null;
+  interestCategoryIds: number[];
   imageUrl?: string | null;
-  // Add other fields as needed based on backend response
+  profilePictureUrl?: string | null;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export const userProfileApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserProfile: builder.query<UserProfile, void>({
       query: () => ({
-        url: "/me",
+        url: "/users/me",
         meta: { authMode: "strict" },
       }),
       providesTags: ["User"],
@@ -24,7 +31,7 @@ export const userProfileApi = baseApi.injectEndpoints({
 
     getUserProfileOptional: builder.query<UserProfile, void>({
       query: () => ({
-        url: "/me",
+        url: "/users/me",
         meta: { authMode: "optional" },
       }),
       providesTags: ["User"],

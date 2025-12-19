@@ -22,9 +22,10 @@ interface JitsiPricingCardProps {
   groupId: string;
   teacherId: number;
   imageUrl?: string;
+  isAuthenticated: boolean;
 }
 
-function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingCardProps) {
+function JitsiPricingCard({ price, groupId, teacherId, imageUrl, isAuthenticated }: JitsiPricingCardProps) {
   const [isOpened, setIsOpened] = useState(true);
   const [isStartingLesson, setIsStartingLesson] = useState(false);
   const router = useRouter();
@@ -36,7 +37,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
 
   // Fetch user data using RTK Query (optional auth - won't redirect if not authenticated)
   const { data: userData, isLoading } = useGetUserProfileOptionalQuery(undefined, {
-
+    skip: !isAuthenticated,
   });
 
   // Check if user is a member (skip only if not authenticated or if user is the teacher owner)
@@ -175,7 +176,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
   };
 
   // Show loading skeleton while fetching user data
-  if (isLoading) {
+  if (isLoading && isAuthenticated) {
     return <PricingCardSkeleton isOpened={isOpened} />;
   }
 
@@ -271,11 +272,8 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl }: JitsiPricingC
     );
   }
 
-  // Check if user is authenticated
-  const isAuthenticated = !!userData;
-
-  // Non-logged-in user view
-  if (!isAuthenticated) {
+  // Non-logged-in user view (using prop isAuthenticated)
+  if (!isAuthenticated || !userData) {
     return (
       <div className="fixed flex flex-col items-center bottom-[20px] inset-x-[20px] z-5 xxl:sticky xxl:top-[102px] xxl:min-w-[403px]">
         <button

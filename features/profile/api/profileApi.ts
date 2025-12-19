@@ -6,8 +6,9 @@ export interface TeacherPublicProfile {
   surname: string | null;
   rating: number | null;
   phone: string | null;
+  phoneCode: string | null;
+  phoneNumber: string | null;
   email: string | null;
-  interests: string[];
   students: number | null;
   bio: string | null;
   imageUrl: string | null;
@@ -20,8 +21,10 @@ export interface UserPublicProfile {
   name: string | null;
   surname: string | null;
   phone: string | null;
+  phoneCode: string | null;
+  phoneNumber: string | null;
   email: string | null;
-  interests: string[];
+  interestCategoryIds: number[]; // Category IDs
   bio: string | null;
   imageUrl: string | null;
   backgroundImageUrl: string | null;
@@ -60,7 +63,15 @@ export interface UpdateProfileRequest {
   surname?: string;
   phoneCode?: string;
   phoneNumber?: string;
-  interests?: string[];
+  userInterestCategoryIds?: number[]; // Category IDs
+  bio?: string;
+}
+
+export interface UpdateTeacherProfileRequest {
+  name?: string;
+  surname?: string;
+  phoneCode?: string;
+  phoneNumber?: string;
   bio?: string;
 }
 
@@ -222,7 +233,7 @@ export const profileApi = baseApi.injectEndpoints({
     // Update teacher profile
     updateTeacherProfile: builder.mutation<
       TeacherPublicProfile,
-      UpdateProfileRequest
+      UpdateTeacherProfileRequest
     >({
       query: (data) => ({
         url: "/teachers/profile",
@@ -245,6 +256,34 @@ export const profileApi = baseApi.injectEndpoints({
         { type: "User", id: `teacher-${teacherId}` },
       ],
     }),
+
+    // Update user by ID (for both students and teachers)
+    updateUserById: builder.mutation<
+      UserPublicProfile | TeacherPublicProfile,
+      { id: number; data: UpdateProfileRequest }
+    >({
+      query: ({ id, data }) => ({
+        url: `/users/${id}`,
+        method: "PUT",
+        body: data,
+        meta: { authMode: "strict" },
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    // Update teacher by ID (uses /teachers/{id} endpoint)
+    updateTeacherById: builder.mutation<
+      TeacherPublicProfile,
+      { id: number; data: UpdateTeacherProfileRequest }
+    >({
+      query: ({ id, data }) => ({
+        url: `/teachers/${id}`,
+        method: "PUT",
+        body: data,
+        meta: { authMode: "strict" },
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -263,4 +302,6 @@ export const {
   useUpdateUserProfileMutation,
   useUpdateTeacherProfileMutation,
   useRateTeacherMutation,
+  useUpdateUserByIdMutation,
+  useUpdateTeacherByIdMutation,
 } = profileApi;
