@@ -8,6 +8,7 @@ import {
   useDeleteMemberMutation,
   useDeleteGroupMutation,
 } from "../../api/groupDetailsApi";
+import { useCancelJoinRequestMutation } from "@/features/notifications/api/notificationsApi";
 import {
   useLazyStartJitsiLessonQuery,
   useLazyJoinJitsiLessonQuery,
@@ -53,6 +54,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl, isAuthenticated
 
   const [joinGroup, { isLoading: isJoining }] = useJoinGroupMutation();
   const [deleteMember, { isLoading: isLeaving }] = useDeleteMemberMutation();
+  const [cancelRequest, { isLoading: isCanceling }] = useCancelJoinRequestMutation();
   const [startJitsiLessonTrigger] = useLazyStartJitsiLessonQuery();
   const [joinJitsiLessonTrigger] = useLazyJoinJitsiLessonQuery();
   const [deleteGroup, { isLoading: isDeleting }] = useDeleteGroupMutation();
@@ -133,6 +135,20 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl, isAuthenticated
       router.refresh();
     } catch (error) {
       handleApiError(error, "Leave Group");
+    }
+  };
+
+  const handleCancelRequest = async () => {
+    if (!confirm('Are you sure you want to cancel your join request?')) {
+      return;
+    }
+
+    try {
+      await cancelRequest(Number(groupId)).unwrap();
+      console.log("Request canceled successfully");
+      router.refresh();
+    } catch (error) {
+      handleApiError(error, "Cancel Request");
     }
   };
 
@@ -380,23 +396,31 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl, isAuthenticated
             ₼{price} / <span className="text-[20px]">month</span>
           </p>
 
-          <button
-            onClick={isMember ? handleJoinLesson : handleJoinGroup}
-            disabled={isJoining || isStartingLesson || isLeaving || isPending}
-            className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
-          >
-            {isJoining
-              ? "Joining..."
-              : isStartingLesson
-              ? "Starting..."
-              : isLeaving
-              ? "Leaving..."
-              : isPending
-              ? "Pending Approval"
-              : isMember
-              ? "Join Lesson"
-              : "Enroll Now"}
-          </button>
+          {isPending ? (
+            <button
+              onClick={handleCancelRequest}
+              disabled={isCanceling}
+              className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50 hover:bg-red-50"
+            >
+              {isCanceling ? "Canceling..." : "Cancel Request"}
+            </button>
+          ) : (
+            <button
+              onClick={isMember ? handleJoinLesson : handleJoinGroup}
+              disabled={isJoining || isStartingLesson || isLeaving}
+              className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
+            >
+              {isJoining
+                ? "Joining..."
+                : isStartingLesson
+                ? "Starting..."
+                : isLeaving
+                ? "Leaving..."
+                : isMember
+                ? "Join Lesson"
+                : "Enroll Now"}
+            </button>
+          )}
         </div>
       </div>
     </div>

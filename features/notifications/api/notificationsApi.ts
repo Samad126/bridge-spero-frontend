@@ -28,6 +28,15 @@ export const notificationsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Groups", "Dashboard"],
     }),
+
+    cancelJoinRequest: builder.mutation<void, number>({
+      query: (groupId) => ({
+        url: `/users/join/${groupId}/cancel`,
+        method: "DELETE",
+        meta: { authMode: "strict" },
+      }),
+      invalidatesTags: ["Groups", "Dashboard"],
+    }),
   }),
 });
 
@@ -35,4 +44,5 @@ export const {
   useGetTeacherNotificationsQuery,
   useAcceptJoinRequestMutation,
   useDeclineJoinRequestMutation,
+  useCancelJoinRequestMutation,
 } = notificationsApi;
