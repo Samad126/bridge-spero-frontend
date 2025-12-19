@@ -31,7 +31,7 @@ export const notificationsApi = baseApi.injectEndpoints({
 
     cancelJoinRequest: builder.mutation<void, number>({
       query: (groupId) => ({
-        url: `/users/join/${groupId}/cancel`,
+        url: `/users/join/${groupId}`,
         method: "DELETE",
         meta: { authMode: "strict" },
       }),
