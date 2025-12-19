@@ -57,7 +57,7 @@ export function Footer({ role }: { role: JWTPayload["role"] | null }) {
 
           <ul className="space-y-[12px]">
             <li>
-              <Link href={"/"}>About</Link>
+              <Link href={"/about"}>About</Link>
             </li>
             <li>
               <Link href={"/explore-groups"}>Explore</Link>
