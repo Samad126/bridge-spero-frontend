@@ -34,10 +34,10 @@ export const authNavItems: NavItem[] = [
 export const authIconItems: NavItem[] = [
   {
     label: "Notifications",
-    href: "#",
+    href: (role) => (role === "USER" ? "/student-notification" : "/teacher-notification"),
     isIcon: true,
     icon: "/bell.svg",
-    ariaLabel: "",
+    ariaLabel: "Notifications",
   },
   {
     label: "Profile",
@@ -51,10 +51,10 @@ export const authIconItems: NavItem[] = [
 export const mobileIconItems: NavItem[] = [
   {
     label: "Notifications",
-    href: "#",
+    href: (role) => (role === "USER" ? "/student-notification" : "/teacher-notification"),
     isIcon: true,
     icon: "/bell.svg",
-    ariaLabel: "",
+    ariaLabel: "Notifications",
   },
   {
     label: "Profile",

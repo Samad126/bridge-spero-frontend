@@ -1,97 +1,26 @@
-import Image from 'next/image'
-import React from 'react'
-import type { StudentNotification } from '../types/notificationtypes'
-
 const StudentNotification = () => {
-    const studentNotifications: StudentNotification[] = [
-        {
-            type: "lesson-starting",
-            title: "Lesson starting in 15 minutes",
-            subject: "Chemistry"
-        },
-        {
-            type: "lesson-starting",
-            title: "Lesson starting in 15 minutes",
-            subject: "Chemistry"
-        },
-        {
-            type: "others",
-            title: "Kamila Sultanli accepted your request",
-            subject: "Chemistry"
-        },
-        {
-            type: "lesson-starting",
-            title: "Lesson starting in 15 minutes",
-            subject: "Chemistry"
-        },
-        {
-            type: "others",
-            title: "Kamila Sultanli shared syllabus",
-            subject: "Chemistry"
-        },
-        {
-            type: "lesson-starting",
-            title: "Lesson starting in 15 minutes",
-            subject: "Chemistry"
-        },
-        {
-            type: "others",
-            title: "Kamila Sultanli shared syllabus",
-            subject: "Chemistry"
-        },
-        {
-            type: "lesson-starting",
-            title: "Lesson starting in 15 minutes",
-            subject: "Chemistry"
-        },
-        {
-            type: "lesson-starting",
-            title: "Lesson starting in 15 minutes",
-            subject: "Chemistry"
-        },
-        {
-            type: "lesson-starting",
-            title: "Lesson starting in 15 minutes",
-            subject: "Chemistry"
-        },
-        {
-            type: "others",
-            title: "Kamila Sultanli shared syllabus",
-            subject: "Chemistry"
-        },
-        {
-            type: "lesson-starting",
-            title: "Lesson starting in 15 minutes",
-            subject: "Chemistry"
-        },
-
-    ]
     return (
         <section className="container">
-            <div className='flex flex-col justify-center items-center'>
-                <h2 className='text-[32px] text-primary mt-10 mb-15 leading-[130%] xxl:text-[54px] xxl:mt-0'>Notifications</h2>
-                <div className='grid grid-cols-1 gap-[12px] xxl:grid-cols-3 xxl:grid-rows-4'>
-                    {studentNotifications.map((item, index) => (
-                        <div key={index} className='w-[350px] h-[119px] flex items-center gap-[20px] border border-1 border-gray-light p-[20px] xxl:w-[452px] xxl:h-[95px]'>
-                            {item.type === "others" && (
-                                <div className='relative w-[54px] h-[54px]'>
-                                    <Image
-                                        alt=''
-                                        src={'/kamila-sultanli.jpg'}
-                                        className="rounded-full object-cover"
-                                        width={54}
-                                        height={54}
-                                    />
-
-                                </div>
-                            )}
-                            <div className='flex flex-col  gap-[12px]'>
-                                <h3 className='text-[20px] text-secondary leading-[100%]'>{item.title}</h3>
-                                <p className='text-tertiary leading-[100%]'>{item.subject}</p>
-                            </div>
-                        </div>
-                    ))}
-
+            <div className='flex flex-col justify-center items-center min-h-[60vh]'>
+                <h2 className='text-[32px] text-primary mt-10 mb-[24px] leading-[130%] xxl:text-[54px] xxl:mt-0'>Notifications</h2>
+                <div className='flex flex-col items-center justify-center gap-[16px] p-[40px] border border-gray-light bg-gray-50 max-w-[600px]'>
+                    <svg
+                        className="w-[80px] h-[80px] text-secondary opacity-50"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                        />
+                    </svg>
+                    <h3 className='text-[24px] text-primary font-semibold text-center'>Coming Soon</h3>
+                    <p className='text-secondary text-center leading-[160%] text-[16px] lg:text-[18px]'>
+                        Student notifications feature is under development. You will be notified about lesson reminders, teacher updates, and group activities soon.
+                    </p>
                 </div>
             </div>
         </section>

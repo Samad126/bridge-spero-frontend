@@ -1,12 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Requests from "./Requests";
-import Notifications from "./Notifications";
+// import Notifications from "./Notifications";
 import { useGetTeacherNotificationsQuery } from "@/features/notifications/api/notificationsApi";
 import { useGetUserProfileOptionalQuery } from "@/features/profile/api/userProfileApi";
 
 const TeacherNotification = () => {
-  const [chosenCategory, setChosenCategory] = useState("requests");
+  // const [chosenCategory, setChosenCategory] = useState("requests");
 
   // Get teacher ID from profile
   const { data: userData, isLoading: isLoadingProfile } = useGetUserProfileOptionalQuery();
@@ -19,9 +19,9 @@ const TeacherNotification = () => {
     }
   );
 
-  const handleChangeCategory = (category: string) => {
-    setChosenCategory(category);
-  };
+  // const handleChangeCategory = (category: string) => {
+  //   setChosenCategory(category);
+  // };
 
   const isLoading = isLoadingProfile || isLoadingRequests;
 
@@ -30,7 +30,7 @@ const TeacherNotification = () => {
       <div className="text-primary text-center text-[32px] xxl:text-[54px] mb-[60px] xxl:mb-[80px]">
         Notifications
       </div>
-      <div className="xxl:hidden flex items-center text-center cursor-pointer mb-[24px]">
+      {/* <div className="xxl:hidden flex items-center text-center cursor-pointer mb-[24px]">
         <div
           onClick={() => handleChangeCategory("requests")}
           className={`py-[12px] ${
@@ -47,21 +47,21 @@ const TeacherNotification = () => {
         >
           Notifications 0
         </div>
-      </div>
+      </div> */}
       {isLoading ? (
         <div className="text-center text-secondary py-[40px]">Loading notifications...</div>
       ) : (
         <>
-          <div className="xxl:hidden flex items-start gap-[24px]">
+          {/* <div className="xxl:hidden flex items-start gap-[24px]">
             {chosenCategory === "requests" ? (
               <Requests requests={requests} />
             ) : (
               <Notifications />
             )}
-          </div>
-          <div className="hidden xxl:flex items-start gap-[24px]">
+          </div> */}
+          <div className="flex items-start gap-[24px]">
             <Requests requests={requests} />
-            <Notifications />
+            {/* <Notifications /> */}
           </div>
         </>
       )}
