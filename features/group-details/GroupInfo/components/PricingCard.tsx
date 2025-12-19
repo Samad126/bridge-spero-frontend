@@ -44,11 +44,14 @@ function PricingCard({ price, groupId, teacherId, imageUrl, isAuthenticated }: P
 
   // Check if user is a member (skip only if not authenticated or if user is the teacher owner)
   const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
-  const { data: isMemberData } = useCheckIsMemberQuery(Number(groupId), {
+  const { data: membershipStatus } = useCheckIsMemberQuery(Number(groupId), {
     skip: !userData || isTeacher,
   });
 
-  const isMember = isMemberData?.isMember || false;
+  console.log(membershipStatus);
+
+  const isMember = membershipStatus === "MEMBER";
+  const isPending = membershipStatus === "PENDING";
 
   const [joinGroup, { isLoading: isJoining }] = useJoinGroupMutation();
   const [deleteMember, { isLoading: isLeaving }] = useDeleteMemberMutation();
@@ -409,7 +412,7 @@ function PricingCard({ price, groupId, teacherId, imageUrl, isAuthenticated }: P
 
           <button
             onClick={isMember ? handleJoinLesson : handleJoinGroup}
-            disabled={isJoining || isStartingLesson || isLeaving}
+            disabled={isJoining || isStartingLesson || isLeaving || isPending}
             className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
           >
             {isJoining
@@ -418,6 +421,8 @@ function PricingCard({ price, groupId, teacherId, imageUrl, isAuthenticated }: P
               ? "Starting..."
               : isLeaving
               ? "Leaving..."
+              : isPending
+              ? "Pending Approval"
               : isMember
               ? "Join Lesson"
               : "Enroll Now"}

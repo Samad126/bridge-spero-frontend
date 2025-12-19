@@ -42,11 +42,14 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl, isAuthenticated
 
   // Check if user is a member (skip only if not authenticated or if user is the teacher owner)
   const isTeacher = userData?.role === "TEACHER" && userData?.id === teacherId;
-  const { data: isMemberData } = useCheckIsMemberQuery(Number(groupId), {
+  const { data: membershipStatus } = useCheckIsMemberQuery(Number(groupId), {
     skip: !userData || isTeacher,
   });
 
-  const isMember = isMemberData?.isMember || false;
+  console.log(membershipStatus);
+
+  const isMember = membershipStatus?.replace(/"/g, "") === "MEMBER";
+  const isPending = membershipStatus?.replace(/"/g, "") === "PENDING";
 
   const [joinGroup, { isLoading: isJoining }] = useJoinGroupMutation();
   const [deleteMember, { isLoading: isLeaving }] = useDeleteMemberMutation();
@@ -379,7 +382,7 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl, isAuthenticated
 
           <button
             onClick={isMember ? handleJoinLesson : handleJoinGroup}
-            disabled={isJoining || isStartingLesson || isLeaving}
+            disabled={isJoining || isStartingLesson || isLeaving || isPending}
             className="w-full bg-white text-secondary h-[46px] text-[18px] disabled:opacity-50"
           >
             {isJoining
@@ -388,6 +391,8 @@ function JitsiPricingCard({ price, groupId, teacherId, imageUrl, isAuthenticated
               ? "Starting..."
               : isLeaving
               ? "Leaving..."
+              : isPending
+              ? "Pending Approval"
               : isMember
               ? "Join Lesson"
               : "Enroll Now"}
