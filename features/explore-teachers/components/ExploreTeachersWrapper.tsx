@@ -19,7 +19,7 @@ export default function ExploreTeachersWrapper({
   const pageNumber = searchParams.pageNumber
     ? parseInt(searchParams.pageNumber)
     : 0;
-  const pageSize = searchParams.pageSize ? parseInt(searchParams.pageSize) : 10;
+  const pageSize = searchParams.pageSize ? parseInt(searchParams.pageSize) : 12;
 
   return (
     <ErrorBoundary

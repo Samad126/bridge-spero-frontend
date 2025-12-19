@@ -14,7 +14,7 @@ export const myGroupsApi = baseApi.injectEndpoints({
     >({
       query: ({ role, filters }) => {
         const endpoint =
-          role === "TEACHER" ? "/teachers/groups" : "/students/groups";
+          role === "TEACHER" ? "/teachers/groups" : "/users/groups";
 
         const params = new URLSearchParams();
 
