@@ -55,7 +55,8 @@ export const createGroupSchema = yup.object().shape({
     })
     .required("Price is required")
     .positive("Price must be a positive number")
-    .min(0.01, "Price must be at least 0.01"),
+    .min(0.01, "Price must be at least 0.01")
+    .max(10000, "Price must not exceed 10000"),
   
   description: yup
     .string()
