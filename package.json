@@ -1,6 +1,6 @@
 {
   "name": "bridge-spero-frontend",
-  "version": "0.14.9",
+  "version": "0.14.13",
   "private": true,
   "scripts": {
     "dev": "next dev",

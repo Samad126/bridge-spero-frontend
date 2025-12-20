@@ -1,6 +1,5 @@
 import { baseApi } from "@/lib/redux/baseApi";
 import {
-  IsMemberResponse,
   ScheduleResponse,
   CreateScheduleRequest,
   UpdateScheduleRequest,
@@ -9,13 +8,18 @@ import {
   ResourcesResponse,
   MembersResponse
 } from "../types/groupDetailsTypes";
+import { MembershipStatus } from "@/features/notifications/types/notificationTypes";
 
 export const groupDetailsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    checkIsMember: builder.query<IsMemberResponse, number>({
+    checkIsMember: builder.query<MembershipStatus, number>({
       query: (groupId) => ({
-        url: `/groups/${groupId}/is-member`,
+        url: `/groups/${groupId}/member-status`,
         meta: { authMode: "strict" },
+        responseHandler: async (response) => {
+          // The endpoint now returns a plain string: "MEMBER", "NOT_MEMBER", or "PENDING"
+          return response.text();
+        },
       }),
       providesTags: ["Groups"],
     }),
@@ -226,7 +230,7 @@ export const groupDetailsApi = baseApi.injectEndpoints({
 
     joinGroup: builder.mutation<void, number>({
       query: (groupId) => ({
-        url: `/groups/${groupId}/members`,
+        url: `/users/join/${groupId}`,
         method: "POST",
         meta: { authMode: "strict" },
       }),

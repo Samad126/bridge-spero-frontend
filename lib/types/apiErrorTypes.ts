@@ -73,9 +73,9 @@ export function getErrorMessage(error: unknown): string {
   const backendError = extractBackendError(error);
 
   if (backendError) {
-    // If there are field-specific errors, combine them
+    // If there are field-specific errors, combine them (show only values, not property names)
     if (backendError.errors && backendError.errors.length > 0) {
-      return backendError.errors.map(e => `${e.field}: ${e.message}`).join('\n');
+      return backendError.errors.map(e => e.message).join('\n');
     }
     return backendError.errorMessage;
   }
