@@ -29,7 +29,7 @@ function Tabs({ groupId, isAuthenticated, teacherId }: TabsProps) {
     skip: !userData || isGroupOwner, // Skip only if not logged in or if user owns the group
   });
 
-  const isEnrolled = membershipStatus === "MEMBER";
+  const isEnrolled = membershipStatus?.replace(/"/g, "") === "MEMBER";
 
   const filteredTabs = useMemo(() => {
     // Not logged in: Show only Schedule and Syllabus
