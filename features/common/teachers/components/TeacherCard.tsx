@@ -54,17 +54,19 @@ function TeacherCard({ experience, profileUrl, star, name, col = 1, id }: Teache
               {name}
             </h3>
           )}
-          <div className="flex items-center">
-            <Image
-              src={"/star.svg"}
-              width={16}
-              height={16}
-              alt={`${name} star`}
-              className="mr-[6px] w-[16px] h-[16px]"
-            />
-            <span className="text-custom-yellow font-medium">{star}</span>
-            <div className="w-px h-[10px] bg-tertiary mx-[12px]"></div>
-            <span className="text-tertiary leading-[130%]">{experience}</span>
+          <div className="flex items-center justify-center md:justify-start w-full flex-wrap gap-x-[8px]">
+            <div className="flex items-center">
+              <Image
+                src={"/star.svg"}
+                width={16}
+                height={16}
+                alt={`${name} star`}
+                className="mr-[6px] w-[16px] h-[16px]"
+              />
+              <span className="text-custom-yellow font-medium">{star}</span>
+            </div>
+            <div className="w-px h-[10px] bg-tertiary hidden md:block md:mx-[4px]"></div>
+            <span className="text-tertiary leading-[130%] text-sm md:text-base truncate max-w-full">{experience}</span>
           </div>
         </div>
       </div>
